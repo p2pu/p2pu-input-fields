@@ -1,6 +1,6 @@
 {
   "name": "p2pu-input-fields",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Input fields used in P2PU projects",
   "main": "dist/build.js",
   "scripts": {
@@ -11,11 +11,11 @@
   "peerDependencies": {
     "react": ">=15.0.1",
     "react-dom": ">=15.0.1",
-    "axios": "^0.18.0",
-    "lodash": "^4.17.10",
-    "moment": "^2.22.1",
-    "moment-timezone": "^0.5.16",
-    "rc-time-picker": "^3.3.1",
+    "axios": "^0.17.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.14",
+    "rc-time-picker": "^3.2.1",
     "react-select": "^1.2.1"
   },
   "devDependencies": {
