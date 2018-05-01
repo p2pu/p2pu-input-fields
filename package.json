@@ -2,6 +2,10 @@
   "name": "p2pu-input-fields",
   "version": "0.2.0",
   "description": "Input fields used in P2PU projects",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/p2pu/p2pu-input-fields.git"
+  },
   "main": "dist/build.js",
   "scripts": {
     "build": "rollup -c"
