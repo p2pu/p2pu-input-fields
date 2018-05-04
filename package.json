@@ -19,8 +19,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.14",
-    "rc-time-picker": "^3.2.1",
-    "react-select": "^1.2.1"
+    "rc-time-picker": "^3.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -33,6 +32,11 @@
     "rollup-plugin-babel": "^3.0.4",
     "rollup-plugin-commonjs": "^9.1.2",
     "rollup-plugin-css-only": "^0.4.0",
+    "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-node-resolve": "^3.3.0"
+  },
+  "dependencies": {
+    "react-select": "^1.2.1",
+    "react-datepicker": "^1.4.1"
   }
 }

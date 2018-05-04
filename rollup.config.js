@@ -2,6 +2,7 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import css from 'rollup-plugin-css-only';
+import json from 'rollup-plugin-json';
 
 export default {
   input: 'src/index.js',
@@ -14,15 +15,20 @@ export default {
     'react-dom',
     'lodash',
     'axios',
-    'react-select',
-    'moment',
-    'moment-timezone',
-    'rc-time-picker'
+    "moment",
+    "moment-timezone",
+    "rc-time-picker"
   ],
   plugins: [
-    resolve(),
+    resolve({
+      extensions: [ '.js', '.jsx' ],
+      jsnext: true,
+      main: true
+    }),
+    json(),
+    commonjs(),
     babel({
-      exclude: 'node_modules/**'
+      exclude: [ 'node_modules/**', '**/*.json' ]
     }),
     css({ output: 'dist/bundle.css' })
   ]
