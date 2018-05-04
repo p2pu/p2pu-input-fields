@@ -1,5 +1,5 @@
 import React, { Component, createElement } from 'react';
-import { findDOMNode } from 'react-dom';
+import reactDom, { findDOMNode } from 'react-dom';
 import moment from 'moment';
 import axios from 'axios';
 import 'lodash';
@@ -97,6 +97,12 @@ var CheckboxWithLabel = function CheckboxWithLabel(props) {
     )
   );
 };
+
+var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
+}
 
 function unwrapExports (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -433,7 +439,7 @@ var checkPropTypes$1 = /*#__PURE__*/Object.freeze({
   __moduleExports: checkPropTypes_1
 });
 
-var assign = ( objectAssign$1 && objectAssign ) || objectAssign$1;
+var _assign = ( objectAssign$1 && objectAssign ) || objectAssign$1;
 
 var checkPropTypes$2 = ( checkPropTypes$1 && checkPropTypes_1 ) || checkPropTypes$1;
 
@@ -810,7 +816,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
       }
       // We need to check all keys in case some are required but missing from
       // props.
-      var allKeys = assign({}, props[propName], shapeTypes);
+      var allKeys = _assign({}, props[propName], shapeTypes);
       for (var key in allKeys) {
         var checker = shapeTypes[key];
         if (!checker) {
@@ -1052,6 +1058,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 });
 
+var propTypes$1 = /*#__PURE__*/Object.freeze({
+  default: propTypes,
+  __moduleExports: propTypes
+});
+
 var classnames = createCommonjsModule(function (module) {
 /*!
   Copyright (c) 2016 Jed Watson.
@@ -1100,6 +1111,11 @@ var classnames = createCommonjsModule(function (module) {
 		window.classNames = classNames;
 	}
 }());
+});
+
+var classnames$1 = /*#__PURE__*/Object.freeze({
+  default: classnames,
+  __moduleExports: classnames
 });
 
 function _inheritsLoose(subClass, superClass) {
@@ -7544,6 +7560,1555 @@ var InputWithLabel = function InputWithLabel(props) {
   );
 };
 
+var countUp_min = createCommonjsModule(function (module, exports) {
+!function(a,n){"function"==typeof undefined&&undefined.amd?undefined(n):module.exports=n(commonjsRequire,exports,module);}(commonjsGlobal,function(a,n,t){var e=function(a,n,t,e,i,r){function o(a){var n,t,e,i,r,o,s=a<0;if(a=Math.abs(a).toFixed(l.decimals),a+="",n=a.split("."),t=n[0],e=n.length>1?l.options.decimal+n[1]:"",l.options.useGrouping){for(i="",r=0,o=t.length;r<o;++r)0!==r&&r%3===0&&(i=l.options.separator+i),i=t[o-r-1]+i;t=i;}return l.options.numerals.length&&(t=t.replace(/[0-9]/g,function(a){return l.options.numerals[+a]}),e=e.replace(/[0-9]/g,function(a){return l.options.numerals[+a]})),(s?"-":"")+l.options.prefix+t+e+l.options.suffix}function s(a,n,t,e){return t*(-Math.pow(2,-10*a/e)+1)*1024/1023+n}function u(a){return"number"==typeof a&&!isNaN(a)}var l=this;if(l.version=function(){return"1.9.3"},l.options={useEasing:!0,useGrouping:!0,separator:",",decimal:".",easingFn:s,formattingFn:o,prefix:"",suffix:"",numerals:[]},r&&"object"==typeof r)for(var m in l.options)r.hasOwnProperty(m)&&null!==r[m]&&(l.options[m]=r[m]);""===l.options.separator?l.options.useGrouping=!1:l.options.separator=""+l.options.separator;for(var d=0,c=["webkit","moz","ms","o"],f=0;f<c.length&&!window.requestAnimationFrame;++f)window.requestAnimationFrame=window[c[f]+"RequestAnimationFrame"],window.cancelAnimationFrame=window[c[f]+"CancelAnimationFrame"]||window[c[f]+"CancelRequestAnimationFrame"];window.requestAnimationFrame||(window.requestAnimationFrame=function(a,n){var t=(new Date).getTime(),e=Math.max(0,16-(t-d)),i=window.setTimeout(function(){a(t+e);},e);return d=t+e,i}),window.cancelAnimationFrame||(window.cancelAnimationFrame=function(a){clearTimeout(a);}),l.initialize=function(){return!!l.initialized||(l.error="",l.d="string"==typeof a?document.getElementById(a):a,l.d?(l.startVal=Number(n),l.endVal=Number(t),u(l.startVal)&&u(l.endVal)?(l.decimals=Math.max(0,e||0),l.dec=Math.pow(10,l.decimals),l.duration=1e3*Number(i)||2e3,l.countDown=l.startVal>l.endVal,l.frameVal=l.startVal,l.initialized=!0,!0):(l.error="[CountUp] startVal ("+n+") or endVal ("+t+") is not a number",!1)):(l.error="[CountUp] target is null or undefined",!1))},l.printValue=function(a){var n=l.options.formattingFn(a);"INPUT"===l.d.tagName?this.d.value=n:"text"===l.d.tagName||"tspan"===l.d.tagName?this.d.textContent=n:this.d.innerHTML=n;},l.count=function(a){l.startTime||(l.startTime=a),l.timestamp=a;var n=a-l.startTime;l.remaining=l.duration-n,l.options.useEasing?l.countDown?l.frameVal=l.startVal-l.options.easingFn(n,0,l.startVal-l.endVal,l.duration):l.frameVal=l.options.easingFn(n,l.startVal,l.endVal-l.startVal,l.duration):l.countDown?l.frameVal=l.startVal-(l.startVal-l.endVal)*(n/l.duration):l.frameVal=l.startVal+(l.endVal-l.startVal)*(n/l.duration),l.countDown?l.frameVal=l.frameVal<l.endVal?l.endVal:l.frameVal:l.frameVal=l.frameVal>l.endVal?l.endVal:l.frameVal,l.frameVal=Math.round(l.frameVal*l.dec)/l.dec,l.printValue(l.frameVal),n<l.duration?l.rAF=requestAnimationFrame(l.count):l.callback&&l.callback();},l.start=function(a){l.initialize()&&(l.callback=a,l.rAF=requestAnimationFrame(l.count));},l.pauseResume=function(){l.paused?(l.paused=!1,delete l.startTime,l.duration=l.remaining,l.startVal=l.frameVal,requestAnimationFrame(l.count)):(l.paused=!0,cancelAnimationFrame(l.rAF));},l.reset=function(){l.paused=!1,delete l.startTime,l.initialized=!1,l.initialize()&&(cancelAnimationFrame(l.rAF),l.printValue(l.startVal));},l.update=function(a){if(l.initialize()){if(a=Number(a),!u(a))return void(l.error="[CountUp] update() - new endVal is not a number: "+a);l.error="",a!==l.frameVal&&(cancelAnimationFrame(l.rAF),l.paused=!1,delete l.startTime,l.startVal=l.frameVal,l.endVal=a,l.countDown=l.startVal>l.endVal,l.rAF=requestAnimationFrame(l.count));}},l.initialize()&&l.printValue(l.startVal);};return e});
+});
+
+var countUp_min$1 = /*#__PURE__*/Object.freeze({
+  default: countUp_min,
+  __moduleExports: countUp_min
+});
+
+var _countup = ( countUp_min$1 && countUp_min ) || countUp_min$1;
+
+var build = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.startAnimation = exports.formatNumber = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+
+
+var _react2 = _interopRequireDefault(React);
+
+
+
+var _countup2 = _interopRequireDefault(_countup);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// Adapted from the countup.js format number function
+// https://github.com/inorganik/countUp.js/blob/master/countUp.js#L46-L60
+var formatNumber = exports.formatNumber = function formatNumber(start, options) {
+  var neg = start < 0;
+  var num = '' + Math.abs(start).toFixed(options.decimals);
+  var x = num.split('.');
+  var x1 = x[0];
+  var x2 = x.length > 1 ? '' + options.decimal + x[1] : '';
+  var rgx = /(\d+)(\d{3})/;
+
+  if (options.separator) {
+    while (rgx.test(x1)) {
+      x1 = x1.replace(rgx, '$1' + options.separator + '$2');
+    }
+  }
+
+  return '' + (neg ? '-' : '') + (options.prefix || '') + x1 + x2 + (options.suffix || '');
+};
+
+var startAnimation = exports.startAnimation = function startAnimation(component) {
+  if (!(component && component.spanElement)) {
+    throw new Error('You need to pass the CountUp component as an argument!\neg. this.myCountUp.startAnimation(this.myCountUp);');
+  }
+
+  var _component$props = component.props,
+      decimal = _component$props.decimal,
+      decimals = _component$props.decimals,
+      duration = _component$props.duration,
+      easingFn = _component$props.easingFn,
+      end = _component$props.end,
+      formattingFn = _component$props.formattingFn,
+      onComplete = _component$props.onComplete,
+      onStart = _component$props.onStart,
+      prefix = _component$props.prefix,
+      separator = _component$props.separator,
+      start = _component$props.start,
+      suffix = _component$props.suffix,
+      useEasing = _component$props.useEasing;
+
+
+  var countupInstance = new _countup2.default(component.spanElement, start, end, decimals, duration, {
+    decimal: decimal,
+    easingFn: easingFn,
+    formattingFn: formattingFn,
+    separator: separator,
+    prefix: prefix,
+    suffix: suffix,
+    useEasing: useEasing,
+    useGrouping: !!separator
+  });
+
+  if (typeof onStart === 'function') {
+    onStart();
+  }
+
+  countupInstance.start(onComplete);
+};
+
+var CountUp = function (_React$Component) {
+  _inherits(CountUp, _React$Component);
+
+  function CountUp() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, CountUp);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CountUp.__proto__ || Object.getPrototypeOf(CountUp)).call.apply(_ref, [this].concat(args))), _this), _this.spanElement = null, _this.refSpan = function (span) {
+      _this.spanElement = span;
+    }, _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  _createClass(CountUp, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      startAnimation(this);
+    }
+  }, {
+    key: 'shouldComponentUpdate',
+    value: function shouldComponentUpdate(nextProps) {
+      var hasCertainPropsChanged = this.props.duration !== nextProps.duration || this.props.end !== nextProps.end || this.props.start !== nextProps.start;
+
+      return nextProps.redraw || hasCertainPropsChanged;
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      startAnimation(this);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props = this.props,
+          className = _props.className,
+          start = _props.start,
+          decimal = _props.decimal,
+          decimals = _props.decimals,
+          separator = _props.separator,
+          prefix = _props.prefix,
+          suffix = _props.suffix,
+          style = _props.style,
+          formattingFn = _props.formattingFn;
+
+
+      return _react2.default.createElement(
+        'span',
+        { className: className, ref: this.refSpan, style: style },
+        typeof formattingFn === 'function' ? formattingFn(start) : formatNumber(start, {
+          decimal: decimal,
+          decimals: decimals,
+          separator: separator,
+          prefix: prefix,
+          suffix: suffix
+        })
+      );
+    }
+  }]);
+
+  return CountUp;
+}(_react2.default.Component);
+
+CountUp.defaultProps = {
+  className: undefined,
+  decimal: '.',
+  decimals: 0,
+  duration: 3,
+  easingFn: null,
+  end: 100,
+  formattingFn: null,
+  onComplete: undefined,
+  onStart: undefined,
+  prefix: '',
+  separator: '',
+  start: 0,
+  suffix: '',
+  redraw: false,
+  style: undefined,
+  useEasing: true
+};
+exports.default = CountUp;
+});
+
+var CountUp = unwrapExports(build);
+var build_1 = build.startAnimation;
+var build_2 = build.formatNumber;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+var emptyObject = {};
+
+if (process.env.NODE_ENV !== 'production') {
+  Object.freeze(emptyObject);
+}
+
+var emptyObject_1 = emptyObject;
+
+var emptyObject$1 = /*#__PURE__*/Object.freeze({
+  default: emptyObject_1,
+  __moduleExports: emptyObject_1
+});
+
+var emptyObject$2 = ( emptyObject$1 && emptyObject_1 ) || emptyObject$1;
+
+if (process.env.NODE_ENV !== 'production') {
+  var warning$3 = require$$1;
+}
+
+var MIXINS_KEY = 'mixins';
+
+// Helper function to allow the creation of anonymous functions which do not
+// have .name set to the name of the variable being assigned to.
+function identity(fn) {
+  return fn;
+}
+
+var ReactPropTypeLocationNames;
+if (process.env.NODE_ENV !== 'production') {
+  ReactPropTypeLocationNames = {
+    prop: 'prop',
+    context: 'context',
+    childContext: 'child context'
+  };
+} else {
+  ReactPropTypeLocationNames = {};
+}
+
+function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
+  /**
+   * Policies that describe methods in `ReactClassInterface`.
+   */
+
+  var injectedMixins = [];
+
+  /**
+   * Composite components are higher-level components that compose other composite
+   * or host components.
+   *
+   * To create a new type of `ReactClass`, pass a specification of
+   * your new class to `React.createClass`. The only requirement of your class
+   * specification is that you implement a `render` method.
+   *
+   *   var MyComponent = React.createClass({
+   *     render: function() {
+   *       return <div>Hello World</div>;
+   *     }
+   *   });
+   *
+   * The class specification supports a specific protocol of methods that have
+   * special meaning (e.g. `render`). See `ReactClassInterface` for
+   * more the comprehensive protocol. Any other properties and methods in the
+   * class specification will be available on the prototype.
+   *
+   * @interface ReactClassInterface
+   * @internal
+   */
+  var ReactClassInterface = {
+    /**
+     * An array of Mixin objects to include when defining your component.
+     *
+     * @type {array}
+     * @optional
+     */
+    mixins: 'DEFINE_MANY',
+
+    /**
+     * An object containing properties and methods that should be defined on
+     * the component's constructor instead of its prototype (static methods).
+     *
+     * @type {object}
+     * @optional
+     */
+    statics: 'DEFINE_MANY',
+
+    /**
+     * Definition of prop types for this component.
+     *
+     * @type {object}
+     * @optional
+     */
+    propTypes: 'DEFINE_MANY',
+
+    /**
+     * Definition of context types for this component.
+     *
+     * @type {object}
+     * @optional
+     */
+    contextTypes: 'DEFINE_MANY',
+
+    /**
+     * Definition of context types this component sets for its children.
+     *
+     * @type {object}
+     * @optional
+     */
+    childContextTypes: 'DEFINE_MANY',
+
+    // ==== Definition methods ====
+
+    /**
+     * Invoked when the component is mounted. Values in the mapping will be set on
+     * `this.props` if that prop is not specified (i.e. using an `in` check).
+     *
+     * This method is invoked before `getInitialState` and therefore cannot rely
+     * on `this.state` or use `this.setState`.
+     *
+     * @return {object}
+     * @optional
+     */
+    getDefaultProps: 'DEFINE_MANY_MERGED',
+
+    /**
+     * Invoked once before the component is mounted. The return value will be used
+     * as the initial value of `this.state`.
+     *
+     *   getInitialState: function() {
+     *     return {
+     *       isOn: false,
+     *       fooBaz: new BazFoo()
+     *     }
+     *   }
+     *
+     * @return {object}
+     * @optional
+     */
+    getInitialState: 'DEFINE_MANY_MERGED',
+
+    /**
+     * @return {object}
+     * @optional
+     */
+    getChildContext: 'DEFINE_MANY_MERGED',
+
+    /**
+     * Uses props from `this.props` and state from `this.state` to render the
+     * structure of the component.
+     *
+     * No guarantees are made about when or how often this method is invoked, so
+     * it must not have side effects.
+     *
+     *   render: function() {
+     *     var name = this.props.name;
+     *     return <div>Hello, {name}!</div>;
+     *   }
+     *
+     * @return {ReactComponent}
+     * @required
+     */
+    render: 'DEFINE_ONCE',
+
+    // ==== Delegate methods ====
+
+    /**
+     * Invoked when the component is initially created and about to be mounted.
+     * This may have side effects, but any external subscriptions or data created
+     * by this method must be cleaned up in `componentWillUnmount`.
+     *
+     * @optional
+     */
+    componentWillMount: 'DEFINE_MANY',
+
+    /**
+     * Invoked when the component has been mounted and has a DOM representation.
+     * However, there is no guarantee that the DOM node is in the document.
+     *
+     * Use this as an opportunity to operate on the DOM when the component has
+     * been mounted (initialized and rendered) for the first time.
+     *
+     * @param {DOMElement} rootNode DOM element representing the component.
+     * @optional
+     */
+    componentDidMount: 'DEFINE_MANY',
+
+    /**
+     * Invoked before the component receives new props.
+     *
+     * Use this as an opportunity to react to a prop transition by updating the
+     * state using `this.setState`. Current props are accessed via `this.props`.
+     *
+     *   componentWillReceiveProps: function(nextProps, nextContext) {
+     *     this.setState({
+     *       likesIncreasing: nextProps.likeCount > this.props.likeCount
+     *     });
+     *   }
+     *
+     * NOTE: There is no equivalent `componentWillReceiveState`. An incoming prop
+     * transition may cause a state change, but the opposite is not true. If you
+     * need it, you are probably looking for `componentWillUpdate`.
+     *
+     * @param {object} nextProps
+     * @optional
+     */
+    componentWillReceiveProps: 'DEFINE_MANY',
+
+    /**
+     * Invoked while deciding if the component should be updated as a result of
+     * receiving new props, state and/or context.
+     *
+     * Use this as an opportunity to `return false` when you're certain that the
+     * transition to the new props/state/context will not require a component
+     * update.
+     *
+     *   shouldComponentUpdate: function(nextProps, nextState, nextContext) {
+     *     return !equal(nextProps, this.props) ||
+     *       !equal(nextState, this.state) ||
+     *       !equal(nextContext, this.context);
+     *   }
+     *
+     * @param {object} nextProps
+     * @param {?object} nextState
+     * @param {?object} nextContext
+     * @return {boolean} True if the component should update.
+     * @optional
+     */
+    shouldComponentUpdate: 'DEFINE_ONCE',
+
+    /**
+     * Invoked when the component is about to update due to a transition from
+     * `this.props`, `this.state` and `this.context` to `nextProps`, `nextState`
+     * and `nextContext`.
+     *
+     * Use this as an opportunity to perform preparation before an update occurs.
+     *
+     * NOTE: You **cannot** use `this.setState()` in this method.
+     *
+     * @param {object} nextProps
+     * @param {?object} nextState
+     * @param {?object} nextContext
+     * @param {ReactReconcileTransaction} transaction
+     * @optional
+     */
+    componentWillUpdate: 'DEFINE_MANY',
+
+    /**
+     * Invoked when the component's DOM representation has been updated.
+     *
+     * Use this as an opportunity to operate on the DOM when the component has
+     * been updated.
+     *
+     * @param {object} prevProps
+     * @param {?object} prevState
+     * @param {?object} prevContext
+     * @param {DOMElement} rootNode DOM element representing the component.
+     * @optional
+     */
+    componentDidUpdate: 'DEFINE_MANY',
+
+    /**
+     * Invoked when the component is about to be removed from its parent and have
+     * its DOM representation destroyed.
+     *
+     * Use this as an opportunity to deallocate any external resources.
+     *
+     * NOTE: There is no `componentDidUnmount` since your component will have been
+     * destroyed by that point.
+     *
+     * @optional
+     */
+    componentWillUnmount: 'DEFINE_MANY',
+
+    /**
+     * Replacement for (deprecated) `componentWillMount`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillMount: 'DEFINE_MANY',
+
+    /**
+     * Replacement for (deprecated) `componentWillReceiveProps`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillReceiveProps: 'DEFINE_MANY',
+
+    /**
+     * Replacement for (deprecated) `componentWillUpdate`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillUpdate: 'DEFINE_MANY',
+
+    // ==== Advanced methods ====
+
+    /**
+     * Updates the component's currently mounted DOM representation.
+     *
+     * By default, this implements React's rendering and reconciliation algorithm.
+     * Sophisticated clients may wish to override this.
+     *
+     * @param {ReactReconcileTransaction} transaction
+     * @internal
+     * @overridable
+     */
+    updateComponent: 'OVERRIDE_BASE'
+  };
+
+  /**
+   * Similar to ReactClassInterface but for static methods.
+   */
+  var ReactClassStaticInterface = {
+    /**
+     * This method is invoked after a component is instantiated and when it
+     * receives new props. Return an object to update state in response to
+     * prop changes. Return null to indicate no change to state.
+     *
+     * If an object is returned, its keys will be merged into the existing state.
+     *
+     * @return {object || null}
+     * @optional
+     */
+    getDerivedStateFromProps: 'DEFINE_MANY_MERGED'
+  };
+
+  /**
+   * Mapping from class specification keys to special processing functions.
+   *
+   * Although these are declared like instance properties in the specification
+   * when defining classes using `React.createClass`, they are actually static
+   * and are accessible on the constructor instead of the prototype. Despite
+   * being static, they must be defined outside of the "statics" key under
+   * which all other static methods are defined.
+   */
+  var RESERVED_SPEC_KEYS = {
+    displayName: function(Constructor, displayName) {
+      Constructor.displayName = displayName;
+    },
+    mixins: function(Constructor, mixins) {
+      if (mixins) {
+        for (var i = 0; i < mixins.length; i++) {
+          mixSpecIntoComponent(Constructor, mixins[i]);
+        }
+      }
+    },
+    childContextTypes: function(Constructor, childContextTypes) {
+      if (process.env.NODE_ENV !== 'production') {
+        validateTypeDef(Constructor, childContextTypes, 'childContext');
+      }
+      Constructor.childContextTypes = _assign(
+        {},
+        Constructor.childContextTypes,
+        childContextTypes
+      );
+    },
+    contextTypes: function(Constructor, contextTypes) {
+      if (process.env.NODE_ENV !== 'production') {
+        validateTypeDef(Constructor, contextTypes, 'context');
+      }
+      Constructor.contextTypes = _assign(
+        {},
+        Constructor.contextTypes,
+        contextTypes
+      );
+    },
+    /**
+     * Special case getDefaultProps which should move into statics but requires
+     * automatic merging.
+     */
+    getDefaultProps: function(Constructor, getDefaultProps) {
+      if (Constructor.getDefaultProps) {
+        Constructor.getDefaultProps = createMergedResultFunction(
+          Constructor.getDefaultProps,
+          getDefaultProps
+        );
+      } else {
+        Constructor.getDefaultProps = getDefaultProps;
+      }
+    },
+    propTypes: function(Constructor, propTypes) {
+      if (process.env.NODE_ENV !== 'production') {
+        validateTypeDef(Constructor, propTypes, 'prop');
+      }
+      Constructor.propTypes = _assign({}, Constructor.propTypes, propTypes);
+    },
+    statics: function(Constructor, statics) {
+      mixStaticSpecIntoComponent(Constructor, statics);
+    },
+    autobind: function() {}
+  };
+
+  function validateTypeDef(Constructor, typeDef, location) {
+    for (var propName in typeDef) {
+      if (typeDef.hasOwnProperty(propName)) {
+        // use a warning instead of an _invariant so components
+        // don't show up in prod but only in __DEV__
+        if (process.env.NODE_ENV !== 'production') {
+          warning$3(
+            typeof typeDef[propName] === 'function',
+            '%s: %s type `%s` is invalid; it must be a function, usually from ' +
+              'React.PropTypes.',
+            Constructor.displayName || 'ReactClass',
+            ReactPropTypeLocationNames[location],
+            propName
+          );
+        }
+      }
+    }
+  }
+
+  function validateMethodOverride(isAlreadyDefined, name) {
+    var specPolicy = ReactClassInterface.hasOwnProperty(name)
+      ? ReactClassInterface[name]
+      : null;
+
+    // Disallow overriding of base class methods unless explicitly allowed.
+    if (ReactClassMixin.hasOwnProperty(name)) {
+      require$$0(
+        specPolicy === 'OVERRIDE_BASE',
+        'ReactClassInterface: You are attempting to override ' +
+          '`%s` from your class specification. Ensure that your method names ' +
+          'do not overlap with React methods.',
+        name
+      );
+    }
+
+    // Disallow defining methods more than once unless explicitly allowed.
+    if (isAlreadyDefined) {
+      require$$0(
+        specPolicy === 'DEFINE_MANY' || specPolicy === 'DEFINE_MANY_MERGED',
+        'ReactClassInterface: You are attempting to define ' +
+          '`%s` on your component more than once. This conflict may be due ' +
+          'to a mixin.',
+        name
+      );
+    }
+  }
+
+  /**
+   * Mixin helper which handles policy validation and reserved
+   * specification keys when building React classes.
+   */
+  function mixSpecIntoComponent(Constructor, spec) {
+    if (!spec) {
+      if (process.env.NODE_ENV !== 'production') {
+        var typeofSpec = typeof spec;
+        var isMixinValid = typeofSpec === 'object' && spec !== null;
+
+        if (process.env.NODE_ENV !== 'production') {
+          warning$3(
+            isMixinValid,
+            "%s: You're attempting to include a mixin that is either null " +
+              'or not an object. Check the mixins included by the component, ' +
+              'as well as any mixins they include themselves. ' +
+              'Expected object but got %s.',
+            Constructor.displayName || 'ReactClass',
+            spec === null ? null : typeofSpec
+          );
+        }
+      }
+
+      return;
+    }
+
+    require$$0(
+      typeof spec !== 'function',
+      "ReactClass: You're attempting to " +
+        'use a component class or function as a mixin. Instead, just use a ' +
+        'regular object.'
+    );
+    require$$0(
+      !isValidElement(spec),
+      "ReactClass: You're attempting to " +
+        'use a component as a mixin. Instead, just use a regular object.'
+    );
+
+    var proto = Constructor.prototype;
+    var autoBindPairs = proto.__reactAutoBindPairs;
+
+    // By handling mixins before any other properties, we ensure the same
+    // chaining order is applied to methods with DEFINE_MANY policy, whether
+    // mixins are listed before or after these methods in the spec.
+    if (spec.hasOwnProperty(MIXINS_KEY)) {
+      RESERVED_SPEC_KEYS.mixins(Constructor, spec.mixins);
+    }
+
+    for (var name in spec) {
+      if (!spec.hasOwnProperty(name)) {
+        continue;
+      }
+
+      if (name === MIXINS_KEY) {
+        // We have already handled mixins in a special case above.
+        continue;
+      }
+
+      var property = spec[name];
+      var isAlreadyDefined = proto.hasOwnProperty(name);
+      validateMethodOverride(isAlreadyDefined, name);
+
+      if (RESERVED_SPEC_KEYS.hasOwnProperty(name)) {
+        RESERVED_SPEC_KEYS[name](Constructor, property);
+      } else {
+        // Setup methods on prototype:
+        // The following member methods should not be automatically bound:
+        // 1. Expected ReactClass methods (in the "interface").
+        // 2. Overridden methods (that were mixed in).
+        var isReactClassMethod = ReactClassInterface.hasOwnProperty(name);
+        var isFunction = typeof property === 'function';
+        var shouldAutoBind =
+          isFunction &&
+          !isReactClassMethod &&
+          !isAlreadyDefined &&
+          spec.autobind !== false;
+
+        if (shouldAutoBind) {
+          autoBindPairs.push(name, property);
+          proto[name] = property;
+        } else {
+          if (isAlreadyDefined) {
+            var specPolicy = ReactClassInterface[name];
+
+            // These cases should already be caught by validateMethodOverride.
+            require$$0(
+              isReactClassMethod &&
+                (specPolicy === 'DEFINE_MANY_MERGED' ||
+                  specPolicy === 'DEFINE_MANY'),
+              'ReactClass: Unexpected spec policy %s for key %s ' +
+                'when mixing in component specs.',
+              specPolicy,
+              name
+            );
+
+            // For methods which are defined more than once, call the existing
+            // methods before calling the new property, merging if appropriate.
+            if (specPolicy === 'DEFINE_MANY_MERGED') {
+              proto[name] = createMergedResultFunction(proto[name], property);
+            } else if (specPolicy === 'DEFINE_MANY') {
+              proto[name] = createChainedFunction(proto[name], property);
+            }
+          } else {
+            proto[name] = property;
+            if (process.env.NODE_ENV !== 'production') {
+              // Add verbose displayName to the function, which helps when looking
+              // at profiling tools.
+              if (typeof property === 'function' && spec.displayName) {
+                proto[name].displayName = spec.displayName + '_' + name;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function mixStaticSpecIntoComponent(Constructor, statics) {
+    if (!statics) {
+      return;
+    }
+
+    for (var name in statics) {
+      var property = statics[name];
+      if (!statics.hasOwnProperty(name)) {
+        continue;
+      }
+
+      var isReserved = name in RESERVED_SPEC_KEYS;
+      require$$0(
+        !isReserved,
+        'ReactClass: You are attempting to define a reserved ' +
+          'property, `%s`, that shouldn\'t be on the "statics" key. Define it ' +
+          'as an instance property instead; it will still be accessible on the ' +
+          'constructor.',
+        name
+      );
+
+      var isAlreadyDefined = name in Constructor;
+      if (isAlreadyDefined) {
+        var specPolicy = ReactClassStaticInterface.hasOwnProperty(name)
+          ? ReactClassStaticInterface[name]
+          : null;
+
+        require$$0(
+          specPolicy === 'DEFINE_MANY_MERGED',
+          'ReactClass: You are attempting to define ' +
+            '`%s` on your component more than once. This conflict may be ' +
+            'due to a mixin.',
+          name
+        );
+
+        Constructor[name] = createMergedResultFunction(Constructor[name], property);
+
+        return;
+      }
+
+      Constructor[name] = property;
+    }
+  }
+
+  /**
+   * Merge two objects, but throw if both contain the same key.
+   *
+   * @param {object} one The first object, which is mutated.
+   * @param {object} two The second object
+   * @return {object} one after it has been mutated to contain everything in two.
+   */
+  function mergeIntoWithNoDuplicateKeys(one, two) {
+    require$$0(
+      one && two && typeof one === 'object' && typeof two === 'object',
+      'mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects.'
+    );
+
+    for (var key in two) {
+      if (two.hasOwnProperty(key)) {
+        require$$0(
+          one[key] === undefined,
+          'mergeIntoWithNoDuplicateKeys(): ' +
+            'Tried to merge two objects with the same key: `%s`. This conflict ' +
+            'may be due to a mixin; in particular, this may be caused by two ' +
+            'getInitialState() or getDefaultProps() methods returning objects ' +
+            'with clashing keys.',
+          key
+        );
+        one[key] = two[key];
+      }
+    }
+    return one;
+  }
+
+  /**
+   * Creates a function that invokes two functions and merges their return values.
+   *
+   * @param {function} one Function to invoke first.
+   * @param {function} two Function to invoke second.
+   * @return {function} Function that invokes the two argument functions.
+   * @private
+   */
+  function createMergedResultFunction(one, two) {
+    return function mergedResult() {
+      var a = one.apply(this, arguments);
+      var b = two.apply(this, arguments);
+      if (a == null) {
+        return b;
+      } else if (b == null) {
+        return a;
+      }
+      var c = {};
+      mergeIntoWithNoDuplicateKeys(c, a);
+      mergeIntoWithNoDuplicateKeys(c, b);
+      return c;
+    };
+  }
+
+  /**
+   * Creates a function that invokes two functions and ignores their return vales.
+   *
+   * @param {function} one Function to invoke first.
+   * @param {function} two Function to invoke second.
+   * @return {function} Function that invokes the two argument functions.
+   * @private
+   */
+  function createChainedFunction(one, two) {
+    return function chainedFunction() {
+      one.apply(this, arguments);
+      two.apply(this, arguments);
+    };
+  }
+
+  /**
+   * Binds a method to the component.
+   *
+   * @param {object} component Component whose method is going to be bound.
+   * @param {function} method Method to be bound.
+   * @return {function} The bound method.
+   */
+  function bindAutoBindMethod(component, method) {
+    var boundMethod = method.bind(component);
+    if (process.env.NODE_ENV !== 'production') {
+      boundMethod.__reactBoundContext = component;
+      boundMethod.__reactBoundMethod = method;
+      boundMethod.__reactBoundArguments = null;
+      var componentName = component.constructor.displayName;
+      var _bind = boundMethod.bind;
+      boundMethod.bind = function(newThis) {
+        for (
+          var _len = arguments.length,
+            args = Array(_len > 1 ? _len - 1 : 0),
+            _key = 1;
+          _key < _len;
+          _key++
+        ) {
+          args[_key - 1] = arguments[_key];
+        }
+
+        // User is trying to bind() an autobound method; we effectively will
+        // ignore the value of "this" that the user is trying to use, so
+        // let's warn.
+        if (newThis !== component && newThis !== null) {
+          if (process.env.NODE_ENV !== 'production') {
+            warning$3(
+              false,
+              'bind(): React component methods may only be bound to the ' +
+                'component instance. See %s',
+              componentName
+            );
+          }
+        } else if (!args.length) {
+          if (process.env.NODE_ENV !== 'production') {
+            warning$3(
+              false,
+              'bind(): You are binding a component method to the component. ' +
+                'React does this for you automatically in a high-performance ' +
+                'way, so you can safely remove this call. See %s',
+              componentName
+            );
+          }
+          return boundMethod;
+        }
+        var reboundMethod = _bind.apply(boundMethod, arguments);
+        reboundMethod.__reactBoundContext = component;
+        reboundMethod.__reactBoundMethod = method;
+        reboundMethod.__reactBoundArguments = args;
+        return reboundMethod;
+      };
+    }
+    return boundMethod;
+  }
+
+  /**
+   * Binds all auto-bound methods in a component.
+   *
+   * @param {object} component Component whose method is going to be bound.
+   */
+  function bindAutoBindMethods(component) {
+    var pairs = component.__reactAutoBindPairs;
+    for (var i = 0; i < pairs.length; i += 2) {
+      var autoBindKey = pairs[i];
+      var method = pairs[i + 1];
+      component[autoBindKey] = bindAutoBindMethod(component, method);
+    }
+  }
+
+  var IsMountedPreMixin = {
+    componentDidMount: function() {
+      this.__isMounted = true;
+    }
+  };
+
+  var IsMountedPostMixin = {
+    componentWillUnmount: function() {
+      this.__isMounted = false;
+    }
+  };
+
+  /**
+   * Add more to the ReactClass base class. These are all legacy features and
+   * therefore not already part of the modern ReactComponent.
+   */
+  var ReactClassMixin = {
+    /**
+     * TODO: This will be deprecated because state should always keep a consistent
+     * type signature and the only use case for this, is to avoid that.
+     */
+    replaceState: function(newState, callback) {
+      this.updater.enqueueReplaceState(this, newState, callback);
+    },
+
+    /**
+     * Checks whether or not this composite component is mounted.
+     * @return {boolean} True if mounted, false otherwise.
+     * @protected
+     * @final
+     */
+    isMounted: function() {
+      if (process.env.NODE_ENV !== 'production') {
+        warning$3(
+          this.__didWarnIsMounted,
+          '%s: isMounted is deprecated. Instead, make sure to clean up ' +
+            'subscriptions and pending requests in componentWillUnmount to ' +
+            'prevent memory leaks.',
+          (this.constructor && this.constructor.displayName) ||
+            this.name ||
+            'Component'
+        );
+        this.__didWarnIsMounted = true;
+      }
+      return !!this.__isMounted;
+    }
+  };
+
+  var ReactClassComponent = function() {};
+  _assign(
+    ReactClassComponent.prototype,
+    ReactComponent.prototype,
+    ReactClassMixin
+  );
+
+  /**
+   * Creates a composite component class given a class specification.
+   * See https://facebook.github.io/react/docs/top-level-api.html#react.createclass
+   *
+   * @param {object} spec Class specification (which must define `render`).
+   * @return {function} Component constructor function.
+   * @public
+   */
+  function createClass(spec) {
+    // To keep our warnings more understandable, we'll use a little hack here to
+    // ensure that Constructor.name !== 'Constructor'. This makes sure we don't
+    // unnecessarily identify a class without displayName as 'Constructor'.
+    var Constructor = identity(function(props, context, updater) {
+      // This constructor gets overridden by mocks. The argument is used
+      // by mocks to assert on what gets mounted.
+
+      if (process.env.NODE_ENV !== 'production') {
+        warning$3(
+          this instanceof Constructor,
+          'Something is calling a React component directly. Use a factory or ' +
+            'JSX instead. See: https://fb.me/react-legacyfactory'
+        );
+      }
+
+      // Wire up auto-binding
+      if (this.__reactAutoBindPairs.length) {
+        bindAutoBindMethods(this);
+      }
+
+      this.props = props;
+      this.context = context;
+      this.refs = emptyObject$2;
+      this.updater = updater || ReactNoopUpdateQueue;
+
+      this.state = null;
+
+      // ReactClasses doesn't have constructors. Instead, they use the
+      // getInitialState and componentWillMount methods for initialization.
+
+      var initialState = this.getInitialState ? this.getInitialState() : null;
+      if (process.env.NODE_ENV !== 'production') {
+        // We allow auto-mocks to proceed as if they're returning null.
+        if (
+          initialState === undefined &&
+          this.getInitialState._isMockFunction
+        ) {
+          // This is probably bad practice. Consider warning here and
+          // deprecating this convenience.
+          initialState = null;
+        }
+      }
+      require$$0(
+        typeof initialState === 'object' && !Array.isArray(initialState),
+        '%s.getInitialState(): must return an object or null',
+        Constructor.displayName || 'ReactCompositeComponent'
+      );
+
+      this.state = initialState;
+    });
+    Constructor.prototype = new ReactClassComponent();
+    Constructor.prototype.constructor = Constructor;
+    Constructor.prototype.__reactAutoBindPairs = [];
+
+    injectedMixins.forEach(mixSpecIntoComponent.bind(null, Constructor));
+
+    mixSpecIntoComponent(Constructor, IsMountedPreMixin);
+    mixSpecIntoComponent(Constructor, spec);
+    mixSpecIntoComponent(Constructor, IsMountedPostMixin);
+
+    // Initialize the defaultProps property after all mixins have been merged.
+    if (Constructor.getDefaultProps) {
+      Constructor.defaultProps = Constructor.getDefaultProps();
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+      // This is a tag to indicate that the use of these method names is ok,
+      // since it's used with createClass. If it's not, then it's likely a
+      // mistake so we'll warn you to use the static property, property
+      // initializer or constructor respectively.
+      if (Constructor.getDefaultProps) {
+        Constructor.getDefaultProps.isReactClassApproved = {};
+      }
+      if (Constructor.prototype.getInitialState) {
+        Constructor.prototype.getInitialState.isReactClassApproved = {};
+      }
+    }
+
+    require$$0(
+      Constructor.prototype.render,
+      'createClass(...): Class specification must implement a `render` method.'
+    );
+
+    if (process.env.NODE_ENV !== 'production') {
+      warning$3(
+        !Constructor.prototype.componentShouldUpdate,
+        '%s has a method called ' +
+          'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' +
+          'The name is phrased as a question because the function is ' +
+          'expected to return a value.',
+        spec.displayName || 'A component'
+      );
+      warning$3(
+        !Constructor.prototype.componentWillRecieveProps,
+        '%s has a method called ' +
+          'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
+        spec.displayName || 'A component'
+      );
+      warning$3(
+        !Constructor.prototype.UNSAFE_componentWillRecieveProps,
+        '%s has a method called UNSAFE_componentWillRecieveProps(). ' +
+          'Did you mean UNSAFE_componentWillReceiveProps()?',
+        spec.displayName || 'A component'
+      );
+    }
+
+    // Reduce time spent doing lookups by setting these on the prototype.
+    for (var methodName in ReactClassInterface) {
+      if (!Constructor.prototype[methodName]) {
+        Constructor.prototype[methodName] = null;
+      }
+    }
+
+    return Constructor;
+  }
+
+  return createClass;
+}
+
+var factory_1 = factory;
+
+var factory$1 = /*#__PURE__*/Object.freeze({
+  default: factory_1,
+  __moduleExports: factory_1
+});
+
+var factory$2 = ( factory$1 && factory_1 ) || factory$1;
+
+if (typeof React === 'undefined') {
+  throw Error(
+    'create-react-class could not find the React object. If you are using script tags, ' +
+      'make sure that React is being loaded before create-react-class.'
+  );
+}
+
+// Hack to grab NoopUpdateQueue from isomorphic React
+var ReactNoopUpdateQueue = new React.Component().updater;
+
+var createReactClass = factory$2(
+  React.Component,
+  React.isValidElement,
+  ReactNoopUpdateQueue
+);
+
+var createReactClass$1 = /*#__PURE__*/Object.freeze({
+  default: createReactClass,
+  __moduleExports: createReactClass
+});
+
+// Tell whether the rect is visible, given an offset
+//
+// return: boolean
+var isVisibleWithOffset = function (offset, rect, containmentRect) {
+  var offsetDir = offset.direction;
+  var offsetVal = offset.value;
+
+  // Rules for checking different kind of offsets. In example if the element is
+  // 90px below viewport and offsetTop is 100, it is considered visible.
+  switch (offsetDir) {
+  case 'top':
+    return ((containmentRect.top + offsetVal) < rect.top) &&
+      (containmentRect.bottom > rect.bottom) &&
+      (containmentRect.left < rect.left) &&
+      (containmentRect.right > rect.right);
+
+  case 'left':
+    return ((containmentRect.left + offsetVal) < rect.left) &&
+      (containmentRect.bottom > rect.bottom) &&
+      (containmentRect.top < rect.top) &&
+      (containmentRect.right > rect.right);
+
+  case 'bottom':
+    return ((containmentRect.bottom - offsetVal) > rect.bottom) &&
+      (containmentRect.left < rect.left) &&
+      (containmentRect.right > rect.right) &&
+      (containmentRect.top < rect.top);
+
+  case 'right':
+    return ((containmentRect.right - offsetVal) > rect.right) &&
+      (containmentRect.left < rect.left) &&
+      (containmentRect.top < rect.top) &&
+      (containmentRect.bottom > rect.bottom);
+  }
+};
+
+var isVisibleWithOffset$1 = /*#__PURE__*/Object.freeze({
+  default: isVisibleWithOffset,
+  __moduleExports: isVisibleWithOffset
+});
+
+var _propTypes = ( propTypes$1 && propTypes ) || propTypes$1;
+
+var createReactClass$2 = ( createReactClass$1 && createReactClass ) || createReactClass$1;
+
+var isVisibleWithOffset$2 = ( isVisibleWithOffset$1 && isVisibleWithOffset ) || isVisibleWithOffset$1;
+
+var containmentPropType = _propTypes.any;
+
+if (typeof window !== 'undefined') {
+  containmentPropType = _propTypes.instanceOf(window.Element);
+}
+
+var visibilitySensor = createReactClass$2({
+  displayName: 'VisibilitySensor',
+
+  propTypes: {
+    onChange: _propTypes.func,
+    active: _propTypes.bool,
+    partialVisibility: _propTypes.oneOfType([
+      _propTypes.bool,
+      _propTypes.oneOf(['top', 'right', 'bottom', 'left']),
+    ]),
+    delayedCall: _propTypes.bool,
+    offset: _propTypes.oneOfType([
+      _propTypes.shape({
+        top: _propTypes.number,
+        left: _propTypes.number,
+        bottom: _propTypes.number,
+        right: _propTypes.number
+      }),
+      // deprecated offset property
+      _propTypes.shape({
+        direction: _propTypes.oneOf(['top', 'right', 'bottom', 'left']),
+        value: _propTypes.number
+      })
+    ]),
+    scrollCheck: _propTypes.bool,
+    scrollDelay: _propTypes.number,
+    scrollThrottle: _propTypes.number,
+    resizeCheck: _propTypes.bool,
+    resizeDelay: _propTypes.number,
+    resizeThrottle: _propTypes.number,
+    intervalCheck: _propTypes.bool,
+    intervalDelay: _propTypes.number,
+    containment: containmentPropType,
+    children: _propTypes.oneOfType([
+      _propTypes.element,
+      _propTypes.func,
+    ]),
+    minTopValue: _propTypes.number,
+  },
+
+  getDefaultProps: function () {
+    return {
+      active: true,
+      partialVisibility: false,
+      minTopValue: 0,
+      scrollCheck: false,
+      scrollDelay: 250,
+      scrollThrottle: -1,
+      resizeCheck: false,
+      resizeDelay: 250,
+      resizeThrottle: -1,
+      intervalCheck: true,
+      intervalDelay: 100,
+      delayedCall: false,
+      offset: {},
+      containment: null,
+      children: React.createElement('span')
+    };
+  },
+
+  getInitialState: function () {
+    return {
+      isVisible: null,
+      visibilityRect: {}
+    };
+  },
+
+  componentDidMount: function () {
+    this.node = reactDom.findDOMNode(this);
+    if (this.props.active) {
+      this.startWatching();
+    }
+  },
+
+  componentWillUnmount: function () {
+    this.stopWatching();
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    if (nextProps.active && !this.props.active) {
+      this.setState(this.getInitialState());
+      this.startWatching();
+    } else if (!nextProps.active) {
+      this.stopWatching();
+    }
+  },
+
+  getContainer: function () {
+    return this.props.containment || window;
+  },
+
+  addEventListener: function (target, event, delay, throttle) {
+    if (!this.debounceCheck) {
+      this.debounceCheck = {};
+    }
+
+    var timeout;
+    var func;
+
+    var later = function () {
+      timeout = null;
+      this.check();
+    }.bind(this);
+
+    if (throttle > -1) {
+      func = function () {
+        if (!timeout) {
+          timeout = setTimeout(later, throttle || 0);
+        }
+      };
+    } else {
+      func = function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(later, delay || 0);
+      };
+    }
+
+    var info = {
+      target: target,
+      fn: func,
+      getLastTimeout: function () {
+        return timeout;
+      },
+    };
+
+    target.addEventListener(event, info.fn);
+    this.debounceCheck[event] = info;
+  },
+
+  startWatching: function () {
+    if (this.debounceCheck || this.interval) { return; }
+
+    if (this.props.intervalCheck) {
+      this.interval = setInterval(this.check, this.props.intervalDelay);
+    }
+
+    if (this.props.scrollCheck) {
+      this.addEventListener(
+        this.getContainer(),
+        'scroll',
+        this.props.scrollDelay,
+        this.props.scrollThrottle
+      );
+    }
+
+    if (this.props.resizeCheck) {
+      this.addEventListener(
+        window,
+        'resize',
+        this.props.resizeDelay,
+        this.props.resizeThrottle
+      );
+    }
+
+    // if dont need delayed call, check on load ( before the first interval fires )
+    !this.props.delayedCall && this.check();
+  },
+
+  stopWatching: function () {
+    if (this.debounceCheck) {
+      // clean up event listeners and their debounce callers
+      for (var debounceEvent in this.debounceCheck) {
+        if (this.debounceCheck.hasOwnProperty(debounceEvent)) {
+          var debounceInfo = this.debounceCheck[debounceEvent];
+
+          clearTimeout(debounceInfo.getLastTimeout());
+          debounceInfo.target.removeEventListener(
+            debounceEvent, debounceInfo.fn
+          );
+
+          this.debounceCheck[debounceEvent] = null;
+        }
+      }
+    }
+    this.debounceCheck = null;
+
+    if (this.interval) { this.interval = clearInterval(this.interval); }
+  },
+
+  /**
+   * Check if the element is within the visible viewport
+   */
+  check: function () {
+    var el = this.node;
+    var rect;
+    var containmentRect;
+    // if the component has rendered to null, dont update visibility
+    if (!el) {
+      return this.state;
+    }
+
+    rect = el.getBoundingClientRect();
+
+    if (this.props.containment) {
+      var containmentDOMRect = this.props.containment.getBoundingClientRect();
+      containmentRect = {
+        top: containmentDOMRect.top,
+        left: containmentDOMRect.left,
+        bottom: containmentDOMRect.bottom,
+        right: containmentDOMRect.right,
+      };
+    } else {
+      containmentRect = {
+        top: 0,
+        left: 0,
+        bottom: window.innerHeight || document.documentElement.clientHeight,
+        right: window.innerWidth || document.documentElement.clientWidth
+      };
+    }
+
+    // Check if visibility is wanted via offset?
+    var offset = this.props.offset || {};
+    var hasValidOffset = typeof offset === 'object';
+    if (hasValidOffset) {
+      containmentRect.top += offset.top || 0;
+      containmentRect.left += offset.left || 0;
+      containmentRect.bottom -= offset.bottom || 0;
+      containmentRect.right -= offset.right || 0;
+    }
+
+    var visibilityRect = {
+      top: rect.top >= containmentRect.top,
+      left: rect.left >= containmentRect.left,
+      bottom: rect.bottom <= containmentRect.bottom,
+      right: rect.right <= containmentRect.right
+    };
+
+    var isVisible = (
+      visibilityRect.top &&
+      visibilityRect.left &&
+      visibilityRect.bottom &&
+      visibilityRect.right
+    );
+
+    // check for partial visibility
+    if (this.props.partialVisibility) {
+      var partialVisible =
+          rect.top <= containmentRect.bottom && rect.bottom >= containmentRect.top &&
+          rect.left <= containmentRect.right && rect.right >= containmentRect.left;
+
+      // account for partial visibility on a single edge
+      if (typeof this.props.partialVisibility === 'string') {
+        partialVisible = visibilityRect[this.props.partialVisibility];
+      }
+
+      // if we have minimum top visibility set by props, lets check, if it meets the passed value
+      // so if for instance element is at least 200px in viewport, then show it.
+      isVisible = this.props.minTopValue
+        ? partialVisible && rect.top <= (containmentRect.bottom - this.props.minTopValue)
+        : partialVisible;
+    }
+
+    // Deprecated options for calculating offset.
+    if (typeof offset.direction === 'string' &&
+        typeof offset.value === 'number') {
+      console.warn('[notice] offset.direction and offset.value have been deprecated. They still work for now, but will be removed in next major version. Please upgrade to the new syntax: { %s: %d }', offset.direction, offset.value);
+
+      isVisible = isVisibleWithOffset$2(offset, rect, containmentRect);
+    }
+
+    var state = this.state;
+    // notify the parent when the value changes
+    if (this.state.isVisible !== isVisible) {
+      state = {
+        isVisible: isVisible,
+        visibilityRect: visibilityRect
+      };
+      this.setState(state);
+      if (this.props.onChange) this.props.onChange(isVisible, visibilityRect);
+    }
+
+    return state;
+  },
+
+  render: function () {
+    if (this.props.children instanceof Function) {
+      return this.props.children({
+        isVisible: this.state.isVisible,
+        visibilityRect: this.state.visibilityRect,
+      });
+    }
+    return React.Children.only(this.props.children);
+  }
+});
+
+var NumberWithLabel = function (_Component) {
+  inherits(NumberWithLabel, _Component);
+
+  function NumberWithLabel(props) {
+    classCallCheck(this, NumberWithLabel);
+
+    var _this = possibleConstructorReturn(this, (NumberWithLabel.__proto__ || Object.getPrototypeOf(NumberWithLabel)).call(this, props));
+
+    _this.triggerCountup = function () {
+      return _this._triggerCountup();
+    };
+    _this.handleVisibilityChange = function (e) {
+      return _this._handleVisibilityChange(e);
+    };
+    return _this;
+  }
+
+  createClass(NumberWithLabel, [{
+    key: '_triggerCountup',
+    value: function _triggerCountup() {
+      build_1(this.countUpNum);
+    }
+  }, {
+    key: '_handleVisibilityChange',
+    value: function _handleVisibilityChange(isVisible) {
+      if (isVisible) {
+        this.triggerCountup();
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      return React.createElement(
+        visibilitySensor,
+        { onChange: this.handleVisibilityChange },
+        React.createElement(
+          'div',
+          { className: 'stat' },
+          React.createElement(CountUp, {
+            className: 'number',
+            start: 0,
+            end: this.props.number,
+            duration: 2,
+            ref: function ref(el) {
+              _this2.countUpNum = el;
+            }
+          }),
+          React.createElement(
+            'span',
+            { className: 'text' },
+            this.props.label
+          )
+        )
+      );
+    }
+  }]);
+  return NumberWithLabel;
+}(Component);
+
 var AutosizeInput_1 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -7560,7 +9125,7 @@ var _react2 = _interopRequireDefault(React);
 
 
 
-var _propTypes2 = _interopRequireDefault(propTypes);
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9725,7 +11290,7 @@ Select$1.defaultProps = {
 	valueKey: 'value'
 };
 
-var propTypes$1 = {
+var propTypes$2 = {
 	autoload: propTypes.bool.isRequired, // automatically call the `loadOptions` prop on-mount; defaults to true
 	cache: propTypes.any, // object to use to cache results; set to null/false to disable caching
 	children: propTypes.func.isRequired, // Child function responsible for creating the inner Select component; (props: Object): PropTypes.element
@@ -9954,7 +11519,7 @@ var Async = function (_Component) {
 	return Async;
 }(Component);
 
-Async.propTypes = propTypes$1;
+Async.propTypes = propTypes$2;
 Async.defaultProps = defaultProps;
 
 var CreatableSelect = function (_React$Component) {
@@ -10514,6 +12079,1610 @@ var PlaceSelect = function (_Component) {
   return PlaceSelect;
 }(Component);
 
+/**
+ * A collection of shims that provide minimal functionality of the ES6 collections.
+ *
+ * These implementations are not meant to be used outside of the ResizeObserver
+ * modules as they cover only a limited range of use cases.
+ */
+/* eslint-disable require-jsdoc, valid-jsdoc */
+var MapShim = (function () {
+    if (typeof Map !== 'undefined') {
+        return Map;
+    }
+
+    /**
+     * Returns index in provided array that matches the specified key.
+     *
+     * @param {Array<Array>} arr
+     * @param {*} key
+     * @returns {number}
+     */
+    function getIndex(arr, key) {
+        var result = -1;
+
+        arr.some(function (entry, index) {
+            if (entry[0] === key) {
+                result = index;
+
+                return true;
+            }
+
+            return false;
+        });
+
+        return result;
+    }
+
+    return (function () {
+        function anonymous() {
+            this.__entries__ = [];
+        }
+
+        var prototypeAccessors = { size: { configurable: true } };
+
+        /**
+         * @returns {boolean}
+         */
+        prototypeAccessors.size.get = function () {
+            return this.__entries__.length;
+        };
+
+        /**
+         * @param {*} key
+         * @returns {*}
+         */
+        anonymous.prototype.get = function (key) {
+            var index = getIndex(this.__entries__, key);
+            var entry = this.__entries__[index];
+
+            return entry && entry[1];
+        };
+
+        /**
+         * @param {*} key
+         * @param {*} value
+         * @returns {void}
+         */
+        anonymous.prototype.set = function (key, value) {
+            var index = getIndex(this.__entries__, key);
+
+            if (~index) {
+                this.__entries__[index][1] = value;
+            } else {
+                this.__entries__.push([key, value]);
+            }
+        };
+
+        /**
+         * @param {*} key
+         * @returns {void}
+         */
+        anonymous.prototype.delete = function (key) {
+            var entries = this.__entries__;
+            var index = getIndex(entries, key);
+
+            if (~index) {
+                entries.splice(index, 1);
+            }
+        };
+
+        /**
+         * @param {*} key
+         * @returns {void}
+         */
+        anonymous.prototype.has = function (key) {
+            return !!~getIndex(this.__entries__, key);
+        };
+
+        /**
+         * @returns {void}
+         */
+        anonymous.prototype.clear = function () {
+            this.__entries__.splice(0);
+        };
+
+        /**
+         * @param {Function} callback
+         * @param {*} [ctx=null]
+         * @returns {void}
+         */
+        anonymous.prototype.forEach = function (callback, ctx) {
+            var this$1 = this;
+            if ( ctx === void 0 ) ctx = null;
+
+            for (var i = 0, list = this$1.__entries__; i < list.length; i += 1) {
+                var entry = list[i];
+
+                callback.call(ctx, entry[1], entry[0]);
+            }
+        };
+
+        Object.defineProperties( anonymous.prototype, prototypeAccessors );
+
+        return anonymous;
+    }());
+})();
+
+/**
+ * Detects whether window and document objects are available in current environment.
+ */
+var isBrowser$1 = typeof window !== 'undefined' && typeof document !== 'undefined' && window.document === document;
+
+// Returns global object of a current environment.
+var global$1 = (function () {
+    if (typeof global !== 'undefined' && global.Math === Math) {
+        return global;
+    }
+
+    if (typeof self !== 'undefined' && self.Math === Math) {
+        return self;
+    }
+
+    if (typeof window !== 'undefined' && window.Math === Math) {
+        return window;
+    }
+
+    // eslint-disable-next-line no-new-func
+    return Function('return this')();
+})();
+
+/**
+ * A shim for the requestAnimationFrame which falls back to the setTimeout if
+ * first one is not supported.
+ *
+ * @returns {number} Requests' identifier.
+ */
+var requestAnimationFrame$1 = (function () {
+    if (typeof requestAnimationFrame === 'function') {
+        // It's required to use a bounded function because IE sometimes throws
+        // an "Invalid calling object" error if rAF is invoked without the global
+        // object on the left hand side.
+        return requestAnimationFrame.bind(global$1);
+    }
+
+    return function (callback) { return setTimeout(function () { return callback(Date.now()); }, 1000 / 60); };
+})();
+
+// Defines minimum timeout before adding a trailing call.
+var trailingTimeout = 2;
+
+/**
+ * Creates a wrapper function which ensures that provided callback will be
+ * invoked only once during the specified delay period.
+ *
+ * @param {Function} callback - Function to be invoked after the delay period.
+ * @param {number} delay - Delay after which to invoke callback.
+ * @returns {Function}
+ */
+var throttle$1 = function (callback, delay) {
+    var leadingCall = false,
+        trailingCall = false,
+        lastCallTime = 0;
+
+    /**
+     * Invokes the original callback function and schedules new invocation if
+     * the "proxy" was called during current request.
+     *
+     * @returns {void}
+     */
+    function resolvePending() {
+        if (leadingCall) {
+            leadingCall = false;
+
+            callback();
+        }
+
+        if (trailingCall) {
+            proxy();
+        }
+    }
+
+    /**
+     * Callback invoked after the specified delay. It will further postpone
+     * invocation of the original function delegating it to the
+     * requestAnimationFrame.
+     *
+     * @returns {void}
+     */
+    function timeoutCallback() {
+        requestAnimationFrame$1(resolvePending);
+    }
+
+    /**
+     * Schedules invocation of the original function.
+     *
+     * @returns {void}
+     */
+    function proxy() {
+        var timeStamp = Date.now();
+
+        if (leadingCall) {
+            // Reject immediately following calls.
+            if (timeStamp - lastCallTime < trailingTimeout) {
+                return;
+            }
+
+            // Schedule new call to be in invoked when the pending one is resolved.
+            // This is important for "transitions" which never actually start
+            // immediately so there is a chance that we might miss one if change
+            // happens amids the pending invocation.
+            trailingCall = true;
+        } else {
+            leadingCall = true;
+            trailingCall = false;
+
+            setTimeout(timeoutCallback, delay);
+        }
+
+        lastCallTime = timeStamp;
+    }
+
+    return proxy;
+};
+
+// Minimum delay before invoking the update of observers.
+var REFRESH_DELAY = 20;
+
+// A list of substrings of CSS properties used to find transition events that
+// might affect dimensions of observed elements.
+var transitionKeys = ['top', 'right', 'bottom', 'left', 'width', 'height', 'size', 'weight'];
+
+// Check if MutationObserver is available.
+var mutationObserverSupported = typeof MutationObserver !== 'undefined';
+
+/**
+ * Singleton controller class which handles updates of ResizeObserver instances.
+ */
+var ResizeObserverController = function() {
+    this.connected_ = false;
+    this.mutationEventsAdded_ = false;
+    this.mutationsObserver_ = null;
+    this.observers_ = [];
+
+    this.onTransitionEnd_ = this.onTransitionEnd_.bind(this);
+    this.refresh = throttle$1(this.refresh.bind(this), REFRESH_DELAY);
+};
+
+/**
+ * Adds observer to observers list.
+ *
+ * @param {ResizeObserverSPI} observer - Observer to be added.
+ * @returns {void}
+ */
+
+
+/**
+ * Holds reference to the controller's instance.
+ *
+ * @private {ResizeObserverController}
+ */
+
+
+/**
+ * Keeps reference to the instance of MutationObserver.
+ *
+ * @private {MutationObserver}
+ */
+
+/**
+ * Indicates whether DOM listeners have been added.
+ *
+ * @private {boolean}
+ */
+ResizeObserverController.prototype.addObserver = function (observer) {
+    if (!~this.observers_.indexOf(observer)) {
+        this.observers_.push(observer);
+    }
+
+    // Add listeners if they haven't been added yet.
+    if (!this.connected_) {
+        this.connect_();
+    }
+};
+
+/**
+ * Removes observer from observers list.
+ *
+ * @param {ResizeObserverSPI} observer - Observer to be removed.
+ * @returns {void}
+ */
+ResizeObserverController.prototype.removeObserver = function (observer) {
+    var observers = this.observers_;
+    var index = observers.indexOf(observer);
+
+    // Remove observer if it's present in registry.
+    if (~index) {
+        observers.splice(index, 1);
+    }
+
+    // Remove listeners if controller has no connected observers.
+    if (!observers.length && this.connected_) {
+        this.disconnect_();
+    }
+};
+
+/**
+ * Invokes the update of observers. It will continue running updates insofar
+ * it detects changes.
+ *
+ * @returns {void}
+ */
+ResizeObserverController.prototype.refresh = function () {
+    var changesDetected = this.updateObservers_();
+
+    // Continue running updates if changes have been detected as there might
+    // be future ones caused by CSS transitions.
+    if (changesDetected) {
+        this.refresh();
+    }
+};
+
+/**
+ * Updates every observer from observers list and notifies them of queued
+ * entries.
+ *
+ * @private
+ * @returns {boolean} Returns "true" if any observer has detected changes in
+ *  dimensions of it's elements.
+ */
+ResizeObserverController.prototype.updateObservers_ = function () {
+    // Collect observers that have active observations.
+    var activeObservers = this.observers_.filter(function (observer) {
+        return observer.gatherActive(), observer.hasActive();
+    });
+
+    // Deliver notifications in a separate cycle in order to avoid any
+    // collisions between observers, e.g. when multiple instances of
+    // ResizeObserver are tracking the same element and the callback of one
+    // of them changes content dimensions of the observed target. Sometimes
+    // this may result in notifications being blocked for the rest of observers.
+    activeObservers.forEach(function (observer) { return observer.broadcastActive(); });
+
+    return activeObservers.length > 0;
+};
+
+/**
+ * Initializes DOM listeners.
+ *
+ * @private
+ * @returns {void}
+ */
+ResizeObserverController.prototype.connect_ = function () {
+    // Do nothing if running in a non-browser environment or if listeners
+    // have been already added.
+    if (!isBrowser$1 || this.connected_) {
+        return;
+    }
+
+    // Subscription to the "Transitionend" event is used as a workaround for
+    // delayed transitions. This way it's possible to capture at least the
+    // final state of an element.
+    document.addEventListener('transitionend', this.onTransitionEnd_);
+
+    window.addEventListener('resize', this.refresh);
+
+    if (mutationObserverSupported) {
+        this.mutationsObserver_ = new MutationObserver(this.refresh);
+
+        this.mutationsObserver_.observe(document, {
+            attributes: true,
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+    } else {
+        document.addEventListener('DOMSubtreeModified', this.refresh);
+
+        this.mutationEventsAdded_ = true;
+    }
+
+    this.connected_ = true;
+};
+
+/**
+ * Removes DOM listeners.
+ *
+ * @private
+ * @returns {void}
+ */
+ResizeObserverController.prototype.disconnect_ = function () {
+    // Do nothing if running in a non-browser environment or if listeners
+    // have been already removed.
+    if (!isBrowser$1 || !this.connected_) {
+        return;
+    }
+
+    document.removeEventListener('transitionend', this.onTransitionEnd_);
+    window.removeEventListener('resize', this.refresh);
+
+    if (this.mutationsObserver_) {
+        this.mutationsObserver_.disconnect();
+    }
+
+    if (this.mutationEventsAdded_) {
+        document.removeEventListener('DOMSubtreeModified', this.refresh);
+    }
+
+    this.mutationsObserver_ = null;
+    this.mutationEventsAdded_ = false;
+    this.connected_ = false;
+};
+
+/**
+ * "Transitionend" event handler.
+ *
+ * @private
+ * @param {TransitionEvent} event
+ * @returns {void}
+ */
+ResizeObserverController.prototype.onTransitionEnd_ = function (ref) {
+        var propertyName = ref.propertyName; if ( propertyName === void 0 ) propertyName = '';
+
+    // Detect whether transition may affect dimensions of an element.
+    var isReflowProperty = transitionKeys.some(function (key) {
+        return !!~propertyName.indexOf(key);
+    });
+
+    if (isReflowProperty) {
+        this.refresh();
+    }
+};
+
+/**
+ * Returns instance of the ResizeObserverController.
+ *
+ * @returns {ResizeObserverController}
+ */
+ResizeObserverController.getInstance = function () {
+    if (!this.instance_) {
+        this.instance_ = new ResizeObserverController();
+    }
+
+    return this.instance_;
+};
+
+ResizeObserverController.instance_ = null;
+
+/**
+ * Defines non-writable/enumerable properties of the provided target object.
+ *
+ * @param {Object} target - Object for which to define properties.
+ * @param {Object} props - Properties to be defined.
+ * @returns {Object} Target object.
+ */
+var defineConfigurable = (function (target, props) {
+    for (var i = 0, list = Object.keys(props); i < list.length; i += 1) {
+        var key = list[i];
+
+        Object.defineProperty(target, key, {
+            value: props[key],
+            enumerable: false,
+            writable: false,
+            configurable: true
+        });
+    }
+
+    return target;
+});
+
+/**
+ * Returns the global object associated with provided element.
+ *
+ * @param {Object} target
+ * @returns {Object}
+ */
+var getWindowOf = (function (target) {
+    // Assume that the element is an instance of Node, which means that it
+    // has the "ownerDocument" property from which we can retrieve a
+    // corresponding global object.
+    var ownerGlobal = target && target.ownerDocument && target.ownerDocument.defaultView;
+
+    // Return the local global object if it's not possible extract one from
+    // provided element.
+    return ownerGlobal || global$1;
+});
+
+// Placeholder of an empty content rectangle.
+var emptyRect = createRectInit(0, 0, 0, 0);
+
+/**
+ * Converts provided string to a number.
+ *
+ * @param {number|string} value
+ * @returns {number}
+ */
+function toFloat(value) {
+    return parseFloat(value) || 0;
+}
+
+/**
+ * Extracts borders size from provided styles.
+ *
+ * @param {CSSStyleDeclaration} styles
+ * @param {...string} positions - Borders positions (top, right, ...)
+ * @returns {number}
+ */
+function getBordersSize$1(styles) {
+    var positions = [], len = arguments.length - 1;
+    while ( len-- > 0 ) positions[ len ] = arguments[ len + 1 ];
+
+    return positions.reduce(function (size, position) {
+        var value = styles['border-' + position + '-width'];
+
+        return size + toFloat(value);
+    }, 0);
+}
+
+/**
+ * Extracts paddings sizes from provided styles.
+ *
+ * @param {CSSStyleDeclaration} styles
+ * @returns {Object} Paddings box.
+ */
+function getPaddings(styles) {
+    var positions = ['top', 'right', 'bottom', 'left'];
+    var paddings = {};
+
+    for (var i = 0, list = positions; i < list.length; i += 1) {
+        var position = list[i];
+
+        var value = styles['padding-' + position];
+
+        paddings[position] = toFloat(value);
+    }
+
+    return paddings;
+}
+
+/**
+ * Calculates content rectangle of provided SVG element.
+ *
+ * @param {SVGGraphicsElement} target - Element content rectangle of which needs
+ *      to be calculated.
+ * @returns {DOMRectInit}
+ */
+function getSVGContentRect(target) {
+    var bbox = target.getBBox();
+
+    return createRectInit(0, 0, bbox.width, bbox.height);
+}
+
+/**
+ * Calculates content rectangle of provided HTMLElement.
+ *
+ * @param {HTMLElement} target - Element for which to calculate the content rectangle.
+ * @returns {DOMRectInit}
+ */
+function getHTMLElementContentRect(target) {
+    // Client width & height properties can't be
+    // used exclusively as they provide rounded values.
+    var clientWidth = target.clientWidth;
+    var clientHeight = target.clientHeight;
+
+    // By this condition we can catch all non-replaced inline, hidden and
+    // detached elements. Though elements with width & height properties less
+    // than 0.5 will be discarded as well.
+    //
+    // Without it we would need to implement separate methods for each of
+    // those cases and it's not possible to perform a precise and performance
+    // effective test for hidden elements. E.g. even jQuery's ':visible' filter
+    // gives wrong results for elements with width & height less than 0.5.
+    if (!clientWidth && !clientHeight) {
+        return emptyRect;
+    }
+
+    var styles = getWindowOf(target).getComputedStyle(target);
+    var paddings = getPaddings(styles);
+    var horizPad = paddings.left + paddings.right;
+    var vertPad = paddings.top + paddings.bottom;
+
+    // Computed styles of width & height are being used because they are the
+    // only dimensions available to JS that contain non-rounded values. It could
+    // be possible to utilize the getBoundingClientRect if only it's data wasn't
+    // affected by CSS transformations let alone paddings, borders and scroll bars.
+    var width = toFloat(styles.width),
+        height = toFloat(styles.height);
+
+    // Width & height include paddings and borders when the 'border-box' box
+    // model is applied (except for IE).
+    if (styles.boxSizing === 'border-box') {
+        // Following conditions are required to handle Internet Explorer which
+        // doesn't include paddings and borders to computed CSS dimensions.
+        //
+        // We can say that if CSS dimensions + paddings are equal to the "client"
+        // properties then it's either IE, and thus we don't need to subtract
+        // anything, or an element merely doesn't have paddings/borders styles.
+        if (Math.round(width + horizPad) !== clientWidth) {
+            width -= getBordersSize$1(styles, 'left', 'right') + horizPad;
+        }
+
+        if (Math.round(height + vertPad) !== clientHeight) {
+            height -= getBordersSize$1(styles, 'top', 'bottom') + vertPad;
+        }
+    }
+
+    // Following steps can't be applied to the document's root element as its
+    // client[Width/Height] properties represent viewport area of the window.
+    // Besides, it's as well not necessary as the <html> itself neither has
+    // rendered scroll bars nor it can be clipped.
+    if (!isDocumentElement(target)) {
+        // In some browsers (only in Firefox, actually) CSS width & height
+        // include scroll bars size which can be removed at this step as scroll
+        // bars are the only difference between rounded dimensions + paddings
+        // and "client" properties, though that is not always true in Chrome.
+        var vertScrollbar = Math.round(width + horizPad) - clientWidth;
+        var horizScrollbar = Math.round(height + vertPad) - clientHeight;
+
+        // Chrome has a rather weird rounding of "client" properties.
+        // E.g. for an element with content width of 314.2px it sometimes gives
+        // the client width of 315px and for the width of 314.7px it may give
+        // 314px. And it doesn't happen all the time. So just ignore this delta
+        // as a non-relevant.
+        if (Math.abs(vertScrollbar) !== 1) {
+            width -= vertScrollbar;
+        }
+
+        if (Math.abs(horizScrollbar) !== 1) {
+            height -= horizScrollbar;
+        }
+    }
+
+    return createRectInit(paddings.left, paddings.top, width, height);
+}
+
+/**
+ * Checks whether provided element is an instance of the SVGGraphicsElement.
+ *
+ * @param {Element} target - Element to be checked.
+ * @returns {boolean}
+ */
+var isSVGGraphicsElement = (function () {
+    // Some browsers, namely IE and Edge, don't have the SVGGraphicsElement
+    // interface.
+    if (typeof SVGGraphicsElement !== 'undefined') {
+        return function (target) { return target instanceof getWindowOf(target).SVGGraphicsElement; };
+    }
+
+    // If it's so, then check that element is at least an instance of the
+    // SVGElement and that it has the "getBBox" method.
+    // eslint-disable-next-line no-extra-parens
+    return function (target) { return target instanceof getWindowOf(target).SVGElement && typeof target.getBBox === 'function'; };
+})();
+
+/**
+ * Checks whether provided element is a document element (<html>).
+ *
+ * @param {Element} target - Element to be checked.
+ * @returns {boolean}
+ */
+function isDocumentElement(target) {
+    return target === getWindowOf(target).document.documentElement;
+}
+
+/**
+ * Calculates an appropriate content rectangle for provided html or svg element.
+ *
+ * @param {Element} target - Element content rectangle of which needs to be calculated.
+ * @returns {DOMRectInit}
+ */
+function getContentRect(target) {
+    if (!isBrowser$1) {
+        return emptyRect;
+    }
+
+    if (isSVGGraphicsElement(target)) {
+        return getSVGContentRect(target);
+    }
+
+    return getHTMLElementContentRect(target);
+}
+
+/**
+ * Creates rectangle with an interface of the DOMRectReadOnly.
+ * Spec: https://drafts.fxtf.org/geometry/#domrectreadonly
+ *
+ * @param {DOMRectInit} rectInit - Object with rectangle's x/y coordinates and dimensions.
+ * @returns {DOMRectReadOnly}
+ */
+function createReadOnlyRect(ref) {
+    var x = ref.x;
+    var y = ref.y;
+    var width = ref.width;
+    var height = ref.height;
+
+    // If DOMRectReadOnly is available use it as a prototype for the rectangle.
+    var Constr = typeof DOMRectReadOnly !== 'undefined' ? DOMRectReadOnly : Object;
+    var rect = Object.create(Constr.prototype);
+
+    // Rectangle's properties are not writable and non-enumerable.
+    defineConfigurable(rect, {
+        x: x, y: y, width: width, height: height,
+        top: y,
+        right: x + width,
+        bottom: height + y,
+        left: x
+    });
+
+    return rect;
+}
+
+/**
+ * Creates DOMRectInit object based on the provided dimensions and the x/y coordinates.
+ * Spec: https://drafts.fxtf.org/geometry/#dictdef-domrectinit
+ *
+ * @param {number} x - X coordinate.
+ * @param {number} y - Y coordinate.
+ * @param {number} width - Rectangle's width.
+ * @param {number} height - Rectangle's height.
+ * @returns {DOMRectInit}
+ */
+function createRectInit(x, y, width, height) {
+    return { x: x, y: y, width: width, height: height };
+}
+
+/**
+ * Class that is responsible for computations of the content rectangle of
+ * provided DOM element and for keeping track of it's changes.
+ */
+var ResizeObservation = function(target) {
+    this.broadcastWidth = 0;
+    this.broadcastHeight = 0;
+    this.contentRect_ = createRectInit(0, 0, 0, 0);
+
+    this.target = target;
+};
+
+/**
+ * Updates content rectangle and tells whether it's width or height properties
+ * have changed since the last broadcast.
+ *
+ * @returns {boolean}
+ */
+
+
+/**
+ * Reference to the last observed content rectangle.
+ *
+ * @private {DOMRectInit}
+ */
+
+
+/**
+ * Broadcasted width of content rectangle.
+ *
+ * @type {number}
+ */
+ResizeObservation.prototype.isActive = function () {
+    var rect = getContentRect(this.target);
+
+    this.contentRect_ = rect;
+
+    return rect.width !== this.broadcastWidth || rect.height !== this.broadcastHeight;
+};
+
+/**
+ * Updates 'broadcastWidth' and 'broadcastHeight' properties with a data
+ * from the corresponding properties of the last observed content rectangle.
+ *
+ * @returns {DOMRectInit} Last observed content rectangle.
+ */
+ResizeObservation.prototype.broadcastRect = function () {
+    var rect = this.contentRect_;
+
+    this.broadcastWidth = rect.width;
+    this.broadcastHeight = rect.height;
+
+    return rect;
+};
+
+var ResizeObserverEntry = function(target, rectInit) {
+    var contentRect = createReadOnlyRect(rectInit);
+
+    // According to the specification following properties are not writable
+    // and are also not enumerable in the native implementation.
+    //
+    // Property accessors are not being used as they'd require to define a
+    // private WeakMap storage which may cause memory leaks in browsers that
+    // don't support this type of collections.
+    defineConfigurable(this, { target: target, contentRect: contentRect });
+};
+
+var ResizeObserverSPI = function(callback, controller, callbackCtx) {
+    this.activeObservations_ = [];
+    this.observations_ = new MapShim();
+
+    if (typeof callback !== 'function') {
+        throw new TypeError('The callback provided as parameter 1 is not a function.');
+    }
+
+    this.callback_ = callback;
+    this.controller_ = controller;
+    this.callbackCtx_ = callbackCtx;
+};
+
+/**
+ * Starts observing provided element.
+ *
+ * @param {Element} target - Element to be observed.
+ * @returns {void}
+ */
+
+
+/**
+ * Registry of the ResizeObservation instances.
+ *
+ * @private {Map<Element, ResizeObservation>}
+ */
+
+
+/**
+ * Public ResizeObserver instance which will be passed to the callback
+ * function and used as a value of it's "this" binding.
+ *
+ * @private {ResizeObserver}
+ */
+
+/**
+ * Collection of resize observations that have detected changes in dimensions
+ * of elements.
+ *
+ * @private {Array<ResizeObservation>}
+ */
+ResizeObserverSPI.prototype.observe = function (target) {
+    if (!arguments.length) {
+        throw new TypeError('1 argument required, but only 0 present.');
+    }
+
+    // Do nothing if current environment doesn't have the Element interface.
+    if (typeof Element === 'undefined' || !(Element instanceof Object)) {
+        return;
+    }
+
+    if (!(target instanceof getWindowOf(target).Element)) {
+        throw new TypeError('parameter 1 is not of type "Element".');
+    }
+
+    var observations = this.observations_;
+
+    // Do nothing if element is already being observed.
+    if (observations.has(target)) {
+        return;
+    }
+
+    observations.set(target, new ResizeObservation(target));
+
+    this.controller_.addObserver(this);
+
+    // Force the update of observations.
+    this.controller_.refresh();
+};
+
+/**
+ * Stops observing provided element.
+ *
+ * @param {Element} target - Element to stop observing.
+ * @returns {void}
+ */
+ResizeObserverSPI.prototype.unobserve = function (target) {
+    if (!arguments.length) {
+        throw new TypeError('1 argument required, but only 0 present.');
+    }
+
+    // Do nothing if current environment doesn't have the Element interface.
+    if (typeof Element === 'undefined' || !(Element instanceof Object)) {
+        return;
+    }
+
+    if (!(target instanceof getWindowOf(target).Element)) {
+        throw new TypeError('parameter 1 is not of type "Element".');
+    }
+
+    var observations = this.observations_;
+
+    // Do nothing if element is not being observed.
+    if (!observations.has(target)) {
+        return;
+    }
+
+    observations.delete(target);
+
+    if (!observations.size) {
+        this.controller_.removeObserver(this);
+    }
+};
+
+/**
+ * Stops observing all elements.
+ *
+ * @returns {void}
+ */
+ResizeObserverSPI.prototype.disconnect = function () {
+    this.clearActive();
+    this.observations_.clear();
+    this.controller_.removeObserver(this);
+};
+
+/**
+ * Collects observation instances the associated element of which has changed
+ * it's content rectangle.
+ *
+ * @returns {void}
+ */
+ResizeObserverSPI.prototype.gatherActive = function () {
+        var this$1 = this;
+
+    this.clearActive();
+
+    this.observations_.forEach(function (observation) {
+        if (observation.isActive()) {
+            this$1.activeObservations_.push(observation);
+        }
+    });
+};
+
+/**
+ * Invokes initial callback function with a list of ResizeObserverEntry
+ * instances collected from active resize observations.
+ *
+ * @returns {void}
+ */
+ResizeObserverSPI.prototype.broadcastActive = function () {
+    // Do nothing if observer doesn't have active observations.
+    if (!this.hasActive()) {
+        return;
+    }
+
+    var ctx = this.callbackCtx_;
+
+    // Create ResizeObserverEntry instance for every active observation.
+    var entries = this.activeObservations_.map(function (observation) {
+        return new ResizeObserverEntry(observation.target, observation.broadcastRect());
+    });
+
+    this.callback_.call(ctx, entries, ctx);
+    this.clearActive();
+};
+
+/**
+ * Clears the collection of active observations.
+ *
+ * @returns {void}
+ */
+ResizeObserverSPI.prototype.clearActive = function () {
+    this.activeObservations_.splice(0);
+};
+
+/**
+ * Tells whether observer has active observations.
+ *
+ * @returns {boolean}
+ */
+ResizeObserverSPI.prototype.hasActive = function () {
+    return this.activeObservations_.length > 0;
+};
+
+// Registry of internal observers. If WeakMap is not available use current shim
+// for the Map collection as it has all required methods and because WeakMap
+// can't be fully polyfilled anyway.
+var observers = typeof WeakMap !== 'undefined' ? new WeakMap() : new MapShim();
+
+/**
+ * ResizeObserver API. Encapsulates the ResizeObserver SPI implementation
+ * exposing only those methods and properties that are defined in the spec.
+ */
+var ResizeObserver = function(callback) {
+    if (!(this instanceof ResizeObserver)) {
+        throw new TypeError('Cannot call a class as a function.');
+    }
+    if (!arguments.length) {
+        throw new TypeError('1 argument required, but only 0 present.');
+    }
+
+    var controller = ResizeObserverController.getInstance();
+    var observer = new ResizeObserverSPI(callback, controller, this);
+
+    observers.set(this, observer);
+};
+
+// Expose public methods of ResizeObserver.
+['observe', 'unobserve', 'disconnect'].forEach(function (method) {
+    ResizeObserver.prototype[method] = function () {
+        return (ref = observers.get(this))[method].apply(ref, arguments);
+        var ref;
+    };
+});
+
+var index = (function () {
+    // Export existing implementation if available.
+    if (typeof global$1.ResizeObserver !== 'undefined') {
+        return global$1.ResizeObserver;
+    }
+
+    return ResizeObserver;
+})();
+
+var ResizeObserver_es = /*#__PURE__*/Object.freeze({
+  default: index
+});
+
+var utils = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.capitalize = capitalize;
+exports.clamp = clamp;
+/**
+ * Capitalize first letter of string
+ * @private
+ * @param  {string} - String
+ * @return {string} - String with first letter capitalized
+ */
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.substr(1);
+}
+
+/**
+ * Clamp position between a range
+ * @param  {number} - Value to be clamped
+ * @param  {number} - Minimum value in range
+ * @param  {number} - Maximum value in range
+ * @return {number} - Clamped value
+ */
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+});
+
+var utils$1 = unwrapExports(utils);
+var utils_1 = utils.capitalize;
+var utils_2 = utils.clamp;
+
+var utils$2 = /*#__PURE__*/Object.freeze({
+  default: utils$1,
+  __moduleExports: utils,
+  capitalize: utils_1,
+  clamp: utils_2
+});
+
+var _classnames = ( classnames$1 && classnames ) || classnames$1;
+
+var _resizeObserverPolyfill = ( ResizeObserver_es && index ) || ResizeObserver_es;
+
+var _utils = ( utils$2 && utils$1 ) || utils$2;
+
+var Rangeslider = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+
+
+var _react2 = _interopRequireDefault(React);
+
+
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+
+
+var _resizeObserverPolyfill2 = _interopRequireDefault(_resizeObserverPolyfill);
+
+
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* eslint no-debugger: "warn" */
+
+
+/**
+ * Predefined constants
+ * @type {Object}
+ */
+var constants = {
+  orientation: {
+    horizontal: {
+      dimension: 'width',
+      direction: 'left',
+      reverseDirection: 'right',
+      coordinate: 'x'
+    },
+    vertical: {
+      dimension: 'height',
+      direction: 'top',
+      reverseDirection: 'bottom',
+      coordinate: 'y'
+    }
+  }
+};
+
+var Slider = function (_Component) {
+  _inherits(Slider, _Component);
+
+  function Slider(props, context) {
+    _classCallCheck(this, Slider);
+
+    var _this = _possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).call(this, props, context));
+
+    _this.handleFormat = function (value) {
+      var format = _this.props.format;
+
+      return format ? format(value) : value;
+    };
+
+    _this.handleUpdate = function () {
+      if (!_this.slider) {
+        // for shallow rendering
+        return;
+      }
+      var orientation = _this.props.orientation;
+
+      var dimension = (0, _utils.capitalize)(constants.orientation[orientation].dimension);
+      var sliderPos = _this.slider['offset' + dimension];
+      var handlePos = _this.handle['offset' + dimension];
+
+      _this.setState({
+        limit: sliderPos - handlePos,
+        grab: handlePos / 2
+      });
+    };
+
+    _this.handleStart = function (e) {
+      var onChangeStart = _this.props.onChangeStart;
+
+      document.addEventListener('mousemove', _this.handleDrag);
+      document.addEventListener('mouseup', _this.handleEnd);
+      _this.setState({
+        active: true
+      }, function () {
+        onChangeStart && onChangeStart(e);
+      });
+    };
+
+    _this.handleDrag = function (e) {
+      e.stopPropagation();
+      var onChange = _this.props.onChange;
+      var _e$target = e.target,
+          className = _e$target.className,
+          classList = _e$target.classList,
+          dataset = _e$target.dataset;
+
+      if (!onChange || className === 'rangeslider__labels') return;
+
+      var value = _this.position(e);
+
+      if (classList && classList.contains('rangeslider__label-item') && dataset.value) {
+        value = parseFloat(dataset.value);
+      }
+
+      onChange && onChange(value, e);
+    };
+
+    _this.handleEnd = function (e) {
+      var onChangeComplete = _this.props.onChangeComplete;
+
+      _this.setState({
+        active: false
+      }, function () {
+        onChangeComplete && onChangeComplete(e);
+      });
+      document.removeEventListener('mousemove', _this.handleDrag);
+      document.removeEventListener('mouseup', _this.handleEnd);
+    };
+
+    _this.handleKeyDown = function (e) {
+      e.preventDefault();
+      var keyCode = e.keyCode;
+      var _this$props = _this.props,
+          value = _this$props.value,
+          min = _this$props.min,
+          max = _this$props.max,
+          step = _this$props.step,
+          onChange = _this$props.onChange;
+
+      var sliderValue = void 0;
+
+      switch (keyCode) {
+        case 38:
+        case 39:
+          sliderValue = value + step > max ? max : value + step;
+          onChange && onChange(sliderValue, e);
+          break;
+        case 37:
+        case 40:
+          sliderValue = value - step < min ? min : value - step;
+          onChange && onChange(sliderValue, e);
+          break;
+      }
+    };
+
+    _this.getPositionFromValue = function (value) {
+      var limit = _this.state.limit;
+      var _this$props2 = _this.props,
+          min = _this$props2.min,
+          max = _this$props2.max;
+
+      var diffMaxMin = max - min;
+      var diffValMin = value - min;
+      var percentage = diffValMin / diffMaxMin;
+      var pos = Math.round(percentage * limit);
+
+      return pos;
+    };
+
+    _this.getValueFromPosition = function (pos) {
+      var limit = _this.state.limit;
+      var _this$props3 = _this.props,
+          orientation = _this$props3.orientation,
+          min = _this$props3.min,
+          max = _this$props3.max,
+          step = _this$props3.step;
+
+      var percentage = (0, _utils.clamp)(pos, 0, limit) / (limit || 1);
+      var baseVal = step * Math.round(percentage * (max - min) / step);
+      var value = orientation === 'horizontal' ? baseVal + min : max - baseVal;
+
+      return (0, _utils.clamp)(value, min, max);
+    };
+
+    _this.position = function (e) {
+      var grab = _this.state.grab;
+      var _this$props4 = _this.props,
+          orientation = _this$props4.orientation,
+          reverse = _this$props4.reverse;
+
+
+      var node = _this.slider;
+      var coordinateStyle = constants.orientation[orientation].coordinate;
+      var directionStyle = reverse ? constants.orientation[orientation].reverseDirection : constants.orientation[orientation].direction;
+      var clientCoordinateStyle = 'client' + (0, _utils.capitalize)(coordinateStyle);
+      var coordinate = !e.touches ? e[clientCoordinateStyle] : e.touches[0][clientCoordinateStyle];
+      var direction = node.getBoundingClientRect()[directionStyle];
+      var pos = reverse ? direction - coordinate - grab : coordinate - direction - grab;
+      var value = _this.getValueFromPosition(pos);
+
+      return value;
+    };
+
+    _this.coordinates = function (pos) {
+      var _this$state = _this.state,
+          limit = _this$state.limit,
+          grab = _this$state.grab;
+      var orientation = _this.props.orientation;
+
+      var value = _this.getValueFromPosition(pos);
+      var position = _this.getPositionFromValue(value);
+      var handlePos = orientation === 'horizontal' ? position + grab : position;
+      var fillPos = orientation === 'horizontal' ? handlePos : limit - handlePos;
+
+      return {
+        fill: fillPos,
+        handle: handlePos,
+        label: handlePos
+      };
+    };
+
+    _this.renderLabels = function (labels) {
+      return _react2.default.createElement(
+        'ul',
+        {
+          ref: function ref(sl) {
+            _this.labels = sl;
+          },
+          className: (0, _classnames2.default)('rangeslider__labels')
+        },
+        labels
+      );
+    };
+
+    _this.state = {
+      active: false,
+      limit: 0,
+      grab: 0
+    };
+    return _this;
+  }
+
+  _createClass(Slider, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.handleUpdate();
+      var resizeObserver = new _resizeObserverPolyfill2.default(this.handleUpdate);
+      resizeObserver.observe(this.slider);
+    }
+
+    /**
+     * Format label/tooltip value
+     * @param  {Number} - value
+     * @return {Formatted Number}
+     */
+
+
+    /**
+     * Update slider state on change
+     * @return {void}
+     */
+
+
+    /**
+     * Attach event listeners to mousemove/mouseup events
+     * @return {void}
+     */
+
+
+    /**
+     * Handle drag/mousemove event
+     * @param  {Object} e - Event object
+     * @return {void}
+     */
+
+
+    /**
+     * Detach event listeners to mousemove/mouseup events
+     * @return {void}
+     */
+
+
+    /**
+     * Support for key events on the slider handle
+     * @param  {Object} e - Event object
+     * @return {void}
+     */
+
+
+    /**
+     * Calculate position of slider based on its value
+     * @param  {number} value - Current value of slider
+     * @return {position} pos - Calculated position of slider based on value
+     */
+
+
+    /**
+     * Translate position of slider to slider value
+     * @param  {number} pos - Current position/coordinates of slider
+     * @return {number} value - Slider value
+     */
+
+
+    /**
+     * Calculate position of slider based on value
+     * @param  {Object} e - Event object
+     * @return {number} value - Slider value
+     */
+
+
+    /**
+     * Grab coordinates of slider
+     * @param  {Object} pos - Position object
+     * @return {Object} - Slider fill/handle coordinates
+     */
+
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var _props = this.props,
+          value = _props.value,
+          orientation = _props.orientation,
+          className = _props.className,
+          tooltip = _props.tooltip,
+          reverse = _props.reverse,
+          labels = _props.labels,
+          min = _props.min,
+          max = _props.max,
+          handleLabel = _props.handleLabel;
+      var active = this.state.active;
+
+      var dimension = constants.orientation[orientation].dimension;
+      var direction = reverse ? constants.orientation[orientation].reverseDirection : constants.orientation[orientation].direction;
+      var position = this.getPositionFromValue(value);
+      var coords = this.coordinates(position);
+      var fillStyle = _defineProperty({}, dimension, coords.fill + 'px');
+      var handleStyle = _defineProperty({}, direction, coords.handle + 'px');
+      var showTooltip = tooltip && active;
+
+      var labelItems = [];
+      var labelKeys = Object.keys(labels);
+
+      if (labelKeys.length > 0) {
+        labelKeys = labelKeys.sort(function (a, b) {
+          return reverse ? a - b : b - a;
+        });
+
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = labelKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var key = _step.value;
+
+            var labelPosition = this.getPositionFromValue(key);
+            var labelCoords = this.coordinates(labelPosition);
+            var labelStyle = _defineProperty({}, direction, labelCoords.label + 'px');
+
+            labelItems.push(_react2.default.createElement(
+              'li',
+              {
+                key: key,
+                className: (0, _classnames2.default)('rangeslider__label-item'),
+                'data-value': key,
+                onMouseDown: this.handleDrag,
+                onTouchStart: this.handleStart,
+                onTouchEnd: this.handleEnd,
+                style: labelStyle
+              },
+              this.props.labels[key]
+            ));
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+
+      return _react2.default.createElement(
+        'div',
+        {
+          ref: function ref(s) {
+            _this2.slider = s;
+          },
+          className: (0, _classnames2.default)('rangeslider', 'rangeslider-' + orientation, { 'rangeslider-reverse': reverse }, className),
+          onMouseDown: this.handleDrag,
+          onMouseUp: this.handleEnd,
+          onTouchStart: this.handleStart,
+          onTouchEnd: this.handleEnd,
+          'aria-valuemin': min,
+          'aria-valuemax': max,
+          'aria-valuenow': value,
+          'aria-orientation': orientation
+        },
+        _react2.default.createElement('div', { className: 'rangeslider__fill', style: fillStyle }),
+        _react2.default.createElement(
+          'div',
+          {
+            ref: function ref(sh) {
+              _this2.handle = sh;
+            },
+            className: 'rangeslider__handle',
+            onMouseDown: this.handleStart,
+            onTouchMove: this.handleDrag,
+            onTouchEnd: this.handleEnd,
+            onKeyDown: this.handleKeyDown,
+            style: handleStyle,
+            tabIndex: 0
+          },
+          showTooltip ? _react2.default.createElement(
+            'div',
+            {
+              ref: function ref(st) {
+                _this2.tooltip = st;
+              },
+              className: 'rangeslider__handle-tooltip'
+            },
+            _react2.default.createElement(
+              'span',
+              null,
+              this.handleFormat(value)
+            )
+          ) : null,
+          _react2.default.createElement(
+            'div',
+            { className: 'rangeslider__handle-label' },
+            handleLabel
+          )
+        ),
+        labels ? this.renderLabels(labelItems) : null
+      );
+    }
+  }]);
+
+  return Slider;
+}(React.Component);
+
+Slider.propTypes = {
+  min: _propTypes2.default.number,
+  max: _propTypes2.default.number,
+  step: _propTypes2.default.number,
+  value: _propTypes2.default.number,
+  orientation: _propTypes2.default.string,
+  tooltip: _propTypes2.default.bool,
+  reverse: _propTypes2.default.bool,
+  labels: _propTypes2.default.object,
+  handleLabel: _propTypes2.default.string,
+  format: _propTypes2.default.func,
+  onChangeStart: _propTypes2.default.func,
+  onChange: _propTypes2.default.func,
+  onChangeComplete: _propTypes2.default.func
+};
+Slider.defaultProps = {
+  min: 0,
+  max: 100,
+  step: 1,
+  value: 0,
+  orientation: 'horizontal',
+  tooltip: true,
+  reverse: false,
+  labels: {},
+  handleLabel: ''
+};
+exports.default = Slider;
+});
+
+var Rangeslider$1 = unwrapExports(Rangeslider);
+
+var Rangeslider$2 = /*#__PURE__*/Object.freeze({
+  default: Rangeslider$1,
+  __moduleExports: Rangeslider
+});
+
+var _Rangeslider = ( Rangeslider$2 && Rangeslider$1 ) || Rangeslider$2;
+
+var lib = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+
+
+var _Rangeslider2 = _interopRequireDefault(_Rangeslider);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _Rangeslider2.default;
+});
+
+var Slider = unwrapExports(lib);
+
+var RangeSliderWithLabel = function RangeSliderWithLabel(props) {
+  var disabledClass = props.disabled ? 'disabled' : '';
+  var onChangeFunction = props.disabled ? null : props.handleChange;
+
+  return React.createElement(
+    'div',
+    { className: 'range-slider-with-label label-left ' + props.classes + ' ' + disabledClass },
+    React.createElement(
+      'label',
+      { htmlFor: props.name },
+      props.label
+    ),
+    React.createElement(Slider, {
+      value: props.value,
+      name: props.name,
+      min: props.min,
+      max: props.max,
+      step: props.step,
+      onChange: onChangeFunction
+    })
+  );
+};
+
 var SelectWithLabel = function SelectWithLabel(props) {
   return React.createElement(
     'div',
@@ -10771,4 +13940,4 @@ var TimeZoneSelect = function (_Component) {
   return TimeZoneSelect;
 }(Component);
 
-export { CheckboxWithLabel, DatePickerWithLabel, ImageUploader, InputWithLabel, PlaceSelect, SelectWithLabel, SwitchWithLabels, TextareaWithLabel, TimePickerWithLabel, TimeZoneSelect };
+export { CheckboxWithLabel, DatePickerWithLabel, ImageUploader, InputWithLabel, NumberWithLabel, PlaceSelect, RangeSliderWithLabel, SelectWithLabel, SwitchWithLabels, TextareaWithLabel, TimePickerWithLabel, TimeZoneSelect };
