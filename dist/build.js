@@ -9497,7 +9497,7 @@ var ImageUploader = function (_Component) {
 
 
 ImageUploader.propTypes = {
-  imageUploadUrl: ProptTypes.string.isRequired,
+  imageUploadUrl: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   classes: PropTypes.string,
