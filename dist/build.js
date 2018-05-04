@@ -2,6 +2,7 @@ import React, { Component, createElement } from 'react';
 import PropTypes from 'prop-types';
 import reactDom, { findDOMNode } from 'react-dom';
 import { compact, uniqBy, sortBy } from 'lodash';
+import jsonp from 'jsonp';
 import moment from 'moment';
 import axios from 'axios';
 import TimePicker from 'rc-time-picker';
@@ -3082,7 +3083,7 @@ var CitySelect = function (_Component) {
 
 CitySelect.propTypes = {
   handleSelect: PropTypes.func.isRequired,
-  handleInputChange: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func,
   name: PropTypes.string.isRequired,
   classes: PropTypes.string
 };

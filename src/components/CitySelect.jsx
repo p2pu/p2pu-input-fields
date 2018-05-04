@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { compact, uniqBy, sortBy } from 'lodash'
 import Select from 'react-select'
+import jsonp from 'jsonp'
 
 import 'react-select/dist/react-select.css'
 
@@ -81,7 +82,7 @@ export default class CitySelect extends Component {
 
 CitySelect.propTypes = {
   handleSelect: PropTypes.func.isRequired,
-  handleInputChange: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func,
   name: PropTypes.string.isRequired,
   classes: PropTypes.string
 }
