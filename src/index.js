@@ -1,4 +1,5 @@
 import CheckboxWithLabel from './components/CheckboxWithLabel.jsx';
+import CitySelect from './components/CitySelect.jsx';
 import DatePickerWithLabel from './components/DatePickerWithLabel.jsx';
 import ImageUploader from './components/ImageUploader.jsx';
 import InputWithLabel from './components/InputWithLabel.jsx';
@@ -12,6 +13,7 @@ import TimePickerWithLabel from './components/TimePickerWithLabel.jsx';
 import TimeZoneSelect from './components/TimeZoneSelect.jsx';
 
 export {
+  CitySelect,
   CheckboxWithLabel,
   DatePickerWithLabel,
   ImageUploader,

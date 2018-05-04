@@ -16,6 +16,7 @@ export default {
     'prop-types',
     'lodash',
     'axios',
+    'jsonp',
     "moment",
     "moment-timezone",
     "rc-time-picker"
