@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 
-const API_ENDPOINT = '/api/upload_image/';
-
 export default class ImageUploader extends Component {
-
   constructor(props) {
     super(props);
     this.state = { image: this.props.image };
@@ -12,7 +10,7 @@ export default class ImageUploader extends Component {
   }
 
   saveImage = opts => {
-    const url = API_ENDPOINT;
+    const url = opts.url;
     const data = opts.data;
     const config = opts.config;
 
@@ -34,6 +32,7 @@ export default class ImageUploader extends Component {
   }
 
   _onChange(e) {
+    const url = this.props.imageUploadUrl;
     const file = e.currentTarget.files[0];
     const data = new FormData();
     data.append('image', file)
@@ -53,7 +52,7 @@ export default class ImageUploader extends Component {
     }
 
     const config = { headers: {'Content-Type': 'multipart/form-data' }}
-    const opts = { data, config, onSuccess, onError, onFail };
+    const opts = { url, data, config, onSuccess, onError, onFail };
 
     this.saveImage(opts);
   }
@@ -84,4 +83,15 @@ export default class ImageUploader extends Component {
       </div>
     )
   }
+}
+
+ImageUploader.propTypes = {
+  imageUploadUrl: ProptTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  classes: PropTypes.string,
+  label: PropTypes.string,
+  id: PropTypes.string,
+  errorMessage: PropTypes.string,
+  image: PropTypes.string
 }

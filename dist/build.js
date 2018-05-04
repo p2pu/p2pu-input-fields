@@ -1,5 +1,6 @@
 import React, { Component, createElement } from 'react';
 import reactDom, { findDOMNode } from 'react-dom';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import axios from 'axios';
 import 'lodash';
@@ -111,957 +112,6 @@ function unwrapExports (x) {
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- */
-
-function makeEmptyFunction(arg) {
-  return function () {
-    return arg;
-  };
-}
-
-/**
- * This function accepts and discards inputs; it has no side effects. This is
- * primarily useful idiomatically for overridable function endpoints which
- * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
- */
-var emptyFunction = function emptyFunction() {};
-
-emptyFunction.thatReturns = makeEmptyFunction;
-emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-emptyFunction.thatReturnsThis = function () {
-  return this;
-};
-emptyFunction.thatReturnsArgument = function (arg) {
-  return arg;
-};
-
-var emptyFunction_1 = emptyFunction;
-
-var emptyFunction$1 = /*#__PURE__*/Object.freeze({
-  default: emptyFunction_1,
-  __moduleExports: emptyFunction_1
-});
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
-/**
- * Use invariant() to assert state which your program assumes to be true.
- *
- * Provide sprintf-style format (only %s is supported) and arguments
- * to provide information about what broke and what you were
- * expecting.
- *
- * The invariant message will be stripped in production, but the invariant
- * will remain to ensure logic does not differ in production.
- */
-
-var validateFormat = function validateFormat(format) {};
-
-if (process.env.NODE_ENV !== 'production') {
-  validateFormat = function validateFormat(format) {
-    if (format === undefined) {
-      throw new Error('invariant requires an error message argument');
-    }
-  };
-}
-
-function invariant(condition, format, a, b, c, d, e, f) {
-  validateFormat(format);
-
-  if (!condition) {
-    var error;
-    if (format === undefined) {
-      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
-    } else {
-      var args = [a, b, c, d, e, f];
-      var argIndex = 0;
-      error = new Error(format.replace(/%s/g, function () {
-        return args[argIndex++];
-      }));
-      error.name = 'Invariant Violation';
-    }
-
-    error.framesToPop = 1; // we don't care about invariant's own frame
-    throw error;
-  }
-}
-
-var invariant_1 = invariant;
-
-var invariant$1 = /*#__PURE__*/Object.freeze({
-  default: invariant_1,
-  __moduleExports: invariant_1
-});
-
-var emptyFunction$2 = ( emptyFunction$1 && emptyFunction_1 ) || emptyFunction$1;
-
-/**
- * Similar to invariant but only logs a warning if the condition is not met.
- * This can be used to log issues in development environments in critical
- * paths. Removing the logging code for production environments will keep the
- * same logic and follow the same code paths.
- */
-
-var warning = emptyFunction$2;
-
-if (process.env.NODE_ENV !== 'production') {
-  var printWarning = function printWarning(format) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    var argIndex = 0;
-    var message = 'Warning: ' + format.replace(/%s/g, function () {
-      return args[argIndex++];
-    });
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-
-  warning = function warning(condition, format) {
-    if (format === undefined) {
-      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-    }
-
-    if (format.indexOf('Failed Composite propType: ') === 0) {
-      return; // Ignore CompositeComponent proptype check.
-    }
-
-    if (!condition) {
-      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        args[_key2 - 2] = arguments[_key2];
-      }
-
-      printWarning.apply(undefined, [format].concat(args));
-    }
-  };
-}
-
-var warning_1 = warning;
-
-var warning$1 = /*#__PURE__*/Object.freeze({
-  default: warning_1,
-  __moduleExports: warning_1
-});
-
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
-/* eslint-disable no-unused-vars */
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (err) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (getOwnPropertySymbols) {
-			symbols = getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
-var objectAssign$1 = /*#__PURE__*/Object.freeze({
-  default: objectAssign,
-  __moduleExports: objectAssign
-});
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
-
-var ReactPropTypesSecret_1 = ReactPropTypesSecret;
-
-var ReactPropTypesSecret$1 = /*#__PURE__*/Object.freeze({
-  default: ReactPropTypesSecret_1,
-  __moduleExports: ReactPropTypesSecret_1
-});
-
-var require$$0 = ( invariant$1 && invariant_1 ) || invariant$1;
-
-var require$$1 = ( warning$1 && warning_1 ) || warning$1;
-
-var require$$2 = ( ReactPropTypesSecret$1 && ReactPropTypesSecret_1 ) || ReactPropTypesSecret$1;
-
-if (process.env.NODE_ENV !== 'production') {
-  var invariant$2 = require$$0;
-  var warning$2 = require$$1;
-  var ReactPropTypesSecret$2 = require$$2;
-  var loggedTypeFailures = {};
-}
-
-/**
- * Assert that the values match with the type specs.
- * Error messages are memorized and will only be shown once.
- *
- * @param {object} typeSpecs Map of name to a ReactPropType
- * @param {object} values Runtime values that need to be type-checked
- * @param {string} location e.g. "prop", "context", "child context"
- * @param {string} componentName Name of the component for error messages.
- * @param {?Function} getStack Returns the component stack.
- * @private
- */
-function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
-  if (process.env.NODE_ENV !== 'production') {
-    for (var typeSpecName in typeSpecs) {
-      if (typeSpecs.hasOwnProperty(typeSpecName)) {
-        var error;
-        // Prop type validation may throw. In case they do, we don't want to
-        // fail the render phase where it didn't fail before. So we log it.
-        // After these have been cleaned up, we'll let them throw.
-        try {
-          // This is intentionally an invariant that gets caught. It's the same
-          // behavior as without this statement except with a better message.
-          invariant$2(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
-          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$2);
-        } catch (ex) {
-          error = ex;
-        }
-        warning$2(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
-        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
-          // Only monitor this failure once because there tends to be a lot of the
-          // same error.
-          loggedTypeFailures[error.message] = true;
-
-          var stack = getStack ? getStack() : '';
-
-          warning$2(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
-        }
-      }
-    }
-  }
-}
-
-var checkPropTypes_1 = checkPropTypes;
-
-var checkPropTypes$1 = /*#__PURE__*/Object.freeze({
-  default: checkPropTypes_1,
-  __moduleExports: checkPropTypes_1
-});
-
-var _assign = ( objectAssign$1 && objectAssign ) || objectAssign$1;
-
-var checkPropTypes$2 = ( checkPropTypes$1 && checkPropTypes_1 ) || checkPropTypes$1;
-
-var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
-  /* global Symbol */
-  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
-
-  /**
-   * Returns the iterator method function contained on the iterable object.
-   *
-   * Be sure to invoke the function with the iterable as context:
-   *
-   *     var iteratorFn = getIteratorFn(myIterable);
-   *     if (iteratorFn) {
-   *       var iterator = iteratorFn.call(myIterable);
-   *       ...
-   *     }
-   *
-   * @param {?object} maybeIterable
-   * @return {?function}
-   */
-  function getIteratorFn(maybeIterable) {
-    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
-    if (typeof iteratorFn === 'function') {
-      return iteratorFn;
-    }
-  }
-
-  /**
-   * Collection of methods that allow declaration and validation of props that are
-   * supplied to React components. Example usage:
-   *
-   *   var Props = require('ReactPropTypes');
-   *   var MyArticle = React.createClass({
-   *     propTypes: {
-   *       // An optional string prop named "description".
-   *       description: Props.string,
-   *
-   *       // A required enum prop named "category".
-   *       category: Props.oneOf(['News','Photos']).isRequired,
-   *
-   *       // A prop named "dialog" that requires an instance of Dialog.
-   *       dialog: Props.instanceOf(Dialog).isRequired
-   *     },
-   *     render: function() { ... }
-   *   });
-   *
-   * A more formal specification of how these methods are used:
-   *
-   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
-   *   decl := ReactPropTypes.{type}(.isRequired)?
-   *
-   * Each and every declaration produces a function with the same signature. This
-   * allows the creation of custom validation functions. For example:
-   *
-   *  var MyLink = React.createClass({
-   *    propTypes: {
-   *      // An optional string or URI prop named "href".
-   *      href: function(props, propName, componentName) {
-   *        var propValue = props[propName];
-   *        if (propValue != null && typeof propValue !== 'string' &&
-   *            !(propValue instanceof URI)) {
-   *          return new Error(
-   *            'Expected a string or an URI for ' + propName + ' in ' +
-   *            componentName
-   *          );
-   *        }
-   *      }
-   *    },
-   *    render: function() {...}
-   *  });
-   *
-   * @internal
-   */
-
-  var ANONYMOUS = '<<anonymous>>';
-
-  // Important!
-  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
-  var ReactPropTypes = {
-    array: createPrimitiveTypeChecker('array'),
-    bool: createPrimitiveTypeChecker('boolean'),
-    func: createPrimitiveTypeChecker('function'),
-    number: createPrimitiveTypeChecker('number'),
-    object: createPrimitiveTypeChecker('object'),
-    string: createPrimitiveTypeChecker('string'),
-    symbol: createPrimitiveTypeChecker('symbol'),
-
-    any: createAnyTypeChecker(),
-    arrayOf: createArrayOfTypeChecker,
-    element: createElementTypeChecker(),
-    instanceOf: createInstanceTypeChecker,
-    node: createNodeChecker(),
-    objectOf: createObjectOfTypeChecker,
-    oneOf: createEnumTypeChecker,
-    oneOfType: createUnionTypeChecker,
-    shape: createShapeTypeChecker,
-    exact: createStrictShapeTypeChecker,
-  };
-
-  /**
-   * inlined Object.is polyfill to avoid requiring consumers ship their own
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-   */
-  /*eslint-disable no-self-compare*/
-  function is(x, y) {
-    // SameValue algorithm
-    if (x === y) {
-      // Steps 1-5, 7-10
-      // Steps 6.b-6.e: +0 != -0
-      return x !== 0 || 1 / x === 1 / y;
-    } else {
-      // Step 6.a: NaN == NaN
-      return x !== x && y !== y;
-    }
-  }
-  /*eslint-enable no-self-compare*/
-
-  /**
-   * We use an Error-like object for backward compatibility as people may call
-   * PropTypes directly and inspect their output. However, we don't use real
-   * Errors anymore. We don't inspect their stack anyway, and creating them
-   * is prohibitively expensive if they are created too often, such as what
-   * happens in oneOfType() for any type before the one that matched.
-   */
-  function PropTypeError(message) {
-    this.message = message;
-    this.stack = '';
-  }
-  // Make `instanceof Error` still work for returned errors.
-  PropTypeError.prototype = Error.prototype;
-
-  function createChainableTypeChecker(validate) {
-    if (process.env.NODE_ENV !== 'production') {
-      var manualPropTypeCallCache = {};
-      var manualPropTypeWarningCount = 0;
-    }
-    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
-      componentName = componentName || ANONYMOUS;
-      propFullName = propFullName || propName;
-
-      if (secret !== require$$2) {
-        if (throwOnDirectAccess) {
-          // New behavior only for users of `prop-types` package
-          require$$0(
-            false,
-            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-            'Use `PropTypes.checkPropTypes()` to call them. ' +
-            'Read more at http://fb.me/use-check-prop-types'
-          );
-        } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
-          // Old behavior for people using React.PropTypes
-          var cacheKey = componentName + ':' + propName;
-          if (
-            !manualPropTypeCallCache[cacheKey] &&
-            // Avoid spamming the console because they are often not actionable except for lib authors
-            manualPropTypeWarningCount < 3
-          ) {
-            require$$1(
-              false,
-              'You are manually calling a React.PropTypes validation ' +
-              'function for the `%s` prop on `%s`. This is deprecated ' +
-              'and will throw in the standalone `prop-types` package. ' +
-              'You may be seeing this warning due to a third-party PropTypes ' +
-              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
-              propFullName,
-              componentName
-            );
-            manualPropTypeCallCache[cacheKey] = true;
-            manualPropTypeWarningCount++;
-          }
-        }
-      }
-      if (props[propName] == null) {
-        if (isRequired) {
-          if (props[propName] === null) {
-            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
-          }
-          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
-        }
-        return null;
-      } else {
-        return validate(props, propName, componentName, location, propFullName);
-      }
-    }
-
-    var chainedCheckType = checkType.bind(null, false);
-    chainedCheckType.isRequired = checkType.bind(null, true);
-
-    return chainedCheckType;
-  }
-
-  function createPrimitiveTypeChecker(expectedType) {
-    function validate(props, propName, componentName, location, propFullName, secret) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== expectedType) {
-        // `propValue` being instance of, say, date/regexp, pass the 'object'
-        // check, but we can offer a more precise error message here rather than
-        // 'of type `object`'.
-        var preciseType = getPreciseType(propValue);
-
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunction$2.thatReturnsNull);
-  }
-
-  function createArrayOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
-      }
-      var propValue = props[propName];
-      if (!Array.isArray(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
-      }
-      for (var i = 0; i < propValue.length; i++) {
-        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', require$$2);
-        if (error instanceof Error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createElementTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      if (!isValidElement(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createInstanceTypeChecker(expectedClass) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!(props[propName] instanceof expectedClass)) {
-        var expectedClassName = expectedClass.name || ANONYMOUS;
-        var actualClassName = getClassName(props[propName]);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createEnumTypeChecker(expectedValues) {
-    if (!Array.isArray(expectedValues)) {
-      process.env.NODE_ENV !== 'production' ? require$$1(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
-      return emptyFunction$2.thatReturnsNull;
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      for (var i = 0; i < expectedValues.length; i++) {
-        if (is(propValue, expectedValues[i])) {
-          return null;
-        }
-      }
-
-      var valuesString = JSON.stringify(expectedValues);
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createObjectOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
-      }
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
-      }
-      for (var key in propValue) {
-        if (propValue.hasOwnProperty(key)) {
-          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, require$$2);
-          if (error instanceof Error) {
-            return error;
-          }
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createUnionTypeChecker(arrayOfTypeCheckers) {
-    if (!Array.isArray(arrayOfTypeCheckers)) {
-      process.env.NODE_ENV !== 'production' ? require$$1(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
-      return emptyFunction$2.thatReturnsNull;
-    }
-
-    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-      var checker = arrayOfTypeCheckers[i];
-      if (typeof checker !== 'function') {
-        require$$1(
-          false,
-          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
-          'received %s at index %s.',
-          getPostfixForTypeWarning(checker),
-          i
-        );
-        return emptyFunction$2.thatReturnsNull;
-      }
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-        var checker = arrayOfTypeCheckers[i];
-        if (checker(props, propName, componentName, location, propFullName, require$$2) == null) {
-          return null;
-        }
-      }
-
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createNodeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!isNode(props[propName])) {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      for (var key in shapeTypes) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          continue;
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, require$$2);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createStrictShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      // We need to check all keys in case some are required but missing from
-      // props.
-      var allKeys = _assign({}, props[propName], shapeTypes);
-      for (var key in allKeys) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          return new PropTypeError(
-            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
-            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
-            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
-          );
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, require$$2);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function isNode(propValue) {
-    switch (typeof propValue) {
-      case 'number':
-      case 'string':
-      case 'undefined':
-        return true;
-      case 'boolean':
-        return !propValue;
-      case 'object':
-        if (Array.isArray(propValue)) {
-          return propValue.every(isNode);
-        }
-        if (propValue === null || isValidElement(propValue)) {
-          return true;
-        }
-
-        var iteratorFn = getIteratorFn(propValue);
-        if (iteratorFn) {
-          var iterator = iteratorFn.call(propValue);
-          var step;
-          if (iteratorFn !== propValue.entries) {
-            while (!(step = iterator.next()).done) {
-              if (!isNode(step.value)) {
-                return false;
-              }
-            }
-          } else {
-            // Iterator will provide entry [k,v] tuples rather than values.
-            while (!(step = iterator.next()).done) {
-              var entry = step.value;
-              if (entry) {
-                if (!isNode(entry[1])) {
-                  return false;
-                }
-              }
-            }
-          }
-        } else {
-          return false;
-        }
-
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  function isSymbol(propType, propValue) {
-    // Native Symbol.
-    if (propType === 'symbol') {
-      return true;
-    }
-
-    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
-    if (propValue['@@toStringTag'] === 'Symbol') {
-      return true;
-    }
-
-    // Fallback for non-spec compliant Symbols which are polyfilled.
-    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
-      return true;
-    }
-
-    return false;
-  }
-
-  // Equivalent of `typeof` but with special handling for array and regexp.
-  function getPropType(propValue) {
-    var propType = typeof propValue;
-    if (Array.isArray(propValue)) {
-      return 'array';
-    }
-    if (propValue instanceof RegExp) {
-      // Old webkits (at least until Android 4.0) return 'function' rather than
-      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
-      // passes PropTypes.object.
-      return 'object';
-    }
-    if (isSymbol(propType, propValue)) {
-      return 'symbol';
-    }
-    return propType;
-  }
-
-  // This handles more types than `getPropType`. Only used for error messages.
-  // See `createPrimitiveTypeChecker`.
-  function getPreciseType(propValue) {
-    if (typeof propValue === 'undefined' || propValue === null) {
-      return '' + propValue;
-    }
-    var propType = getPropType(propValue);
-    if (propType === 'object') {
-      if (propValue instanceof Date) {
-        return 'date';
-      } else if (propValue instanceof RegExp) {
-        return 'regexp';
-      }
-    }
-    return propType;
-  }
-
-  // Returns a string that is postfixed to a warning about an invalid type.
-  // For example, "undefined" or "of type array"
-  function getPostfixForTypeWarning(value) {
-    var type = getPreciseType(value);
-    switch (type) {
-      case 'array':
-      case 'object':
-        return 'an ' + type;
-      case 'boolean':
-      case 'date':
-      case 'regexp':
-        return 'a ' + type;
-      default:
-        return type;
-    }
-  }
-
-  // Returns class name of the object, if any.
-  function getClassName(propValue) {
-    if (!propValue.constructor || !propValue.constructor.name) {
-      return ANONYMOUS;
-    }
-    return propValue.constructor.name;
-  }
-
-  ReactPropTypes.checkPropTypes = checkPropTypes$2;
-  ReactPropTypes.PropTypes = ReactPropTypes;
-
-  return ReactPropTypes;
-};
-
-var factoryWithTypeCheckers$1 = /*#__PURE__*/Object.freeze({
-  default: factoryWithTypeCheckers,
-  __moduleExports: factoryWithTypeCheckers
-});
-
-var factoryWithThrowingShims = function() {
-  function shim(props, propName, componentName, location, propFullName, secret) {
-    if (secret === require$$2) {
-      // It is still safe when called from React.
-      return;
-    }
-    require$$0(
-      false,
-      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-      'Use PropTypes.checkPropTypes() to call them. ' +
-      'Read more at http://fb.me/use-check-prop-types'
-    );
-  }  shim.isRequired = shim;
-  function getShim() {
-    return shim;
-  }  // Important!
-  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
-  var ReactPropTypes = {
-    array: shim,
-    bool: shim,
-    func: shim,
-    number: shim,
-    object: shim,
-    string: shim,
-    symbol: shim,
-
-    any: shim,
-    arrayOf: getShim,
-    element: shim,
-    instanceOf: getShim,
-    node: shim,
-    objectOf: getShim,
-    oneOf: getShim,
-    oneOfType: getShim,
-    shape: getShim,
-    exact: getShim
-  };
-
-  ReactPropTypes.checkPropTypes = emptyFunction$2;
-  ReactPropTypes.PropTypes = ReactPropTypes;
-
-  return ReactPropTypes;
-};
-
-var factoryWithThrowingShims$1 = /*#__PURE__*/Object.freeze({
-  default: factoryWithThrowingShims,
-  __moduleExports: factoryWithThrowingShims
-});
-
-var require$$0$1 = ( factoryWithTypeCheckers$1 && factoryWithTypeCheckers ) || factoryWithTypeCheckers$1;
-
-var require$$1$1 = ( factoryWithThrowingShims$1 && factoryWithThrowingShims ) || factoryWithThrowingShims$1;
-
-var propTypes = createCommonjsModule(function (module) {
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-if (process.env.NODE_ENV !== 'production') {
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-    Symbol.for &&
-    Symbol.for('react.element')) ||
-    0xeac7;
-
-  var isValidElement = function(object) {
-    return typeof object === 'object' &&
-      object !== null &&
-      object.$$typeof === REACT_ELEMENT_TYPE;
-  };
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = require$$0$1(isValidElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = require$$1$1();
-}
-});
-
-var propTypes$1 = /*#__PURE__*/Object.freeze({
-  default: propTypes,
-  __moduleExports: propTypes
-});
 
 var classnames = createCommonjsModule(function (module) {
 /*!
@@ -1521,11 +571,11 @@ var Manager = function (_Component) {
 }(Component);
 
 Manager.childContextTypes = {
-  popperManager: propTypes.object.isRequired
+  popperManager: PropTypes.object.isRequired
 };
 Manager.propTypes = {
-  tag: propTypes.oneOfType([propTypes.string, propTypes.bool]),
-  children: propTypes.oneOfType([propTypes.node, propTypes.func])
+  tag: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
 };
 Manager.defaultProps = {
   tag: 'div'
@@ -1568,13 +618,13 @@ var Target = function Target(props, context) {
 };
 
 Target.contextTypes = {
-  popperManager: propTypes.object.isRequired
+  popperManager: PropTypes.object.isRequired
 };
 
 Target.propTypes = {
-  component: propTypes.oneOfType([propTypes.node, propTypes.func]),
-  innerRef: propTypes.func,
-  children: propTypes.oneOfType([propTypes.node, propTypes.func])
+  component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  innerRef: PropTypes.func,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
 };
 
 /**!
@@ -4307,24 +3357,24 @@ var Popper$1 = function (_Component) {
 }(Component);
 
 Popper$1.contextTypes = {
-  popperManager: propTypes.object
+  popperManager: PropTypes.object
 };
 Popper$1.childContextTypes = {
-  popper: propTypes.object.isRequired
+  popper: PropTypes.object.isRequired
 };
 Popper$1.propTypes = {
-  component: propTypes.oneOfType([propTypes.node, propTypes.func]),
-  innerRef: propTypes.func,
-  placement: propTypes.oneOf(placements$1),
-  eventsEnabled: propTypes.bool,
-  modifiers: propTypes.object,
-  children: propTypes.oneOfType([propTypes.node, propTypes.func]),
-  target: propTypes.oneOfType([
+  component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  innerRef: PropTypes.func,
+  placement: PropTypes.oneOf(placements$1),
+  eventsEnabled: PropTypes.bool,
+  modifiers: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  target: PropTypes.oneOfType([
   // the following check is needed for SSR
-  propTypes.instanceOf(typeof Element !== 'undefined' ? Element : Object), propTypes.shape({
-    getBoundingClientRect: propTypes.func.isRequired,
-    clientWidth: propTypes.number.isRequired,
-    clientHeight: propTypes.number.isRequired
+  PropTypes.instanceOf(typeof Element !== 'undefined' ? Element : Object), PropTypes.shape({
+    getBoundingClientRect: PropTypes.func.isRequired,
+    clientWidth: PropTypes.number.isRequired,
+    clientHeight: PropTypes.number.isRequired
   })])
 };
 Popper$1.defaultProps = {
@@ -4377,13 +3427,13 @@ var Arrow = function Arrow(props, context) {
 };
 
 Arrow.contextTypes = {
-  popper: propTypes.object.isRequired
+  popper: PropTypes.object.isRequired
 };
 
 Arrow.propTypes = {
-  component: propTypes.oneOfType([propTypes.node, propTypes.func]),
-  innerRef: propTypes.func,
-  children: propTypes.oneOfType([propTypes.node, propTypes.func])
+  component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  innerRef: PropTypes.func,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
 };
 
 var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -4606,13 +3656,13 @@ var YearDropdownOptions = function (_React$Component) {
 }(React.Component);
 
 YearDropdownOptions.propTypes = {
-  minDate: propTypes.object,
-  maxDate: propTypes.object,
-  onCancel: propTypes.func.isRequired,
-  onChange: propTypes.func.isRequired,
-  scrollableYearDropdown: propTypes.bool,
-  year: propTypes.number.isRequired,
-  yearDropdownItemNumber: propTypes.number
+  minDate: PropTypes.object,
+  maxDate: PropTypes.object,
+  onCancel: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  scrollableYearDropdown: PropTypes.bool,
+  year: PropTypes.number.isRequired,
+  yearDropdownItemNumber: PropTypes.number
 };
 
 var dayOfWeekCodes = {
@@ -5189,17 +4239,17 @@ var YearDropdown = function (_React$Component) {
 }(React.Component);
 
 YearDropdown.propTypes = {
-  adjustDateOnChange: propTypes.bool,
-  dropdownMode: propTypes.oneOf(["scroll", "select"]).isRequired,
-  maxDate: propTypes.object,
-  minDate: propTypes.object,
-  onChange: propTypes.func.isRequired,
-  scrollableYearDropdown: propTypes.bool,
-  year: propTypes.number.isRequired,
-  yearDropdownItemNumber: propTypes.number,
-  date: propTypes.object,
-  onSelect: propTypes.func,
-  setOpen: propTypes.func
+  adjustDateOnChange: PropTypes.bool,
+  dropdownMode: PropTypes.oneOf(["scroll", "select"]).isRequired,
+  maxDate: PropTypes.object,
+  minDate: PropTypes.object,
+  onChange: PropTypes.func.isRequired,
+  scrollableYearDropdown: PropTypes.bool,
+  year: PropTypes.number.isRequired,
+  yearDropdownItemNumber: PropTypes.number,
+  date: PropTypes.object,
+  onSelect: PropTypes.func,
+  setOpen: PropTypes.func
 };
 
 var MonthDropdownOptions = function (_React$Component) {
@@ -5251,10 +4301,10 @@ var MonthDropdownOptions = function (_React$Component) {
 }(React.Component);
 
 MonthDropdownOptions.propTypes = {
-  onCancel: propTypes.func.isRequired,
-  onChange: propTypes.func.isRequired,
-  month: propTypes.number.isRequired,
-  monthNames: propTypes.arrayOf(propTypes.string.isRequired).isRequired
+  onCancel: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  month: PropTypes.number.isRequired,
+  monthNames: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
 };
 
 var WrappedMonthDropdownOptions = onClickOutsideHOC(MonthDropdownOptions);
@@ -5371,12 +4421,12 @@ var MonthDropdown = function (_React$Component) {
 }(React.Component);
 
 MonthDropdown.propTypes = {
-  dropdownMode: propTypes.oneOf(["scroll", "select"]).isRequired,
-  locale: propTypes.string,
-  dateFormat: propTypes.string.isRequired,
-  month: propTypes.number.isRequired,
-  onChange: propTypes.func.isRequired,
-  useShortMonthInDropdown: propTypes.bool
+  dropdownMode: PropTypes.oneOf(["scroll", "select"]).isRequired,
+  locale: PropTypes.string,
+  dateFormat: PropTypes.string.isRequired,
+  month: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+  useShortMonthInDropdown: PropTypes.bool
 };
 
 function generateMonthYears(minDate, maxDate) {
@@ -5457,13 +4507,13 @@ var MonthYearDropdownOptions = function (_React$Component) {
 }(React.Component);
 
 MonthYearDropdownOptions.propTypes = {
-  minDate: propTypes.object.isRequired,
-  maxDate: propTypes.object.isRequired,
-  onCancel: propTypes.func.isRequired,
-  onChange: propTypes.func.isRequired,
-  scrollableMonthYearDropdown: propTypes.bool,
-  date: propTypes.object.isRequired,
-  dateFormat: propTypes.string.isRequired
+  minDate: PropTypes.object.isRequired,
+  maxDate: PropTypes.object.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  scrollableMonthYearDropdown: PropTypes.bool,
+  date: PropTypes.object.isRequired,
+  dateFormat: PropTypes.string.isRequired
 };
 
 var WrappedMonthYearDropdownOptions = onClickOutsideHOC(MonthYearDropdownOptions);
@@ -5593,14 +4643,14 @@ var MonthYearDropdown = function (_React$Component) {
 }(React.Component);
 
 MonthYearDropdown.propTypes = {
-  dropdownMode: propTypes.oneOf(["scroll", "select"]).isRequired,
-  dateFormat: propTypes.string.isRequired,
-  locale: propTypes.string,
-  maxDate: propTypes.object.isRequired,
-  minDate: propTypes.object.isRequired,
-  date: propTypes.object.isRequired,
-  onChange: propTypes.func.isRequired,
-  scrollableMonthYearDropdown: propTypes.bool
+  dropdownMode: PropTypes.oneOf(["scroll", "select"]).isRequired,
+  dateFormat: PropTypes.string.isRequired,
+  locale: PropTypes.string,
+  maxDate: PropTypes.object.isRequired,
+  minDate: PropTypes.object.isRequired,
+  date: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
+  scrollableMonthYearDropdown: PropTypes.bool
 };
 
 var Day = function (_React$Component) {
@@ -5771,21 +4821,21 @@ var Day = function (_React$Component) {
 }(React.Component);
 
 Day.propTypes = {
-  day: propTypes.object.isRequired,
-  dayClassName: propTypes.func,
-  endDate: propTypes.object,
-  highlightDates: propTypes.instanceOf(Map),
-  inline: propTypes.bool,
-  month: propTypes.number,
-  onClick: propTypes.func,
-  onMouseEnter: propTypes.func,
-  preSelection: propTypes.object,
-  selected: propTypes.object,
-  selectingDate: propTypes.object,
-  selectsEnd: propTypes.bool,
-  selectsStart: propTypes.bool,
-  startDate: propTypes.object,
-  utcOffset: propTypes.number
+  day: PropTypes.object.isRequired,
+  dayClassName: PropTypes.func,
+  endDate: PropTypes.object,
+  highlightDates: PropTypes.instanceOf(Map),
+  inline: PropTypes.bool,
+  month: PropTypes.number,
+  onClick: PropTypes.func,
+  onMouseEnter: PropTypes.func,
+  preSelection: PropTypes.object,
+  selected: PropTypes.object,
+  selectingDate: PropTypes.object,
+  selectsEnd: PropTypes.bool,
+  selectsStart: PropTypes.bool,
+  startDate: PropTypes.object,
+  utcOffset: PropTypes.number
 };
 
 var WeekNumber = function (_React$Component) {
@@ -5827,8 +4877,8 @@ var WeekNumber = function (_React$Component) {
 }(React.Component);
 
 WeekNumber.propTypes = {
-  weekNumber: propTypes.number.isRequired,
-  onClick: propTypes.func
+  weekNumber: PropTypes.number.isRequired,
+  onClick: PropTypes.func
 };
 
 var Week = function (_React$Component) {
@@ -5909,29 +4959,29 @@ var Week = function (_React$Component) {
 }(React.Component);
 
 Week.propTypes = {
-  day: propTypes.object.isRequired,
-  dayClassName: propTypes.func,
-  endDate: propTypes.object,
-  excludeDates: propTypes.array,
-  filterDate: propTypes.func,
-  formatWeekNumber: propTypes.func,
-  highlightDates: propTypes.instanceOf(Map),
-  includeDates: propTypes.array,
-  inline: propTypes.bool,
-  maxDate: propTypes.object,
-  minDate: propTypes.object,
-  month: propTypes.number,
-  onDayClick: propTypes.func,
-  onDayMouseEnter: propTypes.func,
-  onWeekSelect: propTypes.func,
-  preSelection: propTypes.object,
-  selected: propTypes.object,
-  selectingDate: propTypes.object,
-  selectsEnd: propTypes.bool,
-  selectsStart: propTypes.bool,
-  showWeekNumber: propTypes.bool,
-  startDate: propTypes.object,
-  utcOffset: propTypes.number
+  day: PropTypes.object.isRequired,
+  dayClassName: PropTypes.func,
+  endDate: PropTypes.object,
+  excludeDates: PropTypes.array,
+  filterDate: PropTypes.func,
+  formatWeekNumber: PropTypes.func,
+  highlightDates: PropTypes.instanceOf(Map),
+  includeDates: PropTypes.array,
+  inline: PropTypes.bool,
+  maxDate: PropTypes.object,
+  minDate: PropTypes.object,
+  month: PropTypes.number,
+  onDayClick: PropTypes.func,
+  onDayMouseEnter: PropTypes.func,
+  onWeekSelect: PropTypes.func,
+  preSelection: PropTypes.object,
+  selected: PropTypes.object,
+  selectingDate: PropTypes.object,
+  selectsEnd: PropTypes.bool,
+  selectsStart: PropTypes.bool,
+  showWeekNumber: PropTypes.bool,
+  startDate: PropTypes.object,
+  utcOffset: PropTypes.number
 };
 
 var FIXED_HEIGHT_STANDARD_WEEK_COUNT = 6;
@@ -6047,31 +5097,31 @@ var Month = function (_React$Component) {
 }(React.Component);
 
 Month.propTypes = {
-  day: propTypes.object.isRequired,
-  dayClassName: propTypes.func,
-  endDate: propTypes.object,
-  excludeDates: propTypes.array,
-  filterDate: propTypes.func,
-  fixedHeight: propTypes.bool,
-  formatWeekNumber: propTypes.func,
-  highlightDates: propTypes.instanceOf(Map),
-  includeDates: propTypes.array,
-  inline: propTypes.bool,
-  maxDate: propTypes.object,
-  minDate: propTypes.object,
-  onDayClick: propTypes.func,
-  onDayMouseEnter: propTypes.func,
-  onMouseLeave: propTypes.func,
-  onWeekSelect: propTypes.func,
-  peekNextMonth: propTypes.bool,
-  preSelection: propTypes.object,
-  selected: propTypes.object,
-  selectingDate: propTypes.object,
-  selectsEnd: propTypes.bool,
-  selectsStart: propTypes.bool,
-  showWeekNumbers: propTypes.bool,
-  startDate: propTypes.object,
-  utcOffset: propTypes.number
+  day: PropTypes.object.isRequired,
+  dayClassName: PropTypes.func,
+  endDate: PropTypes.object,
+  excludeDates: PropTypes.array,
+  filterDate: PropTypes.func,
+  fixedHeight: PropTypes.bool,
+  formatWeekNumber: PropTypes.func,
+  highlightDates: PropTypes.instanceOf(Map),
+  includeDates: PropTypes.array,
+  inline: PropTypes.bool,
+  maxDate: PropTypes.object,
+  minDate: PropTypes.object,
+  onDayClick: PropTypes.func,
+  onDayMouseEnter: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  onWeekSelect: PropTypes.func,
+  peekNextMonth: PropTypes.bool,
+  preSelection: PropTypes.object,
+  selected: PropTypes.object,
+  selectingDate: PropTypes.object,
+  selectsEnd: PropTypes.bool,
+  selectsStart: PropTypes.bool,
+  showWeekNumbers: PropTypes.bool,
+  startDate: PropTypes.object,
+  utcOffset: PropTypes.number
 };
 
 var Time = function (_React$Component) {
@@ -6208,18 +5258,18 @@ var Time = function (_React$Component) {
 }(React.Component);
 
 Time.propTypes = {
-  format: propTypes.string,
-  includeTimes: propTypes.array,
-  intervals: propTypes.number,
-  selected: propTypes.object,
-  onChange: propTypes.func,
-  todayButton: propTypes.string,
-  minTime: propTypes.object,
-  maxTime: propTypes.object,
-  excludeTimes: propTypes.array,
-  monthRef: propTypes.object,
-  timeCaption: propTypes.string,
-  injectTimes: propTypes.array
+  format: PropTypes.string,
+  includeTimes: PropTypes.array,
+  intervals: PropTypes.number,
+  selected: PropTypes.object,
+  onChange: PropTypes.func,
+  todayButton: PropTypes.string,
+  minTime: PropTypes.object,
+  maxTime: PropTypes.object,
+  excludeTimes: PropTypes.array,
+  monthRef: PropTypes.object,
+  timeCaption: PropTypes.string,
+  injectTimes: PropTypes.array
 };
 
 var DROPDOWN_FOCUS_CLASSNAMES = ["react-datepicker__year-select", "react-datepicker__month-select", "react-datepicker__month-year-select"];
@@ -6683,64 +5733,64 @@ var Calendar = function (_React$Component) {
 }(React.Component);
 
 Calendar.propTypes = {
-  adjustDateOnChange: propTypes.bool,
-  className: propTypes.string,
-  children: propTypes.node,
-  dateFormat: propTypes.oneOfType([propTypes.string, propTypes.array]).isRequired,
-  dayClassName: propTypes.func,
-  dropdownMode: propTypes.oneOf(["scroll", "select"]),
-  endDate: propTypes.object,
-  excludeDates: propTypes.array,
-  filterDate: propTypes.func,
-  fixedHeight: propTypes.bool,
-  formatWeekNumber: propTypes.func,
-  highlightDates: propTypes.instanceOf(Map),
-  includeDates: propTypes.array,
-  includeTimes: propTypes.array,
-  injectTimes: propTypes.array,
-  inline: propTypes.bool,
-  locale: propTypes.string,
-  maxDate: propTypes.object,
-  minDate: propTypes.object,
-  monthsShown: propTypes.number,
-  onClickOutside: propTypes.func.isRequired,
-  onMonthChange: propTypes.func,
-  onYearChange: propTypes.func,
-  forceShowMonthNavigation: propTypes.bool,
-  onDropdownFocus: propTypes.func,
-  onSelect: propTypes.func.isRequired,
-  onWeekSelect: propTypes.func,
-  showTimeSelect: propTypes.bool,
-  showTimeSelectOnly: propTypes.bool,
-  timeFormat: propTypes.string,
-  timeIntervals: propTypes.number,
-  onTimeChange: propTypes.func,
-  minTime: propTypes.object,
-  maxTime: propTypes.object,
-  excludeTimes: propTypes.array,
-  timeCaption: propTypes.string,
-  openToDate: propTypes.object,
-  peekNextMonth: propTypes.bool,
-  scrollableYearDropdown: propTypes.bool,
-  scrollableMonthYearDropdown: propTypes.bool,
-  preSelection: propTypes.object,
-  selected: propTypes.object,
-  selectsEnd: propTypes.bool,
-  selectsStart: propTypes.bool,
-  showMonthDropdown: propTypes.bool,
-  showMonthYearDropdown: propTypes.bool,
-  showWeekNumbers: propTypes.bool,
-  showYearDropdown: propTypes.bool,
-  startDate: propTypes.object,
-  todayButton: propTypes.string,
-  useWeekdaysShort: propTypes.bool,
-  withPortal: propTypes.bool,
-  utcOffset: propTypes.number,
-  weekLabel: propTypes.string,
-  yearDropdownItemNumber: propTypes.number,
-  setOpen: propTypes.func,
-  useShortMonthInDropdown: propTypes.bool,
-  showDisabledMonthNavigation: propTypes.bool
+  adjustDateOnChange: PropTypes.bool,
+  className: PropTypes.string,
+  children: PropTypes.node,
+  dateFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
+  dayClassName: PropTypes.func,
+  dropdownMode: PropTypes.oneOf(["scroll", "select"]),
+  endDate: PropTypes.object,
+  excludeDates: PropTypes.array,
+  filterDate: PropTypes.func,
+  fixedHeight: PropTypes.bool,
+  formatWeekNumber: PropTypes.func,
+  highlightDates: PropTypes.instanceOf(Map),
+  includeDates: PropTypes.array,
+  includeTimes: PropTypes.array,
+  injectTimes: PropTypes.array,
+  inline: PropTypes.bool,
+  locale: PropTypes.string,
+  maxDate: PropTypes.object,
+  minDate: PropTypes.object,
+  monthsShown: PropTypes.number,
+  onClickOutside: PropTypes.func.isRequired,
+  onMonthChange: PropTypes.func,
+  onYearChange: PropTypes.func,
+  forceShowMonthNavigation: PropTypes.bool,
+  onDropdownFocus: PropTypes.func,
+  onSelect: PropTypes.func.isRequired,
+  onWeekSelect: PropTypes.func,
+  showTimeSelect: PropTypes.bool,
+  showTimeSelectOnly: PropTypes.bool,
+  timeFormat: PropTypes.string,
+  timeIntervals: PropTypes.number,
+  onTimeChange: PropTypes.func,
+  minTime: PropTypes.object,
+  maxTime: PropTypes.object,
+  excludeTimes: PropTypes.array,
+  timeCaption: PropTypes.string,
+  openToDate: PropTypes.object,
+  peekNextMonth: PropTypes.bool,
+  scrollableYearDropdown: PropTypes.bool,
+  scrollableMonthYearDropdown: PropTypes.bool,
+  preSelection: PropTypes.object,
+  selected: PropTypes.object,
+  selectsEnd: PropTypes.bool,
+  selectsStart: PropTypes.bool,
+  showMonthDropdown: PropTypes.bool,
+  showMonthYearDropdown: PropTypes.bool,
+  showWeekNumbers: PropTypes.bool,
+  showYearDropdown: PropTypes.bool,
+  startDate: PropTypes.object,
+  todayButton: PropTypes.string,
+  useWeekdaysShort: PropTypes.bool,
+  withPortal: PropTypes.bool,
+  utcOffset: PropTypes.number,
+  weekLabel: PropTypes.string,
+  yearDropdownItemNumber: PropTypes.number,
+  setOpen: PropTypes.func,
+  useShortMonthInDropdown: PropTypes.bool,
+  showDisabledMonthNavigation: PropTypes.bool
 };
 
 var popperPlacementPositions = ["auto", "auto-left", "auto-right", "bottom", "bottom-end", "bottom-start", "left", "left-end", "left-start", "right", "right-end", "right-start", "top", "top-end", "top-start"];
@@ -6814,13 +5864,13 @@ var PopperComponent = function (_React$Component) {
 }(React.Component);
 
 PopperComponent.propTypes = {
-  className: propTypes.string,
-  hidePopper: propTypes.bool,
-  popperComponent: propTypes.element,
-  popperModifiers: propTypes.object, // <datepicker/> props
-  popperPlacement: propTypes.oneOf(popperPlacementPositions), // <datepicker/> props
-  popperContainer: propTypes.func,
-  targetComponent: propTypes.element
+  className: PropTypes.string,
+  hidePopper: PropTypes.bool,
+  popperComponent: PropTypes.element,
+  popperModifiers: PropTypes.object, // <datepicker/> props
+  popperPlacement: PropTypes.oneOf(popperPlacementPositions), // <datepicker/> props
+  popperContainer: PropTypes.func,
+  targetComponent: PropTypes.element
 };
 
 var outsideClickIgnoreClass = "react-datepicker-ignore-onclickoutside";
@@ -7307,92 +6357,92 @@ var DatePicker = function (_React$Component) {
 }(React.Component);
 
 DatePicker.propTypes = {
-  adjustDateOnChange: propTypes.bool,
-  allowSameDay: propTypes.bool,
-  autoComplete: propTypes.string,
-  autoFocus: propTypes.bool,
-  calendarClassName: propTypes.string,
-  children: propTypes.node,
-  className: propTypes.string,
-  customInput: propTypes.element,
-  customInputRef: propTypes.string,
+  adjustDateOnChange: PropTypes.bool,
+  allowSameDay: PropTypes.bool,
+  autoComplete: PropTypes.string,
+  autoFocus: PropTypes.bool,
+  calendarClassName: PropTypes.string,
+  children: PropTypes.node,
+  className: PropTypes.string,
+  customInput: PropTypes.element,
+  customInputRef: PropTypes.string,
   // eslint-disable-next-line react/no-unused-prop-types
-  dateFormat: propTypes.oneOfType([propTypes.string, propTypes.array]),
-  dateFormatCalendar: propTypes.string,
-  dayClassName: propTypes.func,
-  disabled: propTypes.bool,
-  disabledKeyboardNavigation: propTypes.bool,
-  dropdownMode: propTypes.oneOf(["scroll", "select"]).isRequired,
-  endDate: propTypes.object,
-  excludeDates: propTypes.array,
-  filterDate: propTypes.func,
-  fixedHeight: propTypes.bool,
-  formatWeekNumber: propTypes.func,
-  highlightDates: propTypes.array,
-  id: propTypes.string,
-  includeDates: propTypes.array,
-  includeTimes: propTypes.array,
-  injectTimes: propTypes.array,
-  inline: propTypes.bool,
-  isClearable: propTypes.bool,
-  locale: propTypes.string,
-  maxDate: propTypes.object,
-  minDate: propTypes.object,
-  monthsShown: propTypes.number,
-  name: propTypes.string,
-  onBlur: propTypes.func,
-  onChange: propTypes.func.isRequired,
-  onSelect: propTypes.func,
-  onWeekSelect: propTypes.func,
-  onClickOutside: propTypes.func,
-  onChangeRaw: propTypes.func,
-  onFocus: propTypes.func,
-  onKeyDown: propTypes.func,
-  onMonthChange: propTypes.func,
-  onYearChange: propTypes.func,
-  openToDate: propTypes.object,
-  peekNextMonth: propTypes.bool,
-  placeholderText: propTypes.string,
-  popperContainer: propTypes.func,
-  popperClassName: propTypes.string, // <PopperComponent/> props
-  popperModifiers: propTypes.object, // <PopperComponent/> props
-  popperPlacement: propTypes.oneOf(popperPlacementPositions), // <PopperComponent/> props
-  preventOpenOnFocus: propTypes.bool,
-  readOnly: propTypes.bool,
-  required: propTypes.bool,
-  scrollableYearDropdown: propTypes.bool,
-  scrollableMonthYearDropdown: propTypes.bool,
-  selected: propTypes.object,
-  selectsEnd: propTypes.bool,
-  selectsStart: propTypes.bool,
-  showMonthDropdown: propTypes.bool,
-  showMonthYearDropdown: propTypes.bool,
-  showWeekNumbers: propTypes.bool,
-  showYearDropdown: propTypes.bool,
-  forceShowMonthNavigation: propTypes.bool,
-  showDisabledMonthNavigation: propTypes.bool,
-  startDate: propTypes.object,
-  startOpen: propTypes.bool,
-  tabIndex: propTypes.number,
-  timeCaption: propTypes.string,
-  title: propTypes.string,
-  todayButton: propTypes.string,
-  useWeekdaysShort: propTypes.bool,
-  utcOffset: propTypes.number,
-  value: propTypes.string,
-  weekLabel: propTypes.string,
-  withPortal: propTypes.bool,
-  yearDropdownItemNumber: propTypes.number,
-  shouldCloseOnSelect: propTypes.bool,
-  showTimeSelect: propTypes.bool,
-  showTimeSelectOnly: propTypes.bool,
-  timeFormat: propTypes.string,
-  timeIntervals: propTypes.number,
-  minTime: propTypes.object,
-  maxTime: propTypes.object,
-  excludeTimes: propTypes.array,
-  useShortMonthInDropdown: propTypes.bool,
-  clearButtonTitle: propTypes.string
+  dateFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  dateFormatCalendar: PropTypes.string,
+  dayClassName: PropTypes.func,
+  disabled: PropTypes.bool,
+  disabledKeyboardNavigation: PropTypes.bool,
+  dropdownMode: PropTypes.oneOf(["scroll", "select"]).isRequired,
+  endDate: PropTypes.object,
+  excludeDates: PropTypes.array,
+  filterDate: PropTypes.func,
+  fixedHeight: PropTypes.bool,
+  formatWeekNumber: PropTypes.func,
+  highlightDates: PropTypes.array,
+  id: PropTypes.string,
+  includeDates: PropTypes.array,
+  includeTimes: PropTypes.array,
+  injectTimes: PropTypes.array,
+  inline: PropTypes.bool,
+  isClearable: PropTypes.bool,
+  locale: PropTypes.string,
+  maxDate: PropTypes.object,
+  minDate: PropTypes.object,
+  monthsShown: PropTypes.number,
+  name: PropTypes.string,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
+  onSelect: PropTypes.func,
+  onWeekSelect: PropTypes.func,
+  onClickOutside: PropTypes.func,
+  onChangeRaw: PropTypes.func,
+  onFocus: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  onMonthChange: PropTypes.func,
+  onYearChange: PropTypes.func,
+  openToDate: PropTypes.object,
+  peekNextMonth: PropTypes.bool,
+  placeholderText: PropTypes.string,
+  popperContainer: PropTypes.func,
+  popperClassName: PropTypes.string, // <PopperComponent/> props
+  popperModifiers: PropTypes.object, // <PopperComponent/> props
+  popperPlacement: PropTypes.oneOf(popperPlacementPositions), // <PopperComponent/> props
+  preventOpenOnFocus: PropTypes.bool,
+  readOnly: PropTypes.bool,
+  required: PropTypes.bool,
+  scrollableYearDropdown: PropTypes.bool,
+  scrollableMonthYearDropdown: PropTypes.bool,
+  selected: PropTypes.object,
+  selectsEnd: PropTypes.bool,
+  selectsStart: PropTypes.bool,
+  showMonthDropdown: PropTypes.bool,
+  showMonthYearDropdown: PropTypes.bool,
+  showWeekNumbers: PropTypes.bool,
+  showYearDropdown: PropTypes.bool,
+  forceShowMonthNavigation: PropTypes.bool,
+  showDisabledMonthNavigation: PropTypes.bool,
+  startDate: PropTypes.object,
+  startOpen: PropTypes.bool,
+  tabIndex: PropTypes.number,
+  timeCaption: PropTypes.string,
+  title: PropTypes.string,
+  todayButton: PropTypes.string,
+  useWeekdaysShort: PropTypes.bool,
+  utcOffset: PropTypes.number,
+  value: PropTypes.string,
+  weekLabel: PropTypes.string,
+  withPortal: PropTypes.bool,
+  yearDropdownItemNumber: PropTypes.number,
+  shouldCloseOnSelect: PropTypes.bool,
+  showTimeSelect: PropTypes.bool,
+  showTimeSelectOnly: PropTypes.bool,
+  timeFormat: PropTypes.string,
+  timeIntervals: PropTypes.number,
+  minTime: PropTypes.object,
+  maxTime: PropTypes.object,
+  excludeTimes: PropTypes.array,
+  useShortMonthInDropdown: PropTypes.bool,
+  clearButtonTitle: PropTypes.string
 };
 
 var DatePickerWithLabel = function DatePickerWithLabel(props) {
@@ -7426,8 +6476,6 @@ var DatePickerWithLabel = function DatePickerWithLabel(props) {
   );
 };
 
-var API_ENDPOINT = '/api/upload_image/';
-
 var ImageUploader = function (_Component) {
   inherits(ImageUploader, _Component);
 
@@ -7437,7 +6485,7 @@ var ImageUploader = function (_Component) {
     var _this = possibleConstructorReturn(this, (ImageUploader.__proto__ || Object.getPrototypeOf(ImageUploader)).call(this, props));
 
     _this.saveImage = function (opts) {
-      var url = API_ENDPOINT;
+      var url = opts.url;
       var data = opts.data;
       var config = opts.config;
 
@@ -7470,6 +6518,7 @@ var ImageUploader = function (_Component) {
     value: function _onChange(e) {
       var _this2 = this;
 
+      var url = this.props.imageUploadUrl;
       var file = e.currentTarget.files[0];
       var data = new FormData();
       data.append('image', file);
@@ -7489,7 +6538,7 @@ var ImageUploader = function (_Component) {
       };
 
       var config = { headers: { 'Content-Type': 'multipart/form-data' } };
-      var opts = { data: data, config: config, onSuccess: onSuccess, onError: onError, onFail: onFail };
+      var opts = { url: url, data: data, config: config, onSuccess: onSuccess, onError: onError, onFail: onFail };
 
       this.saveImage(opts);
     }
@@ -7526,6 +6575,18 @@ var ImageUploader = function (_Component) {
   }]);
   return ImageUploader;
 }(Component);
+
+
+ImageUploader.propTypes = {
+  imageUploadUrl: ProptTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  classes: PropTypes.string,
+  label: PropTypes.string,
+  id: PropTypes.string,
+  errorMessage: PropTypes.string,
+  image: PropTypes.string
+};
 
 var InputWithLabel = function InputWithLabel(props) {
   var onChange = function onChange(e) {
@@ -7747,6 +6808,100 @@ var CountUp = unwrapExports(build);
 var build_1 = build.startAnimation;
 var build_2 = build.formatNumber;
 
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+var objectAssign$1 = /*#__PURE__*/Object.freeze({
+  default: objectAssign,
+  __moduleExports: objectAssign
+});
+
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -7768,10 +6923,171 @@ var emptyObject$1 = /*#__PURE__*/Object.freeze({
   __moduleExports: emptyObject_1
 });
 
-var emptyObject$2 = ( emptyObject$1 && emptyObject_1 ) || emptyObject$1;
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+/**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+
+var validateFormat = function validateFormat(format) {};
 
 if (process.env.NODE_ENV !== 'production') {
-  var warning$3 = require$$1;
+  validateFormat = function validateFormat(format) {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  };
+}
+
+function invariant(condition, format, a, b, c, d, e, f) {
+  validateFormat(format);
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(format.replace(/%s/g, function () {
+        return args[argIndex++];
+      }));
+      error.name = 'Invariant Violation';
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
+  }
+}
+
+var invariant_1 = invariant;
+
+var invariant$1 = /*#__PURE__*/Object.freeze({
+  default: invariant_1,
+  __moduleExports: invariant_1
+});
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ */
+
+function makeEmptyFunction(arg) {
+  return function () {
+    return arg;
+  };
+}
+
+/**
+ * This function accepts and discards inputs; it has no side effects. This is
+ * primarily useful idiomatically for overridable function endpoints which
+ * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+ */
+var emptyFunction = function emptyFunction() {};
+
+emptyFunction.thatReturns = makeEmptyFunction;
+emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+emptyFunction.thatReturnsThis = function () {
+  return this;
+};
+emptyFunction.thatReturnsArgument = function (arg) {
+  return arg;
+};
+
+var emptyFunction_1 = emptyFunction;
+
+var emptyFunction$1 = /*#__PURE__*/Object.freeze({
+  default: emptyFunction_1,
+  __moduleExports: emptyFunction_1
+});
+
+var emptyFunction$2 = ( emptyFunction$1 && emptyFunction_1 ) || emptyFunction$1;
+
+/**
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var warning = emptyFunction$2;
+
+if (process.env.NODE_ENV !== 'production') {
+  var printWarning = function printWarning(format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function warning(condition, format) {
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
+      }
+
+      printWarning.apply(undefined, [format].concat(args));
+    }
+  };
+}
+
+var warning_1 = warning;
+
+var warning$1 = /*#__PURE__*/Object.freeze({
+  default: warning_1,
+  __moduleExports: warning_1
+});
+
+var _assign = ( objectAssign$1 && objectAssign ) || objectAssign$1;
+
+var emptyObject$2 = ( emptyObject$1 && emptyObject_1 ) || emptyObject$1;
+
+var _invariant = ( invariant$1 && invariant_1 ) || invariant$1;
+
+var require$$0 = ( warning$1 && warning_1 ) || warning$1;
+
+if (process.env.NODE_ENV !== 'production') {
+  var warning$2 = require$$0;
 }
 
 var MIXINS_KEY = 'mixins';
@@ -8152,7 +7468,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         // use a warning instead of an _invariant so components
         // don't show up in prod but only in __DEV__
         if (process.env.NODE_ENV !== 'production') {
-          warning$3(
+          warning$2(
             typeof typeDef[propName] === 'function',
             '%s: %s type `%s` is invalid; it must be a function, usually from ' +
               'React.PropTypes.',
@@ -8172,7 +7488,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
 
     // Disallow overriding of base class methods unless explicitly allowed.
     if (ReactClassMixin.hasOwnProperty(name)) {
-      require$$0(
+      _invariant(
         specPolicy === 'OVERRIDE_BASE',
         'ReactClassInterface: You are attempting to override ' +
           '`%s` from your class specification. Ensure that your method names ' +
@@ -8183,7 +7499,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
 
     // Disallow defining methods more than once unless explicitly allowed.
     if (isAlreadyDefined) {
-      require$$0(
+      _invariant(
         specPolicy === 'DEFINE_MANY' || specPolicy === 'DEFINE_MANY_MERGED',
         'ReactClassInterface: You are attempting to define ' +
           '`%s` on your component more than once. This conflict may be due ' +
@@ -8204,7 +7520,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         var isMixinValid = typeofSpec === 'object' && spec !== null;
 
         if (process.env.NODE_ENV !== 'production') {
-          warning$3(
+          warning$2(
             isMixinValid,
             "%s: You're attempting to include a mixin that is either null " +
               'or not an object. Check the mixins included by the component, ' +
@@ -8219,13 +7535,13 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
       return;
     }
 
-    require$$0(
+    _invariant(
       typeof spec !== 'function',
       "ReactClass: You're attempting to " +
         'use a component class or function as a mixin. Instead, just use a ' +
         'regular object.'
     );
-    require$$0(
+    _invariant(
       !isValidElement(spec),
       "ReactClass: You're attempting to " +
         'use a component as a mixin. Instead, just use a regular object.'
@@ -8278,7 +7594,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
             var specPolicy = ReactClassInterface[name];
 
             // These cases should already be caught by validateMethodOverride.
-            require$$0(
+            _invariant(
               isReactClassMethod &&
                 (specPolicy === 'DEFINE_MANY_MERGED' ||
                   specPolicy === 'DEFINE_MANY'),
@@ -8322,7 +7638,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
       }
 
       var isReserved = name in RESERVED_SPEC_KEYS;
-      require$$0(
+      _invariant(
         !isReserved,
         'ReactClass: You are attempting to define a reserved ' +
           'property, `%s`, that shouldn\'t be on the "statics" key. Define it ' +
@@ -8337,7 +7653,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
           ? ReactClassStaticInterface[name]
           : null;
 
-        require$$0(
+        _invariant(
           specPolicy === 'DEFINE_MANY_MERGED',
           'ReactClass: You are attempting to define ' +
             '`%s` on your component more than once. This conflict may be ' +
@@ -8362,14 +7678,14 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
    * @return {object} one after it has been mutated to contain everything in two.
    */
   function mergeIntoWithNoDuplicateKeys(one, two) {
-    require$$0(
+    _invariant(
       one && two && typeof one === 'object' && typeof two === 'object',
       'mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects.'
     );
 
     for (var key in two) {
       if (two.hasOwnProperty(key)) {
-        require$$0(
+        _invariant(
           one[key] === undefined,
           'mergeIntoWithNoDuplicateKeys(): ' +
             'Tried to merge two objects with the same key: `%s`. This conflict ' +
@@ -8454,7 +7770,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         // let's warn.
         if (newThis !== component && newThis !== null) {
           if (process.env.NODE_ENV !== 'production') {
-            warning$3(
+            warning$2(
               false,
               'bind(): React component methods may only be bound to the ' +
                 'component instance. See %s',
@@ -8463,7 +7779,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
           }
         } else if (!args.length) {
           if (process.env.NODE_ENV !== 'production') {
-            warning$3(
+            warning$2(
               false,
               'bind(): You are binding a component method to the component. ' +
                 'React does this for you automatically in a high-performance ' +
@@ -8530,7 +7846,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      */
     isMounted: function() {
       if (process.env.NODE_ENV !== 'production') {
-        warning$3(
+        warning$2(
           this.__didWarnIsMounted,
           '%s: isMounted is deprecated. Instead, make sure to clean up ' +
             'subscriptions and pending requests in componentWillUnmount to ' +
@@ -8569,7 +7885,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
       // by mocks to assert on what gets mounted.
 
       if (process.env.NODE_ENV !== 'production') {
-        warning$3(
+        warning$2(
           this instanceof Constructor,
           'Something is calling a React component directly. Use a factory or ' +
             'JSX instead. See: https://fb.me/react-legacyfactory'
@@ -8603,7 +7919,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
           initialState = null;
         }
       }
-      require$$0(
+      _invariant(
         typeof initialState === 'object' && !Array.isArray(initialState),
         '%s.getInitialState(): must return an object or null',
         Constructor.displayName || 'ReactCompositeComponent'
@@ -8639,13 +7955,13 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
       }
     }
 
-    require$$0(
+    _invariant(
       Constructor.prototype.render,
       'createClass(...): Class specification must implement a `render` method.'
     );
 
     if (process.env.NODE_ENV !== 'production') {
-      warning$3(
+      warning$2(
         !Constructor.prototype.componentShouldUpdate,
         '%s has a method called ' +
           'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' +
@@ -8653,13 +7969,13 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
           'expected to return a value.',
         spec.displayName || 'A component'
       );
-      warning$3(
+      warning$2(
         !Constructor.prototype.componentWillRecieveProps,
         '%s has a method called ' +
           'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
         spec.displayName || 'A component'
       );
-      warning$3(
+      warning$2(
         !Constructor.prototype.UNSAFE_componentWillRecieveProps,
         '%s has a method called UNSAFE_componentWillRecieveProps(). ' +
           'Did you mean UNSAFE_componentWillReceiveProps()?',
@@ -8751,56 +8067,54 @@ var isVisibleWithOffset$1 = /*#__PURE__*/Object.freeze({
   __moduleExports: isVisibleWithOffset
 });
 
-var _propTypes = ( propTypes$1 && propTypes ) || propTypes$1;
-
 var createReactClass$2 = ( createReactClass$1 && createReactClass ) || createReactClass$1;
 
 var isVisibleWithOffset$2 = ( isVisibleWithOffset$1 && isVisibleWithOffset ) || isVisibleWithOffset$1;
 
-var containmentPropType = _propTypes.any;
+var containmentPropType = PropTypes.any;
 
 if (typeof window !== 'undefined') {
-  containmentPropType = _propTypes.instanceOf(window.Element);
+  containmentPropType = PropTypes.instanceOf(window.Element);
 }
 
 var visibilitySensor = createReactClass$2({
   displayName: 'VisibilitySensor',
 
   propTypes: {
-    onChange: _propTypes.func,
-    active: _propTypes.bool,
-    partialVisibility: _propTypes.oneOfType([
-      _propTypes.bool,
-      _propTypes.oneOf(['top', 'right', 'bottom', 'left']),
+    onChange: PropTypes.func,
+    active: PropTypes.bool,
+    partialVisibility: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
     ]),
-    delayedCall: _propTypes.bool,
-    offset: _propTypes.oneOfType([
-      _propTypes.shape({
-        top: _propTypes.number,
-        left: _propTypes.number,
-        bottom: _propTypes.number,
-        right: _propTypes.number
+    delayedCall: PropTypes.bool,
+    offset: PropTypes.oneOfType([
+      PropTypes.shape({
+        top: PropTypes.number,
+        left: PropTypes.number,
+        bottom: PropTypes.number,
+        right: PropTypes.number
       }),
       // deprecated offset property
-      _propTypes.shape({
-        direction: _propTypes.oneOf(['top', 'right', 'bottom', 'left']),
-        value: _propTypes.number
+      PropTypes.shape({
+        direction: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+        value: PropTypes.number
       })
     ]),
-    scrollCheck: _propTypes.bool,
-    scrollDelay: _propTypes.number,
-    scrollThrottle: _propTypes.number,
-    resizeCheck: _propTypes.bool,
-    resizeDelay: _propTypes.number,
-    resizeThrottle: _propTypes.number,
-    intervalCheck: _propTypes.bool,
-    intervalDelay: _propTypes.number,
+    scrollCheck: PropTypes.bool,
+    scrollDelay: PropTypes.number,
+    scrollThrottle: PropTypes.number,
+    resizeCheck: PropTypes.bool,
+    resizeDelay: PropTypes.number,
+    resizeThrottle: PropTypes.number,
+    intervalCheck: PropTypes.bool,
+    intervalDelay: PropTypes.number,
     containment: containmentPropType,
-    children: _propTypes.oneOfType([
-      _propTypes.element,
-      _propTypes.func,
+    children: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.func,
     ]),
-    minTopValue: _propTypes.number,
+    minTopValue: PropTypes.number,
   },
 
   getDefaultProps: function () {
@@ -9125,7 +8439,7 @@ var _react2 = _interopRequireDefault(React);
 
 
 
-var _propTypes2 = _interopRequireDefault(_propTypes);
+var _propTypes2 = _interopRequireDefault(PropTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9391,7 +8705,7 @@ var arrowRenderer = function arrowRenderer(_ref) {
 };
 
 arrowRenderer.propTypes = {
-	onMouseDown: propTypes.func
+	onMouseDown: PropTypes.func
 };
 
 var clearRenderer = function clearRenderer() {
@@ -9524,21 +8838,21 @@ var menuRenderer = function menuRenderer(_ref) {
 };
 
 menuRenderer.propTypes = {
-	focusOption: propTypes.func,
-	focusedOption: propTypes.object,
-	inputValue: propTypes.string,
-	instancePrefix: propTypes.string,
-	onFocus: propTypes.func,
-	onOptionRef: propTypes.func,
-	onSelect: propTypes.func,
-	optionClassName: propTypes.string,
-	optionComponent: propTypes.func,
-	optionRenderer: propTypes.func,
-	options: propTypes.array,
-	removeValue: propTypes.func,
-	selectValue: propTypes.func,
-	valueArray: propTypes.array,
-	valueKey: propTypes.string
+	focusOption: PropTypes.func,
+	focusedOption: PropTypes.object,
+	inputValue: PropTypes.string,
+	instancePrefix: PropTypes.string,
+	onFocus: PropTypes.func,
+	onOptionRef: PropTypes.func,
+	onSelect: PropTypes.func,
+	optionClassName: PropTypes.string,
+	optionComponent: PropTypes.func,
+	optionRenderer: PropTypes.func,
+	options: PropTypes.array,
+	removeValue: PropTypes.func,
+	selectValue: PropTypes.func,
+	valueArray: PropTypes.array,
+	valueKey: PropTypes.string
 };
 
 var blockEvent = (function (event) {
@@ -9768,17 +9082,17 @@ var Option = function (_React$Component) {
 }(React.Component);
 
 Option.propTypes = {
-	children: propTypes.node,
-	className: propTypes.string, // className (based on mouse position)
-	instancePrefix: propTypes.string.isRequired, // unique prefix for the ids (used for aria)
-	isDisabled: propTypes.bool, // the option is disabled
-	isFocused: propTypes.bool, // the option is focused
-	isSelected: propTypes.bool, // the option is selected
-	onFocus: propTypes.func, // method to handle mouseEnter on option element
-	onSelect: propTypes.func, // method to handle click on option element
-	onUnfocus: propTypes.func, // method to handle mouseLeave on option element
-	option: propTypes.object.isRequired, // object that is base for that option
-	optionIndex: propTypes.number // index of the option, used to generate unique ids for aria
+	children: PropTypes.node,
+	className: PropTypes.string, // className (based on mouse position)
+	instancePrefix: PropTypes.string.isRequired, // unique prefix for the ids (used for aria)
+	isDisabled: PropTypes.bool, // the option is disabled
+	isFocused: PropTypes.bool, // the option is focused
+	isSelected: PropTypes.bool, // the option is selected
+	onFocus: PropTypes.func, // method to handle mouseEnter on option element
+	onSelect: PropTypes.func, // method to handle click on option element
+	onUnfocus: PropTypes.func, // method to handle mouseLeave on option element
+	option: PropTypes.object.isRequired, // object that is base for that option
+	optionIndex: PropTypes.number // index of the option, used to generate unique ids for aria
 };
 
 var Value = function (_React$Component) {
@@ -9888,12 +9202,12 @@ var Value = function (_React$Component) {
 }(React.Component);
 
 Value.propTypes = {
-	children: propTypes.node,
-	disabled: propTypes.bool, // disabled prop passed to ReactSelect
-	id: propTypes.string, // Unique id for the value - used for aria
-	onClick: propTypes.func, // method to handle click on value label
-	onRemove: propTypes.func, // method to handle removal of the value
-	value: propTypes.object.isRequired // the option object for this value
+	children: PropTypes.node,
+	disabled: PropTypes.bool, // disabled prop passed to ReactSelect
+	id: PropTypes.string, // Unique id for the value - used for aria
+	onClick: PropTypes.func, // method to handle click on value label
+	onRemove: PropTypes.func, // method to handle removal of the value
+	value: PropTypes.object.isRequired // the option object for this value
 };
 
 /*!
@@ -9905,8 +9219,8 @@ var stringifyValue = function stringifyValue(value) {
 	return typeof value === 'string' ? value : value !== null && JSON.stringify(value) || '';
 };
 
-var stringOrNode = propTypes.oneOfType([propTypes.string, propTypes.node]);
-var stringOrNumber = propTypes.oneOfType([propTypes.string, propTypes.number]);
+var stringOrNode = PropTypes.oneOfType([PropTypes.string, PropTypes.node]);
+var stringOrNumber = PropTypes.oneOfType([PropTypes.string, PropTypes.number]);
 
 var instanceId = 1;
 
@@ -11166,82 +10480,82 @@ var Select$1 = function (_React$Component) {
 }(React.Component);
 
 Select$1.propTypes = {
-	'aria-describedby': propTypes.string, // html id(s) of element(s) that should be used to describe this input (for assistive tech)
-	'aria-label': propTypes.string, // aria label (for assistive tech)
-	'aria-labelledby': propTypes.string, // html id of an element that should be used as the label (for assistive tech)
-	arrowRenderer: propTypes.func, // create the drop-down caret element
-	autoBlur: propTypes.bool, // automatically blur the component when an option is selected
-	autoFocus: propTypes.bool, // autofocus the component on mount
-	autofocus: propTypes.bool, // deprecated; use autoFocus instead
-	autosize: propTypes.bool, // whether to enable autosizing or not
-	backspaceRemoves: propTypes.bool, // whether backspace removes an item if there is no text input
-	backspaceToRemoveMessage: propTypes.string, // message to use for screenreaders to press backspace to remove the current item - {label} is replaced with the item label
-	className: propTypes.string, // className for the outer element
+	'aria-describedby': PropTypes.string, // html id(s) of element(s) that should be used to describe this input (for assistive tech)
+	'aria-label': PropTypes.string, // aria label (for assistive tech)
+	'aria-labelledby': PropTypes.string, // html id of an element that should be used as the label (for assistive tech)
+	arrowRenderer: PropTypes.func, // create the drop-down caret element
+	autoBlur: PropTypes.bool, // automatically blur the component when an option is selected
+	autoFocus: PropTypes.bool, // autofocus the component on mount
+	autofocus: PropTypes.bool, // deprecated; use autoFocus instead
+	autosize: PropTypes.bool, // whether to enable autosizing or not
+	backspaceRemoves: PropTypes.bool, // whether backspace removes an item if there is no text input
+	backspaceToRemoveMessage: PropTypes.string, // message to use for screenreaders to press backspace to remove the current item - {label} is replaced with the item label
+	className: PropTypes.string, // className for the outer element
 	clearAllText: stringOrNode, // title for the "clear" control when multi: true
-	clearRenderer: propTypes.func, // create clearable x element
+	clearRenderer: PropTypes.func, // create clearable x element
 	clearValueText: stringOrNode, // title for the "clear" control
-	clearable: propTypes.bool, // should it be possible to reset value
-	closeOnSelect: propTypes.bool, // whether to close the menu when a value is selected
-	deleteRemoves: propTypes.bool, // whether delete removes an item if there is no text input
-	delimiter: propTypes.string, // delimiter to use to join multiple values for the hidden field value
-	disabled: propTypes.bool, // whether the Select is disabled or not
-	escapeClearsValue: propTypes.bool, // whether escape clears the value when the menu is closed
-	filterOption: propTypes.func, // method to filter a single option (option, filterString)
-	filterOptions: propTypes.any, // boolean to enable default filtering or function to filter the options array ([options], filterString, [values])
-	id: propTypes.string, // html id to set on the input element for accessibility or tests
-	ignoreAccents: propTypes.bool, // whether to strip diacritics when filtering
-	ignoreCase: propTypes.bool, // whether to perform case-insensitive filtering
-	inputProps: propTypes.object, // custom attributes for the Input
-	inputRenderer: propTypes.func, // returns a custom input component
-	instanceId: propTypes.string, // set the components instanceId
-	isLoading: propTypes.bool, // whether the Select is loading externally or not (such as options being loaded)
-	joinValues: propTypes.bool, // joins multiple values into a single form field with the delimiter (legacy mode)
-	labelKey: propTypes.string, // path of the label value in option objects
-	matchPos: propTypes.string, // (any|start) match the start or entire string when filtering
-	matchProp: propTypes.string, // (any|label|value) which option property to filter on
-	menuBuffer: propTypes.number, // optional buffer (in px) between the bottom of the viewport and the bottom of the menu
-	menuContainerStyle: propTypes.object, // optional style to apply to the menu container
-	menuRenderer: propTypes.func, // renders a custom menu with options
-	menuStyle: propTypes.object, // optional style to apply to the menu
-	multi: propTypes.bool, // multi-value input
-	name: propTypes.string, // generates a hidden <input /> tag with this field name for html forms
+	clearable: PropTypes.bool, // should it be possible to reset value
+	closeOnSelect: PropTypes.bool, // whether to close the menu when a value is selected
+	deleteRemoves: PropTypes.bool, // whether delete removes an item if there is no text input
+	delimiter: PropTypes.string, // delimiter to use to join multiple values for the hidden field value
+	disabled: PropTypes.bool, // whether the Select is disabled or not
+	escapeClearsValue: PropTypes.bool, // whether escape clears the value when the menu is closed
+	filterOption: PropTypes.func, // method to filter a single option (option, filterString)
+	filterOptions: PropTypes.any, // boolean to enable default filtering or function to filter the options array ([options], filterString, [values])
+	id: PropTypes.string, // html id to set on the input element for accessibility or tests
+	ignoreAccents: PropTypes.bool, // whether to strip diacritics when filtering
+	ignoreCase: PropTypes.bool, // whether to perform case-insensitive filtering
+	inputProps: PropTypes.object, // custom attributes for the Input
+	inputRenderer: PropTypes.func, // returns a custom input component
+	instanceId: PropTypes.string, // set the components instanceId
+	isLoading: PropTypes.bool, // whether the Select is loading externally or not (such as options being loaded)
+	joinValues: PropTypes.bool, // joins multiple values into a single form field with the delimiter (legacy mode)
+	labelKey: PropTypes.string, // path of the label value in option objects
+	matchPos: PropTypes.string, // (any|start) match the start or entire string when filtering
+	matchProp: PropTypes.string, // (any|label|value) which option property to filter on
+	menuBuffer: PropTypes.number, // optional buffer (in px) between the bottom of the viewport and the bottom of the menu
+	menuContainerStyle: PropTypes.object, // optional style to apply to the menu container
+	menuRenderer: PropTypes.func, // renders a custom menu with options
+	menuStyle: PropTypes.object, // optional style to apply to the menu
+	multi: PropTypes.bool, // multi-value input
+	name: PropTypes.string, // generates a hidden <input /> tag with this field name for html forms
 	noResultsText: stringOrNode, // placeholder displayed when there are no matching search results
-	onBlur: propTypes.func, // onBlur handler: function (event) {}
-	onBlurResetsInput: propTypes.bool, // whether input is cleared on blur
-	onChange: propTypes.func, // onChange handler: function (newValue) {}
-	onClose: propTypes.func, // fires when the menu is closed
-	onCloseResetsInput: propTypes.bool, // whether input is cleared when menu is closed through the arrow
-	onFocus: propTypes.func, // onFocus handler: function (event) {}
-	onInputChange: propTypes.func, // onInputChange handler: function (inputValue) {}
-	onInputKeyDown: propTypes.func, // input keyDown handler: function (event) {}
-	onMenuScrollToBottom: propTypes.func, // fires when the menu is scrolled to the bottom; can be used to paginate options
-	onOpen: propTypes.func, // fires when the menu is opened
-	onSelectResetsInput: propTypes.bool, // whether input is cleared on select (works only for multiselect)
-	onValueClick: propTypes.func, // onClick handler for value labels: function (value, event) {}
-	openOnClick: propTypes.bool, // boolean to control opening the menu when the control is clicked
-	openOnFocus: propTypes.bool, // always open options menu on focus
-	optionClassName: propTypes.string, // additional class(es) to apply to the <Option /> elements
-	optionComponent: propTypes.func, // option component to render in dropdown
-	optionRenderer: propTypes.func, // optionRenderer: function (option) {}
-	options: propTypes.array, // array of options
-	pageSize: propTypes.number, // number of entries to page when using page up/down keys
+	onBlur: PropTypes.func, // onBlur handler: function (event) {}
+	onBlurResetsInput: PropTypes.bool, // whether input is cleared on blur
+	onChange: PropTypes.func, // onChange handler: function (newValue) {}
+	onClose: PropTypes.func, // fires when the menu is closed
+	onCloseResetsInput: PropTypes.bool, // whether input is cleared when menu is closed through the arrow
+	onFocus: PropTypes.func, // onFocus handler: function (event) {}
+	onInputChange: PropTypes.func, // onInputChange handler: function (inputValue) {}
+	onInputKeyDown: PropTypes.func, // input keyDown handler: function (event) {}
+	onMenuScrollToBottom: PropTypes.func, // fires when the menu is scrolled to the bottom; can be used to paginate options
+	onOpen: PropTypes.func, // fires when the menu is opened
+	onSelectResetsInput: PropTypes.bool, // whether input is cleared on select (works only for multiselect)
+	onValueClick: PropTypes.func, // onClick handler for value labels: function (value, event) {}
+	openOnClick: PropTypes.bool, // boolean to control opening the menu when the control is clicked
+	openOnFocus: PropTypes.bool, // always open options menu on focus
+	optionClassName: PropTypes.string, // additional class(es) to apply to the <Option /> elements
+	optionComponent: PropTypes.func, // option component to render in dropdown
+	optionRenderer: PropTypes.func, // optionRenderer: function (option) {}
+	options: PropTypes.array, // array of options
+	pageSize: PropTypes.number, // number of entries to page when using page up/down keys
 	placeholder: stringOrNode, // field placeholder, displayed when there's no value
-	removeSelected: propTypes.bool, // whether the selected option is removed from the dropdown on multi selects
-	required: propTypes.bool, // applies HTML5 required attribute when needed
-	resetValue: propTypes.any, // value to use when you clear the control
-	rtl: propTypes.bool, // set to true in order to use react-select in right-to-left direction
-	scrollMenuIntoView: propTypes.bool, // boolean to enable the viewport to shift so that the full menu fully visible when engaged
-	searchable: propTypes.bool, // whether to enable searching feature or not
-	simpleValue: propTypes.bool, // pass the value to onChange as a simple value (legacy pre 1.0 mode), defaults to false
-	style: propTypes.object, // optional style to apply to the control
+	removeSelected: PropTypes.bool, // whether the selected option is removed from the dropdown on multi selects
+	required: PropTypes.bool, // applies HTML5 required attribute when needed
+	resetValue: PropTypes.any, // value to use when you clear the control
+	rtl: PropTypes.bool, // set to true in order to use react-select in right-to-left direction
+	scrollMenuIntoView: PropTypes.bool, // boolean to enable the viewport to shift so that the full menu fully visible when engaged
+	searchable: PropTypes.bool, // whether to enable searching feature or not
+	simpleValue: PropTypes.bool, // pass the value to onChange as a simple value (legacy pre 1.0 mode), defaults to false
+	style: PropTypes.object, // optional style to apply to the control
 	tabIndex: stringOrNumber, // optional tab index of the control
-	tabSelectsValue: propTypes.bool, // whether to treat tabbing out while focused to be value selection
-	trimFilter: propTypes.bool, // whether to trim whitespace around filter value
-	value: propTypes.any, // initial field value
-	valueComponent: propTypes.func, // value component to render
-	valueKey: propTypes.string, // path of the label value in option objects
-	valueRenderer: propTypes.func, // valueRenderer: function (option) {}
-	wrapperStyle: propTypes.object // optional style to apply to the component wrapper
+	tabSelectsValue: PropTypes.bool, // whether to treat tabbing out while focused to be value selection
+	trimFilter: PropTypes.bool, // whether to trim whitespace around filter value
+	value: PropTypes.any, // initial field value
+	valueComponent: PropTypes.func, // value component to render
+	valueKey: PropTypes.string, // path of the label value in option objects
+	valueRenderer: PropTypes.func, // valueRenderer: function (option) {}
+	wrapperStyle: PropTypes.object // optional style to apply to the component wrapper
 };
 
 Select$1.defaultProps = {
@@ -11290,26 +10604,26 @@ Select$1.defaultProps = {
 	valueKey: 'value'
 };
 
-var propTypes$2 = {
-	autoload: propTypes.bool.isRequired, // automatically call the `loadOptions` prop on-mount; defaults to true
-	cache: propTypes.any, // object to use to cache results; set to null/false to disable caching
-	children: propTypes.func.isRequired, // Child function responsible for creating the inner Select component; (props: Object): PropTypes.element
-	ignoreAccents: propTypes.bool, // strip diacritics when filtering; defaults to true
-	ignoreCase: propTypes.bool, // perform case-insensitive filtering; defaults to true
-	loadOptions: propTypes.func.isRequired, // callback to load options asynchronously; (inputValue: string, callback: Function): ?Promise
-	loadingPlaceholder: propTypes.oneOfType([// replaces the placeholder while options are loading
-	propTypes.string, propTypes.node]),
-	multi: propTypes.bool, // multi-value input
-	noResultsText: propTypes.oneOfType([// field noResultsText, displayed when no options come back from the server
-	propTypes.string, propTypes.node]),
-	onChange: propTypes.func, // onChange handler: function (newValue) {}
-	onInputChange: propTypes.func, // optional for keeping track of what is being typed
-	options: propTypes.array.isRequired, // array of options
-	placeholder: propTypes.oneOfType([// field placeholder, displayed when there's no value (shared with Select)
-	propTypes.string, propTypes.node]),
-	searchPromptText: propTypes.oneOfType([// label to prompt for search input
-	propTypes.string, propTypes.node]),
-	value: propTypes.any // initial field value
+var propTypes = {
+	autoload: PropTypes.bool.isRequired, // automatically call the `loadOptions` prop on-mount; defaults to true
+	cache: PropTypes.any, // object to use to cache results; set to null/false to disable caching
+	children: PropTypes.func.isRequired, // Child function responsible for creating the inner Select component; (props: Object): PropTypes.element
+	ignoreAccents: PropTypes.bool, // strip diacritics when filtering; defaults to true
+	ignoreCase: PropTypes.bool, // perform case-insensitive filtering; defaults to true
+	loadOptions: PropTypes.func.isRequired, // callback to load options asynchronously; (inputValue: string, callback: Function): ?Promise
+	loadingPlaceholder: PropTypes.oneOfType([// replaces the placeholder while options are loading
+	PropTypes.string, PropTypes.node]),
+	multi: PropTypes.bool, // multi-value input
+	noResultsText: PropTypes.oneOfType([// field noResultsText, displayed when no options come back from the server
+	PropTypes.string, PropTypes.node]),
+	onChange: PropTypes.func, // onChange handler: function (newValue) {}
+	onInputChange: PropTypes.func, // optional for keeping track of what is being typed
+	options: PropTypes.array.isRequired, // array of options
+	placeholder: PropTypes.oneOfType([// field placeholder, displayed when there's no value (shared with Select)
+	PropTypes.string, PropTypes.node]),
+	searchPromptText: PropTypes.oneOfType([// label to prompt for search input
+	PropTypes.string, PropTypes.node]),
+	value: PropTypes.any // initial field value
 };
 
 var defaultCache = {};
@@ -11519,7 +10833,7 @@ var Async = function (_Component) {
 	return Async;
 }(Component);
 
-Async.propTypes = propTypes$2;
+Async.propTypes = propTypes;
 Async.defaultProps = defaultProps;
 
 var CreatableSelect = function (_React$Component) {
@@ -11808,47 +11122,47 @@ CreatableSelect.propTypes = {
 	// Child function responsible for creating the inner Select component
 	// This component can be used to compose HOCs (eg Creatable and Async)
 	// (props: Object): PropTypes.element
-	children: propTypes.func,
+	children: PropTypes.func,
 
 	// See Select.propTypes.filterOptions
-	filterOptions: propTypes.any,
+	filterOptions: PropTypes.any,
 
 	// Searches for any matching option within the set of options.
 	// This function prevents duplicate options from being created.
 	// ({ option: Object, options: Array, labelKey: string, valueKey: string }): boolean
-	isOptionUnique: propTypes.func,
+	isOptionUnique: PropTypes.func,
 
 	// Determines if the current input text represents a valid option.
 	// ({ label: string }): boolean
-	isValidNewOption: propTypes.func,
+	isValidNewOption: PropTypes.func,
 
 	// See Select.propTypes.menuRenderer
-	menuRenderer: propTypes.any,
+	menuRenderer: PropTypes.any,
 
 	// Factory to create new option.
 	// ({ label: string, labelKey: string, valueKey: string }): Object
-	newOptionCreator: propTypes.func,
+	newOptionCreator: PropTypes.func,
 
 	// input change handler: function (inputValue) {}
-	onInputChange: propTypes.func,
+	onInputChange: PropTypes.func,
 
 	// input keyDown handler: function (event) {}
-	onInputKeyDown: propTypes.func,
+	onInputKeyDown: PropTypes.func,
 
 	// new option click handler: function (option) {}
-	onNewOptionClick: propTypes.func,
+	onNewOptionClick: PropTypes.func,
 
 	// See Select.propTypes.options
-	options: propTypes.array,
+	options: PropTypes.array,
 
 	// Creates prompt/placeholder option text.
 	// (filterText: string): string
-	promptTextCreator: propTypes.func,
+	promptTextCreator: PropTypes.func,
 
-	ref: propTypes.func,
+	ref: PropTypes.func,
 
 	// Decides if a keyDown event (eg its `keyCode`) should result in the creation of a new option.
-	shouldKeyDownEventCreateNewOption: propTypes.func
+	shouldKeyDownEventCreateNewOption: PropTypes.func
 };
 
 var AsyncCreatableSelect = function (_React$Component) {
@@ -11906,7 +11220,7 @@ var defaultChildren$1 = function defaultChildren(props) {
 };
 
 AsyncCreatableSelect.propTypes = {
-	children: propTypes.func.isRequired // Child function responsible for creating the inner Select component; (props: Object): PropTypes.element
+	children: PropTypes.func.isRequired // Child function responsible for creating the inner Select component; (props: Object): PropTypes.element
 };
 
 AsyncCreatableSelect.defaultProps = {
@@ -13170,7 +12484,7 @@ var _react2 = _interopRequireDefault(React);
 
 
 
-var _propTypes2 = _interopRequireDefault(_propTypes);
+var _propTypes2 = _interopRequireDefault(PropTypes);
 
 
 

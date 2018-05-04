@@ -13,6 +13,7 @@ export default {
   external: [
     'react',
     'react-dom',
+    'prop-types',
     'lodash',
     'axios',
     "moment",
