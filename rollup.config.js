@@ -32,6 +32,6 @@ export default {
     babel({
       exclude: [ 'node_modules/**', '**/*.json' ]
     }),
-    css({ output: 'dist/bundle.css' })
+    css({ output: 'dist/build.css' })
   ]
 };
