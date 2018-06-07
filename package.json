@@ -42,6 +42,7 @@
     "rollup-plugin-uglify": "^4.0.0"
   },
   "dependencies": {
+    "moment-timezone": "^0.5.17",
     "react-countup": "^3.0.3",
     "react-datepicker": "^1.4.1",
     "react-rangeslider": "^2.2.0",

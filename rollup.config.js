@@ -22,7 +22,7 @@ export default {
       'axios': 'axios',
       'jsonp': 'jsonp',
       'moment': 'moment',
-      'rc-time-picker': 'TimePicker'
+      'rc-time-picker': 'rc-time-picker'
     }
   },
   external: [
