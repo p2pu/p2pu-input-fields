@@ -33,6 +33,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "react": ">=15.0.1",
     "react-dom": ">=15.0.1",
+    "rollup": "^0.60.1",
     "rollup-plugin-analyzer": "^2.0.1",
     "rollup-plugin-babel": "^3.0.4",
     "rollup-plugin-commonjs": "^9.1.3",
