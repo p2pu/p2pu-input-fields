@@ -2,20 +2,18 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
-import {uglify} from 'rollup-plugin-uglify';
+import {terser} from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 import json from 'rollup-plugin-json';
-import { plugin as analyze } from 'rollup-plugin-analyzer'
 
 const env = process.env.NODE_ENV;
-const opts = {limit: 5, filter: [], root: __dirname}
 
 export default {
   input: 'src/index.js',
   output: {
     file: 'dist/build.js',
     name: 'p2puInputFields',
-    format: 'iife',
+    format: 'es',
     globals: {
       react: 'React',
       'react-dom': 'ReactDOM',
@@ -64,8 +62,7 @@ export default {
         'transform-class-properties'
       ]
     }),
-    uglify(),
     css({ output: 'dist/build.css' }),
-    analyze(),
+    terser()
   ]
 };
