@@ -5,8 +5,10 @@ import replace from 'rollup-plugin-replace';
 import {uglify} from 'rollup-plugin-uglify';
 import css from 'rollup-plugin-css-only';
 import json from 'rollup-plugin-json';
+import { plugin as analyze } from 'rollup-plugin-analyzer'
 
 const env = process.env.NODE_ENV;
+const opts = {limit: 5, filter: [], root: __dirname}
 
 export default {
   input: 'src/index.js',
@@ -22,6 +24,7 @@ export default {
       'axios': 'axios',
       'jsonp': 'jsonp',
       'moment': 'moment',
+      'moment-timezone': 'moment-timezone',
       'rc-time-picker': 'rc-time-picker'
     }
   },
@@ -33,6 +36,7 @@ export default {
     'axios',
     'jsonp',
     "moment",
+    "moment-timezone",
     "rc-time-picker"
   ],
   plugins: [
@@ -62,5 +66,6 @@ export default {
     }),
     uglify(),
     css({ output: 'dist/build.css' }),
+    analyze(),
   ]
 };
