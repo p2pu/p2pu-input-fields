@@ -1,1 +1,1 @@
-export { default as NumberWithLabel } from './NumberWithLabel.jsx';
+export { default as NumberWithLabel } from './NumberWithLabel.js';

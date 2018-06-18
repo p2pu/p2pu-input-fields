@@ -8,8 +8,8 @@
   },
   "main": "dist/build.js",
   "scripts": {
-    "build": "rollup -c",
-    "build:es": "NODE_ENV=production babel ./src --out-dir ./dist"
+    "build:umd": "rollup -c",
+    "build:es2015": "NODE_ENV=production babel ./src --out-dir ./dist"
   },
   "author": "Sharon Kennedy <sharon@p2pu.org>",
   "license": "MIT",
