@@ -6,11 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _NumberWithLabel = require('./NumberWithLabel.js');
 
-Object.defineProperty(exports, 'NumberWithLabel', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_NumberWithLabel).default;
-  }
-});
+var _NumberWithLabel2 = _interopRequireDefault(_NumberWithLabel);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _NumberWithLabel2.default;
