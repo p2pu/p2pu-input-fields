@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { compact, uniqBy, sortBy } from 'lodash';
 import axios from 'axios';
-import moment from 'moment-timezone';
 import Select from 'react-select';
+import timezones from './timezone-names.json';
 
 import 'react-select/dist/react-select.css';
 
@@ -48,7 +48,7 @@ export default class TimeZoneSelect extends Component {
 
 
   render() {
-    const timezoneOptions = moment.tz.names().map((tz) => ({value: tz, label: tz }))
+    const timezoneOptions = timezones.map((tz) => ({value: tz, label: tz }))
 
     return(
       <div>
