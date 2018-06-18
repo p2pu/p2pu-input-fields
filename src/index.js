@@ -1,29 +1,13 @@
-import CheckboxWithLabel from './components/CheckboxWithLabel.jsx';
-import CitySelect from './components/CitySelect.jsx';
-import DatePickerWithLabel from './components/DatePickerWithLabel.jsx';
-import ImageUploader from './components/ImageUploader.jsx';
-import InputWithLabel from './components/InputWithLabel.jsx';
-import NumberWithLabel from './components/NumberWithLabel.jsx';
-import PlaceSelect from './components/PlaceSelect.jsx';
-import RangeSliderWithLabel from './components/RangeSliderWithLabel.jsx';
-import SelectWithLabel from './components/SelectWithLabel.jsx';
-import SwitchWithLabels from './components/SwitchWithLabels.jsx';
-import TextareaWithLabel from './components/TextareaWithLabel.jsx';
-import TimePickerWithLabel from './components/TimePickerWithLabel.jsx';
-import TimeZoneSelect from './components/TimeZoneSelect.jsx';
-
-export {
-  CitySelect,
-  CheckboxWithLabel,
-  DatePickerWithLabel,
-  ImageUploader,
-  InputWithLabel,
-  NumberWithLabel,
-  PlaceSelect,
-  RangeSliderWithLabel,
-  SelectWithLabel,
-  SwitchWithLabels,
-  TextareaWithLabel,
-  TimePickerWithLabel,
-  TimeZoneSelect
-}
+export { default as CheckboxWithLabel } from './components/CheckboxWithLabel.jsx';
+export { default as CitySelect } from './components/CitySelect.jsx';
+export { default as DatePickerWithLabel } from './components/DatePickerWithLabel.jsx';
+export { default as ImageUploader } from './components/ImageUploader.jsx';
+export { default as InputWithLabel } from './components/InputWithLabel.jsx';
+export { default as NumberWithLabel } from './components/NumberWithLabel.jsx';
+export { default as PlaceSelect } from './components/PlaceSelect.jsx';
+export { default as RangeSliderWithLabel } from './components/RangeSliderWithLabel.jsx';
+export { default as SelectWithLabel } from './components/SelectWithLabel.jsx';
+export { default as SwitchWithLabels } from './components/SwitchWithLabels.jsx';
+export { default as TextareaWithLabel } from './components/TextareaWithLabel.jsx';
+export { default as TimePickerWithLabel } from './components/TimePickerWithLabel.jsx';
+export { default as TimeZoneSelect } from './components/TimeZoneSelect.jsx';
