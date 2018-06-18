@@ -1,2 +1,1 @@
-import NumberWithLabel from './NumberWithLabel.js';
-export default NumberWithLabel;
+export { default as NumberWithLabel } from './NumberWithLabel.js';
