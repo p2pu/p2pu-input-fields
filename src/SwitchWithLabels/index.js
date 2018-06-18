@@ -1,1 +1,1 @@
-export { default as SwitchWithLabel } from './SwitchWithLabel.js';
+export { default as SwitchWithLabels } from './SwitchWithLabels.js';
