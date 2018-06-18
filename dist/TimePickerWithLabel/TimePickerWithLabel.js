@@ -1,3 +1,5 @@
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 import React from 'react';
 import TimePicker from 'rc-time-picker';
 import moment from 'moment';
@@ -10,7 +12,7 @@ var TimePickerWithLabel = function TimePickerWithLabel(props) {
 
   var onChange = function onChange(value) {
     var time = !!value ? value.format(saveFormat) : null;
-    props.handleChange(babelHelpers.defineProperty({}, props.name, time));
+    props.handleChange(_defineProperty({}, props.name, time));
   };
 
   var time = !!props.value ? moment(props.value, saveFormat) : null;

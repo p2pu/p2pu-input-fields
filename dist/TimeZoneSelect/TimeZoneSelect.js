@@ -1,3 +1,13 @@
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 import React, { Component } from 'react';
 import { compact, uniqBy, sortBy } from 'lodash';
 import axios from 'axios';
@@ -9,12 +19,12 @@ import 'react-select/dist/react-select.css';
 var GEONAMES_ENDPOINT = 'https://secure.geonames.org/timezoneJSON';
 
 var TimeZoneSelect = function (_Component) {
-  babelHelpers.inherits(TimeZoneSelect, _Component);
+  _inherits(TimeZoneSelect, _Component);
 
   function TimeZoneSelect(props) {
-    babelHelpers.classCallCheck(this, TimeZoneSelect);
+    _classCallCheck(this, TimeZoneSelect);
 
-    var _this = babelHelpers.possibleConstructorReturn(this, (TimeZoneSelect.__proto__ || Object.getPrototypeOf(TimeZoneSelect)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (TimeZoneSelect.__proto__ || Object.getPrototypeOf(TimeZoneSelect)).call(this, props));
 
     _this.state = { value: _this.props.timezone };
     _this.onChange = function (s) {
@@ -26,7 +36,7 @@ var TimeZoneSelect = function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(TimeZoneSelect, [{
+  _createClass(TimeZoneSelect, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.detectTimeZone();
@@ -81,7 +91,7 @@ var TimeZoneSelect = function (_Component) {
           value: this.state.value,
           onChange: this.onChange,
           options: timezoneOptions
-        }, babelHelpers.defineProperty(_React$createElement, 'name', 'timezone'), babelHelpers.defineProperty(_React$createElement, 'id', 'id_timezone'), _React$createElement)),
+        }, _defineProperty(_React$createElement, 'name', 'timezone'), _defineProperty(_React$createElement, 'id', 'id_timezone'), _React$createElement)),
         this.props.errorMessage && React.createElement(
           'div',
           { className: 'error-message minicaps' },
@@ -90,6 +100,7 @@ var TimeZoneSelect = function (_Component) {
       );
     }
   }]);
+
   return TimeZoneSelect;
 }(Component);
 

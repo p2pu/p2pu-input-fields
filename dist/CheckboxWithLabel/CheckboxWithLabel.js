@@ -1,8 +1,10 @@
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 import React from 'react';
 
 var CheckboxWithLabel = function CheckboxWithLabel(props) {
   var onChange = function onChange(e) {
-    props.handleChange(babelHelpers.defineProperty({}, props.name, e.currentTarget.checked));
+    props.handleChange(_defineProperty({}, props.name, e.currentTarget.checked));
   };
 
   return React.createElement(

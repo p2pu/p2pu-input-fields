@@ -1,8 +1,10 @@
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 import React from 'react';
 
 var TextareaWithLabel = function TextareaWithLabel(props) {
   var onChange = function onChange(e) {
-    props.handleChange(babelHelpers.defineProperty({}, props.name, e.currentTarget.value));
+    props.handleChange(_defineProperty({}, props.name, e.currentTarget.value));
   };
 
   return React.createElement(

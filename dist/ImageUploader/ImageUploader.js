@@ -1,14 +1,24 @@
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
 var ImageUploader = function (_Component) {
-  babelHelpers.inherits(ImageUploader, _Component);
+  _inherits(ImageUploader, _Component);
 
   function ImageUploader(props) {
-    babelHelpers.classCallCheck(this, ImageUploader);
+    _classCallCheck(this, ImageUploader);
 
-    var _this = babelHelpers.possibleConstructorReturn(this, (ImageUploader.__proto__ || Object.getPrototypeOf(ImageUploader)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (ImageUploader.__proto__ || Object.getPrototypeOf(ImageUploader)).call(this, props));
 
     _this.saveImage = function (opts) {
       var url = opts.url;
@@ -39,7 +49,7 @@ var ImageUploader = function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(ImageUploader, [{
+  _createClass(ImageUploader, [{
     key: '_onChange',
     value: function _onChange(e) {
       var _this2 = this;
@@ -51,12 +61,12 @@ var ImageUploader = function (_Component) {
 
       var onSuccess = function onSuccess(data) {
         _this2.setState({ image: data.image_url });
-        _this2.props.handleChange(babelHelpers.defineProperty({}, _this2.props.name, data.image_url));
+        _this2.props.handleChange(_defineProperty({}, _this2.props.name, data.image_url));
       };
 
       var onError = function onError(data) {
         console.log(data.errors);
-        _this2.props.handleChange(babelHelpers.defineProperty({}, _this2.props.name, null));
+        _this2.props.handleChange(_defineProperty({}, _this2.props.name, null));
       };
 
       var onFail = function onFail(err) {
@@ -99,6 +109,7 @@ var ImageUploader = function (_Component) {
       );
     }
   }]);
+
   return ImageUploader;
 }(Component);
 

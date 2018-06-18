@@ -1,3 +1,5 @@
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
@@ -7,7 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 var DatePickerWithLabel = function DatePickerWithLabel(props) {
   var onChange = function onChange(value) {
     var date = !!value ? value.format('YYYY-MM-DD') : null;
-    props.handleChange(babelHelpers.defineProperty({}, props.name, date));
+    props.handleChange(_defineProperty({}, props.name, date));
   };
 
   var date = !!props.value ? moment(props.value) : null;

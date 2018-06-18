@@ -1,12 +1,20 @@
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 import React, { Component } from 'react';
 
 var SwitchWithLabels = function (_Component) {
-  babelHelpers.inherits(SwitchWithLabels, _Component);
+  _inherits(SwitchWithLabels, _Component);
 
   function SwitchWithLabels(props) {
-    babelHelpers.classCallCheck(this, SwitchWithLabels);
+    _classCallCheck(this, SwitchWithLabels);
 
-    var _this = babelHelpers.possibleConstructorReturn(this, (SwitchWithLabels.__proto__ || Object.getPrototypeOf(SwitchWithLabels)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (SwitchWithLabels.__proto__ || Object.getPrototypeOf(SwitchWithLabels)).call(this, props));
 
     _this.state = { checked: _this.props.defaultChecked };
     _this.handleChange = function (event) {
@@ -21,7 +29,7 @@ var SwitchWithLabels = function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(SwitchWithLabels, [{
+  _createClass(SwitchWithLabels, [{
     key: "_handleChange",
     value: function _handleChange(event) {
       var checked = event.currentTarget.checked;
@@ -71,6 +79,7 @@ var SwitchWithLabels = function (_Component) {
       );
     }
   }]);
+
   return SwitchWithLabels;
 }(Component);
 

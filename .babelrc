@@ -5,7 +5,6 @@
     }],
   ],
   "plugins": [
-    "external-helpers",
     "transform-react-jsx",
     "transform-class-properties"
   ]
