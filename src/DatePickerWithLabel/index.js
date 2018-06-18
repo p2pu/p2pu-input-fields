@@ -1,1 +1,3 @@
-export { default as DatePickerWithLabel } from './DatePickerWithLabel.js';
+import DatePickerWithLabel from './DatePickerWithLabel.js';
+
+export default DatePickerWithLabel

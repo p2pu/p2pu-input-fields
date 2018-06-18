@@ -1,1 +1,2 @@
-export { default as RangeSliderWithLabel } from './RangeSliderWithLabel.js';
+import RangeSliderWithLabel from './RangeSliderWithLabel.js';
+export default RangeSliderWithLabel

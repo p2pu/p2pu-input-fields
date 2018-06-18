@@ -1,1 +1,2 @@
-export { default as TextareaWithLabel } from './TextareaWithLabel.js';
+import TextareaWithLabel from './TextareaWithLabel.js';
+export default TextareaWithLabel

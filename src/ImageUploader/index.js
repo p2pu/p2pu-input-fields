@@ -1,1 +1,3 @@
-export { default as ImageUploader } from './ImageUploader.js';
+import ImageUploader from './ImageUploader.js';
+
+export default ImageUploader;

@@ -1,1 +1,2 @@
-export { default as SwitchWithLabels } from './SwitchWithLabels.js';
+import SwitchWithLabels from './SwitchWithLabels.js';
+export default SwitchWithLabels

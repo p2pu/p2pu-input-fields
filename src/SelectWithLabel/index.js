@@ -1,1 +1,2 @@
-export { default as SelectWithLabel } from './SelectWithLabel.js';
+import SelectWithLabel from './SelectWithLabel.js';
+export default SelectWithLabel

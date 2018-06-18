@@ -1,1 +1,2 @@
-export { default as PlaceSelect } from './PlaceSelect.js';
+import PlaceSelect from './PlaceSelect.js';
+export default PlaceSelect

@@ -1,18 +1,38 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _lodash = require('lodash');
+
+var _reactSelect = require('react-select');
+
+var _reactSelect2 = _interopRequireDefault(_reactSelect);
+
+var _jsonp = require('jsonp');
+
+var _jsonp2 = _interopRequireDefault(_jsonp);
+
+require('react-select/dist/react-select.css');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { compact, uniqBy, sortBy } from 'lodash';
-import Select from 'react-select';
-import jsonp from 'jsonp';
-
-import 'react-select/dist/react-select.css';
 
 var CitySelect = function (_Component) {
   _inherits(CitySelect, _Component);
@@ -72,7 +92,7 @@ var CitySelect = function (_Component) {
       var _this2 = this;
 
       var url = 'https://learningcircles.p2pu.org/api/learningcircles/?active=true&signup=open';
-      jsonp(url, null, function (err, res) {
+      (0, _jsonp2.default)(url, null, function (err, res) {
         if (err) {
           console.log(err);
         } else {
@@ -91,16 +111,16 @@ var CitySelect = function (_Component) {
         }
       });
 
-      cities = compact(cities);
-      cities = uniqBy(cities, 'value');
-      cities = sortBy(cities, 'label');
+      cities = (0, _lodash.compact)(cities);
+      cities = (0, _lodash.uniqBy)(cities, 'value');
+      cities = (0, _lodash.sortBy)(cities, 'label');
 
       this.setState({ cities: cities });
     }
   }, {
     key: 'render',
     value: function render() {
-      return React.createElement(Select, {
+      return _react2.default.createElement(_reactSelect2.default, {
         name: this.props.name,
         className: 'city-select ' + this.props.classes,
         value: this.state.value,
@@ -114,14 +134,14 @@ var CitySelect = function (_Component) {
   }]);
 
   return CitySelect;
-}(Component);
+}(_react.Component);
 
-export default CitySelect;
+exports.default = CitySelect;
 
 
 CitySelect.propTypes = {
-  handleSelect: PropTypes.func.isRequired,
-  handleInputChange: PropTypes.func,
-  name: PropTypes.string.isRequired,
-  classes: PropTypes.string
+  handleSelect: _propTypes2.default.func.isRequired,
+  handleInputChange: _propTypes2.default.func,
+  name: _propTypes2.default.string.isRequired,
+  classes: _propTypes2.default.string
 };

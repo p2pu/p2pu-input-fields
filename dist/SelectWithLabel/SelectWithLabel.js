@@ -1,18 +1,31 @@
-import React from 'react';
-import Select from 'react-select';
+'use strict';
 
-import 'react-select/dist/react-select.css';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactSelect = require('react-select');
+
+var _reactSelect2 = _interopRequireDefault(_reactSelect);
+
+require('react-select/dist/react-select.css');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SelectWithLabel = function SelectWithLabel(props) {
-  return React.createElement(
+  return _react2.default.createElement(
     'div',
     { className: '' + props.classes },
-    React.createElement(
+    _react2.default.createElement(
       'label',
       { htmlFor: props.name },
       props.label + ' ' + (props.required ? '*' : '')
     ),
-    React.createElement(Select, {
+    _react2.default.createElement(_reactSelect2.default, {
       name: props.name,
       className: props.selectClasses,
       value: props.value,
@@ -23,7 +36,7 @@ var SelectWithLabel = function SelectWithLabel(props) {
       placeholder: props.placeholder,
       multi: props.multi || false
     }),
-    props.errorMessage && React.createElement(
+    props.errorMessage && _react2.default.createElement(
       'div',
       { className: 'error-message minicaps' },
       props.errorMessage
@@ -31,4 +44,4 @@ var SelectWithLabel = function SelectWithLabel(props) {
   );
 };
 
-export default SelectWithLabel;
+exports.default = SelectWithLabel;

@@ -1,1 +1,2 @@
-export { default as TimeZoneSelect } from './TimeZoneSelect.js';
+import TimeZoneSelect from './TimeZoneSelect.js';
+export default TimeZoneSelect;

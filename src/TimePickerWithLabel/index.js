@@ -1,1 +1,2 @@
-export { default as TimePickerWithLabel } from './TimePickerWithLabel.js';
+import TimePickerWithLabel from './TimePickerWithLabel.js';
+export default TimePickerWithLabel
