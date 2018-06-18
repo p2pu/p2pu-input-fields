@@ -6,11 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _CitySelect = require('./CitySelect.js');
 
-Object.defineProperty(exports, 'CitySelect', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_CitySelect).default;
-  }
-});
+var _CitySelect2 = _interopRequireDefault(_CitySelect);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _CitySelect2.default;

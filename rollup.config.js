@@ -1,53 +1,53 @@
-import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
-import replace from 'rollup-plugin-replace';
-import {uglify} from 'rollup-plugin-uglify';
-import css from 'rollup-plugin-css-only';
-import json from 'rollup-plugin-json';
+import babel from "rollup-plugin-babel";
+import commonjs from "rollup-plugin-commonjs";
+import resolve from "rollup-plugin-node-resolve";
+import replace from "rollup-plugin-replace";
+import { uglify } from "rollup-plugin-uglify";
+import css from "rollup-plugin-css-only";
+import json from "rollup-plugin-json";
 
 const env = process.env.NODE_ENV;
 const commonjsOptions = {
   ignoreGlobal: true,
-  include: /node_modules/,
+  include: /node_modules/
 };
 
 export default {
-  input: 'src/index.js',
+  input: "src/index.js",
   output: {
-    file: 'dist/build.js',
-    name: 'p2puInputFields',
-    format: 'umd',
+    file: "dist/build.js",
+    name: "p2puInputFields",
+    format: "umd",
     globals: {
-      react: 'React',
-      'react-dom': 'ReactDOM',
-      'prop-types': 'PropTypes',
-      'lodash': 'lodash',
-      'axios': 'axios',
-      'jsonp': 'jsonp',
-      'moment': 'moment',
-      'moment-timezone': 'moment-timezone',
-      'rc-time-picker': 'rc-time-picker'
+      react: "React",
+      "react-dom": "ReactDOM",
+      "prop-types": "PropTypes",
+      lodash: "lodash",
+      axios: "axios",
+      jsonp: "jsonp",
+      moment: "moment",
+      "moment-timezone": "moment-timezone",
+      "rc-time-picker": "rc-time-picker"
     }
   },
   external: [
-    'react',
-    'react-dom',
-    'prop-types',
-    'lodash',
-    'axios',
-    'jsonp',
+    "react",
+    "react-dom",
+    "prop-types",
+    "lodash",
+    "axios",
+    "jsonp",
     "moment",
     "moment-timezone",
     "rc-time-picker"
   ],
   plugins: [
     resolve({
-      extensions: [ '.js', '.jsx' ],
+      extensions: [".js", ".jsx"],
       jsnext: true,
       main: true
     }),
-    replace({ 'process.env.NODE_ENV': JSON.stringify(env) }),
+    replace({ "process.env.NODE_ENV": JSON.stringify(env) }),
     json(),
     commonjs(commonjsOptions),
     babel({
@@ -55,18 +55,18 @@ export default {
         [
           "es2015",
           {
-            "modules": false
+            modules: false
           }
         ]
       ],
-      exclude: [ 'node_modules/**', '**/*.json' ],
+      exclude: ["node_modules/**", "**/*.json"],
       plugins: [
         "external-helpers",
         "transform-react-jsx",
-        'transform-class-properties'
+        "transform-class-properties"
       ]
     }),
-    css({ output: 'dist/build.css' }),
+    css({ output: "dist/build.css" }),
     uglify()
   ]
 };

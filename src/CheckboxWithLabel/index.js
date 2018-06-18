@@ -1,1 +1,4 @@
-export { default as CheckboxWithLabel } from './CheckboxWithLabel.js';
+
+import CheckboxWithLabel from './CheckboxWithLabel.js';
+
+export default CheckboxWithLabel

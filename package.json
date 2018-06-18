@@ -9,7 +9,7 @@
   "main": "dist/build.js",
   "scripts": {
     "build:umd": "rollup -c",
-    "build:es": "NODE_ENV=production babel ./src --out-dir ./dist"
+    "build:es": "NODE_ENV=production babel ./src --out-dir ./dist --ignore ./src/components/*"
   },
   "author": "Sharon Kennedy <sharon@p2pu.org>",
   "license": "MIT",

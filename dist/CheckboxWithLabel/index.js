@@ -6,11 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _CheckboxWithLabel = require('./CheckboxWithLabel.js');
 
-Object.defineProperty(exports, 'CheckboxWithLabel', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_CheckboxWithLabel).default;
-  }
-});
+var _CheckboxWithLabel2 = _interopRequireDefault(_CheckboxWithLabel);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _CheckboxWithLabel2.default;

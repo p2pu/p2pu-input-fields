@@ -1,1 +1,3 @@
-export { default as CitySelect } from './CitySelect.js';
+import CitySelect from './CitySelect.js';
+
+export default CitySelect
