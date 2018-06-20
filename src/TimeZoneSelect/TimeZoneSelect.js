@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { compact, uniqBy, sortBy } from 'lodash';
 import axios from 'axios';
 import Select from 'react-select';
 import timezones from './timezone-names.js';

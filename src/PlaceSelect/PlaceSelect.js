@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
-import { compact, uniqBy, sortBy } from 'lodash';
 
 import 'react-select/dist/react-select.css';
 
