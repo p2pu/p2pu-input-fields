@@ -6,7 +6,8 @@
     "type": "git",
     "url": "git+https://github.com/p2pu/p2pu-input-fields.git"
   },
-  "main": "dist/build.js",
+  "main": "dist/p2pu-input-fields.umd.js",
+  "module": "dist/p2pu-input-fields.esm.js",
   "scripts": {
     "build:umd": "rollup -c",
     "build:es": "NODE_ENV=production babel ./src --out-dir ./dist --ignore ./src/components/*"

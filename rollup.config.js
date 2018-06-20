@@ -14,22 +14,40 @@ const commonjsOptions = {
 
 export default {
   input: "src/index.js",
-  output: {
-    file: "dist/build.js",
-    name: "p2puInputFields",
-    format: "umd",
-    globals: {
-      react: "React",
-      "react-dom": "ReactDOM",
-      "prop-types": "PropTypes",
-      lodash: "lodash",
-      axios: "axios",
-      jsonp: "jsonp",
-      moment: "moment",
-      "moment-timezone": "moment-timezone",
-      "rc-time-picker": "rc-time-picker"
+  output: [
+    {
+      file: "dist/p2pu-input-fields.umd.js",
+      name: "p2puInputFields",
+      format: "umd",
+      globals: {
+        react: "React",
+        "react-dom": "ReactDOM",
+        "prop-types": "PropTypes",
+        lodash: "lodash",
+        axios: "axios",
+        jsonp: "jsonp",
+        moment: "moment",
+        "moment-timezone": "moment-timezone",
+        "rc-time-picker": "rc-time-picker",
+      }
+    },
+    {
+      file: 'dist/p2pu-input-fields.esm.js',
+      format: 'es',
+      globals: {
+        react: "React",
+        "react-dom": "ReactDOM",
+        "prop-types": "PropTypes",
+        lodash: "lodash",
+        axios: "axios",
+        jsonp: "jsonp",
+        moment: "moment",
+        "moment-timezone": "moment-timezone",
+        "rc-time-picker": "rc-time-picker",
+      }
+
     }
-  },
+  ],
   external: [
     "react",
     "react-dom",
@@ -67,6 +85,5 @@ export default {
       ]
     }),
     css({ output: "dist/build.css" }),
-    uglify()
   ]
 };
