@@ -1,32 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _lodash = require('lodash');
-
-var _axios = require('axios');
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _reactSelect = require('react-select');
-
-var _reactSelect2 = _interopRequireDefault(_reactSelect);
-
-var _timezoneNames = require('./timezone-names.js');
-
-var _timezoneNames2 = _interopRequireDefault(_timezoneNames);
-
-require('react-select/dist/react-select.css');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -35,6 +7,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+import React, { Component } from 'react';
+import axios from 'axios';
+import Select from 'react-select';
+import timezones from './timezone-names.js';
+
+import 'react-select/dist/react-select.css';
 
 var GEONAMES_ENDPOINT = 'https://secure.geonames.org/timezoneJSON';
 
@@ -79,7 +58,7 @@ var TimeZoneSelect = function (_Component) {
       } else if (!!this.props.latitude && !!this.props.longitude) {
         // use selected city to detect timezone
         var url = GEONAMES_ENDPOINT + '?lat=' + this.props.latitude + '&lng=' + this.props.longitude + '&username=p2pu';
-        _axios2.default.get(url).then(function (res) {
+        axios.get(url).then(function (res) {
           var timezone = res.data.timezoneId;
           _this2.props.handleChange({ timezone: timezone });
           _this2.setState({ value: { value: timezone, label: timezone } });
@@ -98,21 +77,21 @@ var TimeZoneSelect = function (_Component) {
     value: function render() {
       var _React$createElement;
 
-      var timezoneOptions = _timezoneNames2.default.map(function (tz) {
+      var timezoneOptions = timezones.map(function (tz) {
         return { value: tz, label: tz };
       });
 
-      return _react2.default.createElement(
+      return React.createElement(
         'div',
         null,
-        _react2.default.createElement(_reactSelect2.default, (_React$createElement = {
+        React.createElement(Select, (_React$createElement = {
           name: this.props.name,
           className: 'form-group input-with-label',
           value: this.state.value,
           onChange: this.onChange,
           options: timezoneOptions
         }, _defineProperty(_React$createElement, 'name', 'timezone'), _defineProperty(_React$createElement, 'id', 'id_timezone'), _React$createElement)),
-        this.props.errorMessage && _react2.default.createElement(
+        this.props.errorMessage && React.createElement(
           'div',
           { className: 'error-message minicaps' },
           this.props.errorMessage
@@ -122,6 +101,6 @@ var TimeZoneSelect = function (_Component) {
   }]);
 
   return TimeZoneSelect;
-}(_react.Component);
+}(Component);
 
-exports.default = TimeZoneSelect;
+export default TimeZoneSelect;

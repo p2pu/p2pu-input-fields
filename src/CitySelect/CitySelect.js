@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { compact, uniqBy, sortBy } from 'lodash'
+import compact from 'lodash/compact'
+import uniqBy from 'lodash/uniqBy'
+import sortBy from 'lodash/sortBy'
 import Select from 'react-select'
 import jsonp from 'jsonp'
 

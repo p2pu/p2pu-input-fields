@@ -1,24 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = require('prop-types');
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _axios = require('axios');
-
-var _axios2 = _interopRequireDefault(_axios);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -27,6 +7,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
 var ImageUploader = function (_Component) {
   _inherits(ImageUploader, _Component);
@@ -41,7 +25,7 @@ var ImageUploader = function (_Component) {
       var data = opts.data;
       var config = opts.config;
 
-      (0, _axios2.default)({
+      axios({
         url: url,
         data: data,
         config: config,
@@ -97,48 +81,48 @@ var ImageUploader = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(
+      return React.createElement(
         'div',
         { className: 'input-with-label form-group ' + this.props.classes },
-        _react2.default.createElement(
+        React.createElement(
           'label',
           { htmlFor: this.props.name },
           this.props.label
         ),
-        _react2.default.createElement('input', {
+        React.createElement('input', {
           className: 'image-upload',
           type: 'file',
           name: this.props.name,
           id: this.props.id,
           onChange: this.onChange
         }),
-        this.props.errorMessage && _react2.default.createElement(
+        this.props.errorMessage && React.createElement(
           'div',
           { className: 'error-message' },
           this.props.errorMessage
         ),
-        this.state.image && _react2.default.createElement(
+        this.state.image && React.createElement(
           'div',
           { className: 'image-preview', style: { width: '250px' } },
-          _react2.default.createElement('img', { src: this.state.image, alt: 'Image preview', style: { width: '100%', height: '100%' } })
+          React.createElement('img', { src: this.state.image, alt: 'Image preview', style: { width: '100%', height: '100%' } })
         )
       );
     }
   }]);
 
   return ImageUploader;
-}(_react.Component);
+}(Component);
 
-exports.default = ImageUploader;
+export default ImageUploader;
 
 
 ImageUploader.propTypes = {
-  imageUploadUrl: _propTypes2.default.string.isRequired,
-  handleChange: _propTypes2.default.func.isRequired,
-  name: _propTypes2.default.string.isRequired,
-  classes: _propTypes2.default.string,
-  label: _propTypes2.default.string,
-  id: _propTypes2.default.string,
-  errorMessage: _propTypes2.default.string,
-  image: _propTypes2.default.string
+  imageUploadUrl: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  classes: PropTypes.string,
+  label: PropTypes.string,
+  id: PropTypes.string,
+  errorMessage: PropTypes.string,
+  image: PropTypes.string
 };
