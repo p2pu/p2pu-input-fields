@@ -1,5 +1,5 @@
 {
-  "name": "@p2pu/p2pu-input-fields",
+  "name": "p2pu-input-fields",
   "version": "0.5.7",
   "description": "Input fields used in P2PU projects",
   "repository": {
