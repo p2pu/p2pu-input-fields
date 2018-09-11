@@ -37,7 +37,7 @@ export default class PlaceSelect extends Component {
   componentWillMount() {
     if (!!this.props.place_id) {
       this.fetchPlaceById();
-    } else if (this.props.city === 'Kansas City') {
+    } else if (this.props.city === 'Kansas City, Missouri, United States of America') {
       this.setState({ value: KANSAS_CITY_OPTION });
     } else if (this.props.city) {
       const value = { label: this.props.city, value: this.props.city }
@@ -50,7 +50,7 @@ export default class PlaceSelect extends Component {
 
     if (selected) {
       cityData = {
-        city: selected.value.locale_names ? selected.value.locale_names.default[0] : selected.value,
+        city: selected.label,
         latitude: selected.value._geoloc ? selected.value._geoloc.lat : null,
         longitude: selected.value._geoloc ? selected.value._geoloc.lng : null,
         place_id: selected.value.objectID ? selected.value.objectID : null,
