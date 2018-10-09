@@ -1,6 +1,6 @@
 {
   "name": "p2pu-input-fields",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Input fields used in P2PU projects",
   "repository": {
     "type": "git",
@@ -20,7 +20,6 @@
     "prop-types": "^15.6.1",
     "axios": "^0.17.1",
     "jsonp": "^0.2.1",
-    "lodash": "^4.17.10",
     "moment": "^2.18.1",
     "rc-time-picker": "^3.2.1"
   },

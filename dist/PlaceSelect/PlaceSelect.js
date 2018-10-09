@@ -76,6 +76,8 @@ var PlaceSelect = function (_Component) {
       if (selected) {
         cityData = {
           city: selected.label,
+          region: selected.value.administrative ? selected.value.administrative[0] : null,
+          country: selected.value.country ? selected.value.country.default : null,
           latitude: selected.value._geoloc ? selected.value._geoloc.lat : null,
           longitude: selected.value._geoloc ? selected.value._geoloc.lng : null,
           place_id: selected.value.objectID ? selected.value.objectID : null

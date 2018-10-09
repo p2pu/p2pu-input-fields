@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import compact from 'lodash/compact'
-import uniqBy from 'lodash/uniqBy'
-import sortBy from 'lodash/sortBy'
 import Select from 'react-select'
 import jsonp from 'jsonp'
 
@@ -59,9 +56,10 @@ export default class CitySelect extends Component {
       }
     });
 
-    cities = compact(cities);
-    cities = uniqBy(cities, 'value');
-    cities = sortBy(cities, 'label');
+    cities = cities.filter( city => city );
+    const uniqBy = (arr, fn) => [...new Map(arr.reverse().map((x) => [typeof fn === 'function' ? fn(x) : x[fn], x])).values()]
+    cities = uniqBy(cities, el => el.value);
+    cities.sort(el => el.label);
 
     this.setState({ cities });
   }
