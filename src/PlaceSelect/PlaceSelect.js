@@ -51,6 +51,8 @@ export default class PlaceSelect extends Component {
     if (selected) {
       cityData = {
         city: selected.label,
+        region: selected.value.administrative ? selected.value.administrative[0] : null,
+        country: selected.value.country ? selected.value.country.default : null,
         latitude: selected.value._geoloc ? selected.value._geoloc.lat : null,
         longitude: selected.value._geoloc ? selected.value._geoloc.lng : null,
         place_id: selected.value.objectID ? selected.value.objectID : null,
@@ -109,9 +111,7 @@ export default class PlaceSelect extends Component {
   }
 
   render() {
-    const options = this.state.hits.map((place) => {
-      return this.generateCityOption(place)
-    })
+    const options = this.state.hits.map(place => this.generateCityOption(place))
 
     return(
       <div>
