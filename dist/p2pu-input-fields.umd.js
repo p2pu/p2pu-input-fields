@@ -11361,7 +11361,7 @@
 
         if (selected) {
           cityData = {
-            city: selected.label,
+            city: selected.value.locale_names.default[0],
             region: selected.value.administrative ? selected.value.administrative[0] : null,
             country: selected.value.country ? selected.value.country.default : null,
             latitude: selected.value._geoloc ? selected.value._geoloc.lat : null,
