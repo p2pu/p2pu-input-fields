@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "react-countup": "^3.0.3",
-    "react-datepicker": "^1.4.1",
+    "react-datepicker": "1.4.1",
     "react-rangeslider": "^2.2.0",
     "react-select": "^1.2.1",
     "react-visibility-sensor": "^3.11.0"
