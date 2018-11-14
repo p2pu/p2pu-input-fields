@@ -71,6 +71,7 @@ var PlaceSelect = function (_Component) {
   }, {
     key: '_handleChange',
     value: function _handleChange(selected) {
+      console.log(selected);
       var cityData = {};
 
       if (selected) {
@@ -78,7 +79,7 @@ var PlaceSelect = function (_Component) {
           city: selected.value.locale_names.default[0],
           region: selected.value.administrative ? selected.value.administrative[0] : null,
           country: selected.value.country ? selected.value.country.default : null,
-          country_en: selected.value.country ? selected.value.country.en : null,
+          country_en: selected.value.country ? selected.value.country.en : selected.value.country.default,
           latitude: selected.value._geoloc ? selected.value._geoloc.lat : null,
           longitude: selected.value._geoloc ? selected.value._geoloc.lng : null,
           place_id: selected.value.objectID ? selected.value.objectID : null
