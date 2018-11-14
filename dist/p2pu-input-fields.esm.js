@@ -11352,13 +11352,15 @@ var PlaceSelect = function (_Component) {
   }, {
     key: '_handleChange',
     value: function _handleChange(selected) {
+      console.log(selected);
       var cityData = {};
 
       if (selected) {
         cityData = {
-          city: selected.value.locale_names.default[0],
+          city: selected.value.locale_names.default ? selected.value.locale_names.default[0] : selected.value,
           region: selected.value.administrative ? selected.value.administrative[0] : null,
           country: selected.value.country ? selected.value.country.default : null,
+          country_en: selected.value.country ? selected.value.country.en : null,
           latitude: selected.value._geoloc ? selected.value._geoloc.lat : null,
           longitude: selected.value._geoloc ? selected.value._geoloc.lng : null,
           place_id: selected.value.objectID ? selected.value.objectID : null
@@ -11375,9 +11377,9 @@ var PlaceSelect = function (_Component) {
 
       var url = ALGOLIA_ENDPOINT + '/query/';
       var data = {
-        'type': 'city',
-        'hitsPerPage': '10',
-        'query': query
+        "type": "city",
+        "hitsPerPage": "10",
+        "query": query
       };
       var method = 'post';
 
