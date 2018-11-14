@@ -71,12 +71,11 @@ var PlaceSelect = function (_Component) {
   }, {
     key: '_handleChange',
     value: function _handleChange(selected) {
-      console.log(selected);
       var cityData = {};
 
       if (selected) {
         cityData = {
-          city: selected.value.locale_names.default ? selected.value.locale_names.default[0] : selected.value,
+          city: selected.value.locale_names.default,
           region: selected.value.administrative ? selected.value.administrative[0] : null,
           country: selected.value.country ? selected.value.country.default : null,
           country_en: selected.value.country ? selected.value.country.en : null,
@@ -155,7 +154,7 @@ var PlaceSelect = function (_Component) {
       return React.createElement(
         'div',
         null,
-        React.createElement(Select.AsyncCreatable, {
+        React.createElement(Select.Async, {
           name: this.props.name,
           className: 'city-select ' + this.props.classes,
           value: this.state.value,
