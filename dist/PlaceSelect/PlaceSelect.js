@@ -75,8 +75,8 @@ var PlaceSelect = function (_Component) {
       var cityData = {};
 
       if (selected) {
-        country = selected.value.country ? selected.value.country.default : null;
-        country_en = selected.value.country && selected.value.country.en ? selected.value.country.en : country;
+        var country = selected.value.country ? selected.value.country.default : null;
+        var country_en = selected.value.country && selected.value.country.en ? selected.value.country.en : country;
         cityData = {
           city: selected.value.locale_names.default[0],
           region: selected.value.administrative ? selected.value.administrative[0] : null,

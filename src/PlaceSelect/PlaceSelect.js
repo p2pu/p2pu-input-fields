@@ -50,8 +50,8 @@ export default class PlaceSelect extends Component {
     let cityData = {};
 
     if (selected) {
-      country = selected.value.country ? selected.value.country.default : null;
-      country_en = selected.value.country && selected.value.country.en ? selected.value.country.en : country;
+      const country = selected.value.country ? selected.value.country.default : null;
+      const country_en = selected.value.country && selected.value.country.en ? selected.value.country.en : country;
       cityData = {
         city: selected.value.locale_names.default[0],
         region: selected.value.administrative ? selected.value.administrative[0] : null,
