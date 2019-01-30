@@ -74,8 +74,7 @@ export default {
         "@babel/external-helpers",
         "transform-react-jsx",
         "transform-class-properties"
-      ],
-      externalHelpers: true
+      ]
     }),
     css({ output: "dist/build.css" }),
   ]

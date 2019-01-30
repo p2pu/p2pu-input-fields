@@ -6,9 +6,113 @@ import moment from 'moment';
 import axios from 'axios';
 import TimePicker from 'rc-time-picker';
 
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
 var CheckboxWithLabel = function CheckboxWithLabel(props) {
   var onChange = function onChange(e) {
-    props.handleChange(babelHelpers.defineProperty({}, props.name, e.currentTarget.checked));
+    props.handleChange(_defineProperty({}, props.name, e.currentTarget.checked));
   };
 
   return React.createElement("div", {
@@ -536,7 +640,7 @@ var blockEvent = (function (event) {
 	}
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
@@ -589,7 +693,7 @@ var defineProperty = function (obj, key, value) {
   return obj;
 };
 
-var _extends = Object.assign || function (target) {
+var _extends$1 = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i];
 
@@ -924,7 +1028,7 @@ var shouldShowPlaceholder = function shouldShowPlaceholder(state, props, isOpen)
  * @param {Object}		 props	- the Select component's props (or nextProps)
  */
 var expandValue = function expandValue(value, props) {
-	var valueType = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+	var valueType = typeof value === 'undefined' ? 'undefined' : _typeof$1(value);
 	if (valueType !== 'string' && valueType !== 'number' && valueType !== 'boolean') return value;
 	var options = props.options,
 	    valueKey = props.valueKey;
@@ -1315,7 +1419,7 @@ var Select$1 = function (_React$Component) {
 		value: function setInputValue(newValue) {
 			if (this.props.onInputChange) {
 				var nextState = this.props.onInputChange(newValue);
-				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof(nextState)) !== 'object') {
+				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof$1(nextState)) !== 'object') {
 					newValue = '' + nextState;
 				}
 			}
@@ -1329,7 +1433,7 @@ var Select$1 = function (_React$Component) {
 			if (this.props.onInputChange) {
 				var nextState = this.props.onInputChange(newValue);
 				// Note: != used deliberately here to catch undefined and null
-				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof(nextState)) !== 'object') {
+				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof$1(nextState)) !== 'object') {
 					newValue = '' + nextState;
 				}
 			}
@@ -1477,7 +1581,7 @@ var Select$1 = function (_React$Component) {
 			var nextProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
 
 			/** support optionally passing in the `nextProps` so `componentWillReceiveProps` updates will function as expected */
-			var props = (typeof nextProps === 'undefined' ? 'undefined' : _typeof(nextProps)) === 'object' ? nextProps : this.props;
+			var props = (typeof nextProps === 'undefined' ? 'undefined' : _typeof$1(nextProps)) === 'object' ? nextProps : this.props;
 			if (props.multi) {
 				if (typeof value === 'string') {
 					value = value.split(props.delimiter);
@@ -1813,7 +1917,7 @@ var Select$1 = function (_React$Component) {
 				value = '';
 			}
 
-			var inputProps = _extends({}, this.props.inputProps, {
+			var inputProps = _extends$1({}, this.props.inputProps, {
 				'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
 				'aria-describedby': this.props['aria-describedby'],
 				'aria-expanded': '' + isOpen,
@@ -1843,7 +1947,7 @@ var Select$1 = function (_React$Component) {
 
 
 				var _ariaOwns = classnames(defineProperty({}, this._instancePrefix + '-list', isOpen));
-				return React.createElement('div', _extends({}, divProps, {
+				return React.createElement('div', _extends$1({}, divProps, {
 					'aria-expanded': isOpen,
 					'aria-owns': _ariaOwns,
 					'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
@@ -1863,12 +1967,12 @@ var Select$1 = function (_React$Component) {
 			}
 
 			if (this.props.autosize) {
-				return React.createElement(AutosizeInput, _extends({ id: this.props.id }, inputProps, { minWidth: '5' }));
+				return React.createElement(AutosizeInput, _extends$1({ id: this.props.id }, inputProps, { minWidth: '5' }));
 			}
 			return React.createElement(
 				'div',
 				{ className: className, key: 'input-wrap', style: { display: 'inline-block' } },
-				React.createElement('input', _extends({ id: this.props.id }, inputProps))
+				React.createElement('input', _extends$1({ id: this.props.id }, inputProps))
 			);
 		}
 	}, {
@@ -2423,7 +2527,7 @@ var Async = function (_Component) {
 			if (onInputChange) {
 				var value = onInputChange(newInputValue);
 				// Note: != used deliberately here to catch undefined and null
-				if (value != null && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') {
+				if (value != null && (typeof value === 'undefined' ? 'undefined' : _typeof$1(value)) !== 'object') {
 					newInputValue = '' + value;
 				}
 			}
@@ -2492,7 +2596,7 @@ var Async = function (_Component) {
 				}
 			};
 
-			return children(_extends({}, this.props, props, {
+			return children(_extends$1({}, this.props, props, {
 				isLoading: isLoading,
 				onInputChange: this.onInputChange
 			}));
@@ -2618,7 +2722,7 @@ var CreatableSelect = function (_React$Component) {
 			var menuRenderer$$1 = this.props.menuRenderer;
 
 
-			return menuRenderer$$1(_extends({}, params, {
+			return menuRenderer$$1(_extends$1({}, params, {
 				onSelect: this.onOptionSelect,
 				selectValue: this.onOptionSelect
 			}));
@@ -2688,7 +2792,7 @@ var CreatableSelect = function (_React$Component) {
 				children = defaultChildren$2;
 			}
 
-			var props = _extends({}, restProps, {
+			var props = _extends$1({}, restProps, {
 				allowCreate: true,
 				filterOptions: this.filterOptions,
 				menuRenderer: this.menuRenderer,
@@ -2867,7 +2971,7 @@ var AsyncCreatableSelect = function (_React$Component) {
 							    creatableProps = objectWithoutProperties(_ref2, ['ref']);
 
 							var creatableRef = ref;
-							return _this2.props.children(_extends({}, creatableProps, {
+							return _this2.props.children(_extends$1({}, creatableProps, {
 								ref: function ref(select) {
 									creatableRef(select);
 									asyncRef(select);
@@ -2904,13 +3008,14 @@ Select$1.Option = Option;
 var CitySelect =
 /*#__PURE__*/
 function (_Component) {
-  babelHelpers.inherits(CitySelect, _Component);
+  _inherits(CitySelect, _Component);
 
   function CitySelect(props) {
     var _this;
 
-    babelHelpers.classCallCheck(this, CitySelect);
-    _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(CitySelect).call(this, props));
+    _classCallCheck(this, CitySelect);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(CitySelect).call(this, props));
     _this.state = {};
 
     _this.handleChange = function (s) {
@@ -2938,7 +3043,7 @@ function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(CitySelect, [{
+  _createClass(CitySelect, [{
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
       if (this.props !== nextProps) {
@@ -2994,7 +3099,7 @@ function (_Component) {
       });
 
       var uniqBy = function uniqBy(arr, fn) {
-        return babelHelpers.toConsumableArray(new Map(arr.reverse().map(function (x) {
+        return _toConsumableArray(new Map(arr.reverse().map(function (x) {
           return [typeof fn === 'function' ? fn(x) : x[fn], x];
         })).values());
       };
@@ -3024,6 +3129,7 @@ function (_Component) {
       });
     }
   }]);
+
   return CitySelect;
 }(Component);
 CitySelect.propTypes = {
@@ -3033,13 +3139,13 @@ CitySelect.propTypes = {
   classes: PropTypes.string
 };
 
-function _inheritsLoose(subClass, superClass) {
+function _inheritsLoose$1(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
   subClass.__proto__ = superClass;
 }
 
-function _objectWithoutProperties(source, excluded) {
+function _objectWithoutProperties$1(source, excluded) {
   if (source == null) return {};
   var target = {};
   var sourceKeys = Object.keys(source);
@@ -3187,7 +3293,7 @@ function onClickOutsideHOC(WrappedComponent, config) {
   return _temp = _class =
   /*#__PURE__*/
   function (_Component) {
-    _inheritsLoose(onClickOutside, _Component);
+    _inheritsLoose$1(onClickOutside, _Component);
 
     function onClickOutside(props) {
       var _this;
@@ -3350,7 +3456,7 @@ function onClickOutsideHOC(WrappedComponent, config) {
       // eslint-disable-next-line no-unused-vars
       var _props = this.props,
           excludeScrollbar = _props.excludeScrollbar,
-          props = _objectWithoutProperties(_props, ["excludeScrollbar"]);
+          props = _objectWithoutProperties$1(_props, ["excludeScrollbar"]);
 
       if (WrappedComponent.prototype.isReactComponent) {
         props.ref = this.getRef;
@@ -3375,38 +3481,38 @@ function onClickOutsideHOC(WrappedComponent, config) {
   }, _temp;
 }
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass$1 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _objectWithoutProperties$1(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _objectWithoutProperties$2(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn$1(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits$1(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Manager = function (_Component) {
-  _inherits(Manager, _Component);
+  _inherits$1(Manager, _Component);
 
   function Manager() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, Manager);
+    _classCallCheck$1(this, Manager);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Manager.__proto__ || Object.getPrototypeOf(Manager)).call.apply(_ref, [this].concat(args))), _this), _this._setTargetNode = function (node) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn$1(this, (_ref = Manager.__proto__ || Object.getPrototypeOf(Manager)).call.apply(_ref, [this].concat(args))), _this), _this._setTargetNode = function (node) {
       _this._targetNode = node;
     }, _this._getTargetNode = function () {
       return _this._targetNode;
-    }, _temp), _possibleConstructorReturn(_this, _ret);
+    }, _temp), _possibleConstructorReturn$1(_this, _ret);
   }
 
-  _createClass(Manager, [{
+  _createClass$1(Manager, [{
     key: 'getChildContext',
     value: function getChildContext() {
       return {
@@ -3422,7 +3528,7 @@ var Manager = function (_Component) {
       var _props = this.props,
           tag = _props.tag,
           children = _props.children,
-          restProps = _objectWithoutProperties$1(_props, ['tag', 'children']);
+          restProps = _objectWithoutProperties$2(_props, ['tag', 'children']);
 
       if (tag !== false) {
         return createElement(tag, restProps, children);
@@ -3446,16 +3552,16 @@ Manager.defaultProps = {
   tag: 'div'
 };
 
-var _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _objectWithoutProperties$2(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _objectWithoutProperties$3(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var Target = function Target(props, context) {
   var _props$component = props.component,
       component = _props$component === undefined ? 'div' : _props$component,
       innerRef = props.innerRef,
       children = props.children,
-      restProps = _objectWithoutProperties$2(props, ['component', 'innerRef', 'children']);
+      restProps = _objectWithoutProperties$3(props, ['component', 'innerRef', 'children']);
 
   var popperManager = context.popperManager;
 
@@ -3471,7 +3577,7 @@ var Target = function Target(props, context) {
     return children({ targetProps: targetProps, restProps: restProps });
   }
 
-  var componentProps = _extends$1({}, restProps);
+  var componentProps = _extends$2({}, restProps);
 
   if (typeof component === 'string') {
     componentProps.ref = targetRef;
@@ -3888,7 +3994,7 @@ var defineProperty$1 = function (obj, key, value) {
   return obj;
 };
 
-var _extends$2 = Object.assign || function (target) {
+var _extends$3 = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i];
 
@@ -3910,7 +4016,7 @@ var _extends$2 = Object.assign || function (target) {
  * @returns {Object} ClientRect like output
  */
 function getClientRect(offsets) {
-  return _extends$2({}, offsets, {
+  return _extends$3({}, offsets, {
     right: offsets.left + offsets.width,
     bottom: offsets.top + offsets.height
   });
@@ -4192,7 +4298,7 @@ function computeAutoPlacement(placement, refRect, popper, reference, boundariesE
   };
 
   var sortedAreas = Object.keys(rects).map(function (key) {
-    return _extends$2({
+    return _extends$3({
       key: key
     }, rects[key], {
       area: getArea(rects[key])
@@ -4780,9 +4886,9 @@ function computeStyle(data, options) {
   };
 
   // Update `data` attributes, styles and arrowStyles
-  data.attributes = _extends$2({}, attributes, data.attributes);
-  data.styles = _extends$2({}, styles, data.styles);
-  data.arrowStyles = _extends$2({}, data.offsets.arrow, data.arrowStyles);
+  data.attributes = _extends$3({}, attributes, data.attributes);
+  data.styles = _extends$3({}, styles, data.styles);
+  data.arrowStyles = _extends$3({}, data.offsets.arrow, data.arrowStyles);
 
   return data;
 }
@@ -5055,7 +5161,7 @@ function flip(data, options) {
 
       // this object contains `position`, we want to preserve it along with
       // any additional property we may add in the future
-      data.offsets.popper = _extends$2({}, data.offsets.popper, getPopperOffsets(data.instance.popper, data.offsets.reference, data.placement));
+      data.offsets.popper = _extends$3({}, data.offsets.popper, getPopperOffsets(data.instance.popper, data.offsets.reference, data.placement));
 
       data = runModifiers(data.instance.modifiers, data, 'flip');
     }
@@ -5329,7 +5435,7 @@ function preventOverflow(data, options) {
 
   order.forEach(function (placement) {
     var side = ['left', 'top'].indexOf(placement) !== -1 ? 'primary' : 'secondary';
-    popper = _extends$2({}, popper, check[side](placement));
+    popper = _extends$3({}, popper, check[side](placement));
   });
 
   data.offsets.popper = popper;
@@ -5364,7 +5470,7 @@ function shift(data) {
       end: defineProperty$1({}, side, reference[side] + reference[measurement] - popper[measurement])
     };
 
-    data.offsets.popper = _extends$2({}, popper, shiftOffsets[shiftvariation]);
+    data.offsets.popper = _extends$3({}, popper, shiftOffsets[shiftvariation]);
   }
 
   return data;
@@ -5880,7 +5986,7 @@ var Popper = function () {
     this.update = debounce(this.update.bind(this));
 
     // with {} we create a new object with the options inside it
-    this.options = _extends$2({}, Popper.Defaults, options);
+    this.options = _extends$3({}, Popper.Defaults, options);
 
     // init state
     this.state = {
@@ -5895,13 +6001,13 @@ var Popper = function () {
 
     // Deep merge modifiers options
     this.options.modifiers = {};
-    Object.keys(_extends$2({}, Popper.Defaults.modifiers, options.modifiers)).forEach(function (name) {
-      _this.options.modifiers[name] = _extends$2({}, Popper.Defaults.modifiers[name] || {}, options.modifiers ? options.modifiers[name] : {});
+    Object.keys(_extends$3({}, Popper.Defaults.modifiers, options.modifiers)).forEach(function (name) {
+      _this.options.modifiers[name] = _extends$3({}, Popper.Defaults.modifiers[name] || {}, options.modifiers ? options.modifiers[name] : {});
     });
 
     // Refactoring modifiers' list (Object => Array)
     this.modifiers = Object.keys(this.options.modifiers).map(function (name) {
-      return _extends$2({
+      return _extends$3({
         name: name
       }, _this.options.modifiers[name]);
     })
@@ -6010,35 +6116,35 @@ Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
 
-var _extends$3 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _createClass$1 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass$2 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _objectWithoutProperties$3(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _objectWithoutProperties$4(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn$1(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn$2(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits$1(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits$2(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var placements$1 = Popper.placements;
 
 var Popper$1 = function (_Component) {
-  _inherits$1(Popper$$1, _Component);
+  _inherits$2(Popper$$1, _Component);
 
   function Popper$$1() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck$1(this, Popper$$1);
+    _classCallCheck$2(this, Popper$$1);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn$1(this, (_ref = Popper$$1.__proto__ || Object.getPrototypeOf(Popper$$1)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _this._setArrowNode = function (node) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn$2(this, (_ref = Popper$$1.__proto__ || Object.getPrototypeOf(Popper$$1)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _this._setArrowNode = function (node) {
       _this._arrowNode = node;
     }, _this._getTargetNode = function () {
       if (_this.props.target) {
@@ -6078,7 +6184,7 @@ var Popper$1 = function (_Component) {
         };
       }
 
-      return _extends$3({
+      return _extends$4({
         position: data.offsets.popper.position
       }, data.styles);
     }, _this._getPopperPlacement = function () {
@@ -6107,10 +6213,10 @@ var Popper$1 = function (_Component) {
       }
     }, _this._scheduleUpdate = function () {
       _this._popper && _this._popper.scheduleUpdate();
-    }, _temp), _possibleConstructorReturn$1(_this, _ret);
+    }, _temp), _possibleConstructorReturn$2(_this, _ret);
   }
 
-  _createClass$1(Popper$$1, [{
+  _createClass$2(Popper$$1, [{
     key: 'getChildContext',
     value: function getChildContext() {
       return {
@@ -6145,12 +6251,12 @@ var Popper$1 = function (_Component) {
           placement = _props.placement,
           eventsEnabled = _props.eventsEnabled;
 
-      var modifiers = _extends$3({}, this.props.modifiers, {
+      var modifiers = _extends$4({}, this.props.modifiers, {
         applyStyle: { enabled: false },
         updateState: this._updateStateModifier
       });
       if (this._arrowNode) {
-        modifiers.arrow = _extends$3({}, this.props.modifiers.arrow || {}, {
+        modifiers.arrow = _extends$4({}, this.props.modifiers.arrow || {}, {
           element: this._arrowNode
         });
       }
@@ -6182,7 +6288,7 @@ var Popper$1 = function (_Component) {
           eventsEnabled = _props2.eventsEnabled,
           modifiers = _props2.modifiers,
           children = _props2.children,
-          restProps = _objectWithoutProperties$3(_props2, ['component', 'innerRef', 'placement', 'eventsEnabled', 'modifiers', 'children']);
+          restProps = _objectWithoutProperties$4(_props2, ['component', 'innerRef', 'placement', 'eventsEnabled', 'modifiers', 'children']);
 
       var popperStyle = this._getPopperStyle();
       var popperPlacement = this._getPopperPlacement();
@@ -6202,8 +6308,8 @@ var Popper$1 = function (_Component) {
         });
       }
 
-      var componentProps = _extends$3({}, restProps, {
-        style: _extends$3({}, restProps.style, popperStyle),
+      var componentProps = _extends$4({}, restProps, {
+        style: _extends$4({}, restProps.style, popperStyle),
         'data-placement': popperPlacement,
         'data-x-out-of-boundaries': popperHide
       });
@@ -6249,16 +6355,16 @@ Popper$1.defaultProps = {
   modifiers: {}
 };
 
-var _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$5 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _objectWithoutProperties$4(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _objectWithoutProperties$5(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var Arrow = function Arrow(props, context) {
   var _props$component = props.component,
       component = _props$component === undefined ? 'span' : _props$component,
       innerRef = props.innerRef,
       children = props.children,
-      restProps = _objectWithoutProperties$4(props, ['component', 'innerRef', 'children']);
+      restProps = _objectWithoutProperties$5(props, ['component', 'innerRef', 'children']);
 
   var popper = context.popper;
 
@@ -6278,8 +6384,8 @@ var Arrow = function Arrow(props, context) {
     return children({ arrowProps: arrowProps, restProps: restProps });
   }
 
-  var componentProps = _extends$4({}, restProps, {
-    style: _extends$4({}, arrowStyle, restProps.style)
+  var componentProps = _extends$5({}, restProps, {
+    style: _extends$5({}, arrowStyle, restProps.style)
   });
 
   if (typeof component === 'string') {
@@ -6301,7 +6407,7 @@ Arrow.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
 };
 
-var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+var _typeof$2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
@@ -6940,7 +7046,7 @@ function getHightLightDaysMap() {
         classNamesArr.push(defaultClassName);
         dateClasses.set(key, classNamesArr);
       }
-    } else if ((typeof obj === "undefined" ? "undefined" : _typeof$1(obj)) === "object") {
+    } else if ((typeof obj === "undefined" ? "undefined" : _typeof$2(obj)) === "object") {
       var keys = Object.keys(obj);
       var className = keys[0];
       var arrOfMoments = obj[keys[0]];
@@ -9313,7 +9419,7 @@ DatePicker.propTypes = {
 var DatePickerWithLabel = function DatePickerWithLabel(props) {
   var onChange = function onChange(value) {
     var date = !!value ? value.format('YYYY-MM-DD') : null;
-    props.handleChange(babelHelpers.defineProperty({}, props.name, date));
+    props.handleChange(_defineProperty({}, props.name, date));
   };
 
   var date = !!props.value ? moment(props.value) : null;
@@ -9336,13 +9442,14 @@ var DatePickerWithLabel = function DatePickerWithLabel(props) {
 var ImageUploader =
 /*#__PURE__*/
 function (_Component) {
-  babelHelpers.inherits(ImageUploader, _Component);
+  _inherits(ImageUploader, _Component);
 
   function ImageUploader(props) {
     var _this;
 
-    babelHelpers.classCallCheck(this, ImageUploader);
-    _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(ImageUploader).call(this, props));
+    _classCallCheck(this, ImageUploader);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ImageUploader).call(this, props));
 
     _this.saveImage = function (opts) {
       var url = opts.url;
@@ -9377,7 +9484,7 @@ function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(ImageUploader, [{
+  _createClass(ImageUploader, [{
     key: "_onChange",
     value: function _onChange(e) {
       var _this2 = this;
@@ -9392,13 +9499,13 @@ function (_Component) {
           image: data.image_url
         });
 
-        _this2.props.handleChange(babelHelpers.defineProperty({}, _this2.props.name, data.image_url));
+        _this2.props.handleChange(_defineProperty({}, _this2.props.name, data.image_url));
       };
 
       var onError = function onError(data) {
         console.log(data.errors);
 
-        _this2.props.handleChange(babelHelpers.defineProperty({}, _this2.props.name, null));
+        _this2.props.handleChange(_defineProperty({}, _this2.props.name, null));
       };
 
       var onFail = function onFail(err) {
@@ -9450,6 +9557,7 @@ function (_Component) {
       })));
     }
   }]);
+
   return ImageUploader;
 }(Component);
 ImageUploader.propTypes = {
@@ -9465,7 +9573,7 @@ ImageUploader.propTypes = {
 
 var InputWithLabel = function InputWithLabel(props) {
   var onChange = function onChange(e) {
-    props.handleChange(babelHelpers.defineProperty({}, props.name, e.currentTarget.value));
+    props.handleChange(_defineProperty({}, props.name, e.currentTarget.value));
   };
 
   return React.createElement("div", {
@@ -11169,13 +11277,14 @@ var visibilitySensor = createReactClass({
 var NumberWithLabel =
 /*#__PURE__*/
 function (_Component) {
-  babelHelpers.inherits(NumberWithLabel, _Component);
+  _inherits(NumberWithLabel, _Component);
 
   function NumberWithLabel(props) {
     var _this;
 
-    babelHelpers.classCallCheck(this, NumberWithLabel);
-    _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(NumberWithLabel).call(this, props));
+    _classCallCheck(this, NumberWithLabel);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(NumberWithLabel).call(this, props));
 
     _this.triggerCountup = function () {
       return _this._triggerCountup();
@@ -11188,7 +11297,7 @@ function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(NumberWithLabel, [{
+  _createClass(NumberWithLabel, [{
     key: "_triggerCountup",
     value: function _triggerCountup() {
       build_1(this.countUpNum);
@@ -11222,6 +11331,7 @@ function (_Component) {
       }, this.props.label)));
     }
   }]);
+
   return NumberWithLabel;
 }(Component);
 
@@ -11247,13 +11357,14 @@ var KANSAS_CITY_OPTION = {
 var PlaceSelect =
 /*#__PURE__*/
 function (_Component) {
-  babelHelpers.inherits(PlaceSelect, _Component);
+  _inherits(PlaceSelect, _Component);
 
   function PlaceSelect(props) {
     var _this;
 
-    babelHelpers.classCallCheck(this, PlaceSelect);
-    _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(PlaceSelect).call(this, props));
+    _classCallCheck(this, PlaceSelect);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PlaceSelect).call(this, props));
     _this.state = {
       hits: [],
       value: null
@@ -11278,7 +11389,7 @@ function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(PlaceSelect, [{
+  _createClass(PlaceSelect, [{
     key: "componentWillMount",
     value: function componentWillMount() {
       if (!!this.props.place_id) {
@@ -11402,6 +11513,7 @@ function (_Component) {
       }, this.props.errorMessage));
     }
   }]);
+
   return PlaceSelect;
 }(Component);
 
@@ -13008,13 +13120,14 @@ var SelectWithLabel = function SelectWithLabel(props) {
 var SwitchWithLabels =
 /*#__PURE__*/
 function (_Component) {
-  babelHelpers.inherits(SwitchWithLabels, _Component);
+  _inherits(SwitchWithLabels, _Component);
 
   function SwitchWithLabels(props) {
     var _this;
 
-    babelHelpers.classCallCheck(this, SwitchWithLabels);
-    _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(SwitchWithLabels).call(this, props));
+    _classCallCheck(this, SwitchWithLabels);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SwitchWithLabels).call(this, props));
     _this.state = {
       checked: _this.props.defaultChecked
     };
@@ -13034,7 +13147,7 @@ function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(SwitchWithLabels, [{
+  _createClass(SwitchWithLabels, [{
     key: "_handleChange",
     value: function _handleChange(event) {
       var checked = event.currentTarget.checked;
@@ -13074,12 +13187,13 @@ function (_Component) {
       }, this.props.labelRight));
     }
   }]);
+
   return SwitchWithLabels;
 }(Component);
 
 var TextareaWithLabel = function TextareaWithLabel(props) {
   var onChange = function onChange(e) {
-    props.handleChange(babelHelpers.defineProperty({}, props.name, e.currentTarget.value));
+    props.handleChange(_defineProperty({}, props.name, e.currentTarget.value));
   };
 
   return React.createElement("div", {
@@ -13105,7 +13219,7 @@ var TimePickerWithLabel = function TimePickerWithLabel(props) {
 
   var onChange = function onChange(value) {
     var time = !!value ? value.format(saveFormat) : null;
-    props.handleChange(babelHelpers.defineProperty({}, props.name, time));
+    props.handleChange(_defineProperty({}, props.name, time));
   };
 
   var time = !!props.value ? moment(props.value, saveFormat) : null;
@@ -13135,13 +13249,14 @@ var GEONAMES_ENDPOINT = 'https://secure.geonames.org/timezoneJSON';
 var TimeZoneSelect =
 /*#__PURE__*/
 function (_Component) {
-  babelHelpers.inherits(TimeZoneSelect, _Component);
+  _inherits(TimeZoneSelect, _Component);
 
   function TimeZoneSelect(props) {
     var _this;
 
-    babelHelpers.classCallCheck(this, TimeZoneSelect);
-    _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(TimeZoneSelect).call(this, props));
+    _classCallCheck(this, TimeZoneSelect);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(TimeZoneSelect).call(this, props));
     _this.state = {
       value: _this.props.timezone
     };
@@ -13157,7 +13272,7 @@ function (_Component) {
     return _this;
   }
 
-  babelHelpers.createClass(TimeZoneSelect, [{
+  _createClass(TimeZoneSelect, [{
     key: "componentDidMount",
     value: function componentDidMount() {
       this.detectTimeZone();
@@ -13236,11 +13351,12 @@ function (_Component) {
         value: this.state.value,
         onChange: this.onChange,
         options: timezoneOptions
-      }, babelHelpers.defineProperty(_React$createElement, "name", 'timezone'), babelHelpers.defineProperty(_React$createElement, "id", 'id_timezone'), _React$createElement)), this.props.errorMessage && React.createElement("div", {
+      }, _defineProperty(_React$createElement, "name", 'timezone'), _defineProperty(_React$createElement, "id", 'id_timezone'), _React$createElement)), this.props.errorMessage && React.createElement("div", {
         className: "error-message minicaps"
       }, this.props.errorMessage));
     }
   }]);
+
   return TimeZoneSelect;
 }(Component);
 
