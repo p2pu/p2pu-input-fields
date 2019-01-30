@@ -9439,7 +9439,8 @@
       id: props.id,
       onChange: onChange,
       className: "form-control",
-      minDate: props.minDate
+      minDate: props.minDate,
+      disabled: props.disabled
     }), props.errorMessage && React__default.createElement("div", {
       className: 'error-message minicaps'
     }, props.errorMessage));
