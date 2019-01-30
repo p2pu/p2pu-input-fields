@@ -1,2 +1,13 @@
-import TimeZoneSelect from './TimeZoneSelect.js';
-export default TimeZoneSelect;
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _TimeZoneSelect = _interopRequireDefault(require("./TimeZoneSelect.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = _TimeZoneSelect.default;
+exports.default = _default;

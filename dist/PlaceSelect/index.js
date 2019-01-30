@@ -1,2 +1,13 @@
-import PlaceSelect from './PlaceSelect.js';
-export default PlaceSelect;
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _PlaceSelect = _interopRequireDefault(require("./PlaceSelect.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = _PlaceSelect.default;
+exports.default = _default;

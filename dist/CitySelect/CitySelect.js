@@ -1,58 +1,100 @@
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+"use strict";
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _reactSelect = _interopRequireDefault(require("react-select"));
+
+var _jsonp = _interopRequireDefault(require("jsonp"));
+
+require("react-select/dist/react-select.css");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Select from 'react-select';
-import jsonp from 'jsonp';
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-import 'react-select/dist/react-select.css';
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-var CitySelect = function (_Component) {
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var CitySelect =
+/*#__PURE__*/
+function (_Component) {
   _inherits(CitySelect, _Component);
 
   function CitySelect(props) {
+    var _this;
+
     _classCallCheck(this, CitySelect);
 
-    var _this = _possibleConstructorReturn(this, (CitySelect.__proto__ || Object.getPrototypeOf(CitySelect)).call(this, props));
-
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(CitySelect).call(this, props));
     _this.state = {};
+
     _this.handleChange = function (s) {
       return _this._handleChange(s);
     };
+
     _this.handleInputChange = function (s) {
       return _this._handleInputChange(s);
     };
+
     _this.populateCities = function () {
       return _this._populateCities();
     };
+
     _this.convertCityToSelectOption = function (city) {
       return _this._convertCityToSelectOption(city);
     };
+
     _this.filterCitiesFromResults = function (r) {
       return _this._filterCitiesFromResults(r);
     };
+
     _this.populateCities();
+
     return _this;
   }
 
   _createClass(CitySelect, [{
-    key: 'componentWillReceiveProps',
+    key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
       if (this.props !== nextProps) {
         var value = !nextProps.value ? this.state.value : this.convertCityToSelectOption(nextProps.value);
-        this.setState({ value: value });
+        this.setState({
+          value: value
+        });
       }
     }
   }, {
-    key: '_convertCityToSelectOption',
+    key: "_convertCityToSelectOption",
     value: function _convertCityToSelectOption(city) {
       return {
         label: city,
@@ -60,20 +102,21 @@ var CitySelect = function (_Component) {
       };
     }
   }, {
-    key: '_handleChange',
+    key: "_handleChange",
     value: function _handleChange(selected) {
       var query = selected ? selected.label : selected;
-
       this.props.handleSelect(query);
-      this.setState({ value: selected });
+      this.setState({
+        value: selected
+      });
     }
   }, {
-    key: '_populateCities',
+    key: "_populateCities",
     value: function _populateCities() {
       var _this2 = this;
 
       var url = 'https://learningcircles.p2pu.org/api/learningcircles/?active=true&signup=open';
-      jsonp(url, null, function (err, res) {
+      (0, _jsonp.default)(url, null, function (err, res) {
         if (err) {
           console.log(err);
         } else {
@@ -82,7 +125,7 @@ var CitySelect = function (_Component) {
       });
     }
   }, {
-    key: '_filterCitiesFromResults',
+    key: "_filterCitiesFromResults",
     value: function _filterCitiesFromResults(courses) {
       var _this3 = this;
 
@@ -91,30 +134,32 @@ var CitySelect = function (_Component) {
           return _this3.convertCityToSelectOption(course.city);
         }
       });
-
       cities = cities.filter(function (city) {
         return city;
       });
+
       var uniqBy = function uniqBy(arr, fn) {
-        return [].concat(_toConsumableArray(new Map(arr.reverse().map(function (x) {
+        return _toConsumableArray(new Map(arr.reverse().map(function (x) {
           return [typeof fn === 'function' ? fn(x) : x[fn], x];
-        })).values()));
+        })).values());
       };
+
       cities = uniqBy(cities, function (el) {
         return el.value;
       });
       cities.sort(function (el) {
         return el.label;
       });
-
-      this.setState({ cities: cities });
+      this.setState({
+        cities: cities
+      });
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
-      return React.createElement(Select, {
+      return _react.default.createElement(_reactSelect.default, {
         name: this.props.name,
-        className: 'city-select ' + this.props.classes,
+        className: "city-select ".concat(this.props.classes),
         value: this.state.value,
         options: this.state.cities,
         onChange: this.handleChange,
@@ -126,14 +171,12 @@ var CitySelect = function (_Component) {
   }]);
 
   return CitySelect;
-}(Component);
+}(_react.Component);
 
-export default CitySelect;
-
-
+exports.default = CitySelect;
 CitySelect.propTypes = {
-  handleSelect: PropTypes.func.isRequired,
-  handleInputChange: PropTypes.func,
-  name: PropTypes.string.isRequired,
-  classes: PropTypes.string
+  handleSelect: _propTypes.default.func.isRequired,
+  handleInputChange: _propTypes.default.func,
+  name: _propTypes.default.string.isRequired,
+  classes: _propTypes.default.string
 };
