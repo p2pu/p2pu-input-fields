@@ -21,6 +21,7 @@ const DatePickerWithLabel = (props) => {
         id={props.id}
         onChange={onChange}
         className="form-control"
+        minDate={props.minDate}
       />
       {
         props.errorMessage &&
