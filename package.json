@@ -21,8 +21,8 @@
     "prop-types": "^15.6.1",
     "axios": "^0.17.1",
     "jsonp": "^0.2.1",
-    "moment": "^2.18.1",
-    "rc-time-picker": "^3.2.1"
+    "moment": "^2.24.0",
+    "rc-time-picker": "^3.6.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -34,8 +34,6 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "css-loader": "^2.1.0",
-    "moment": "^2.24.0",
-    "rc-time-picker": "^3.6.1",
     "react": ">=15.0.1",
     "react-dom": ">=15.0.1",
     "rollup": "^0.60.1",
