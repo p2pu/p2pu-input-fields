@@ -69,20 +69,13 @@ export default {
     json(),
     commonjs(commonjsOptions),
     babel({
-      presets: [
-        [
-          "es2015",
-          {
-            modules: false
-          }
-        ]
-      ],
       exclude: ["node_modules/**", "**/*.json"],
       plugins: [
-        "external-helpers",
+        "@babel/external-helpers",
         "transform-react-jsx",
         "transform-class-properties"
-      ]
+      ],
+      externalHelpers: true
     }),
     css({ output: "dist/build.css" }),
   ]

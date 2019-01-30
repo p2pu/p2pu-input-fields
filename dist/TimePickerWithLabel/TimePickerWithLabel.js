@@ -1,10 +1,21 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _rcTimePicker = _interopRequireDefault(require("rc-time-picker"));
+
+var _moment = _interopRequireDefault(require("moment"));
+
+require("rc-time-picker/assets/index.css");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-import React from 'react';
-import TimePicker from 'rc-time-picker';
-import moment from 'moment';
-
-import 'rc-time-picker/assets/index.css';
 
 var TimePickerWithLabel = function TimePickerWithLabel(props) {
   var saveFormat = 'HH:mm';
@@ -15,33 +26,25 @@ var TimePickerWithLabel = function TimePickerWithLabel(props) {
     props.handleChange(_defineProperty({}, props.name, time));
   };
 
-  var time = !!props.value ? moment(props.value, saveFormat) : null;
-
-  return React.createElement(
-    'div',
-    { className: 'input-with-label form-group ' + props.classes },
-    React.createElement(
-      'label',
-      { htmlFor: props.name },
-      props.label + ' ' + (props.required ? '*' : '')
-    ),
-    React.createElement(TimePicker, {
-      showSecond: false,
-      use12Hours: true,
-      value: time,
-      format: displayFormat,
-      name: props.name,
-      id: props.id,
-      onChange: onChange,
-      minuteStep: 15,
-      allowEmpty: true
-    }),
-    props.errorMessage && React.createElement(
-      'div',
-      { className: 'error-message minicaps' },
-      props.errorMessage
-    )
-  );
+  var time = !!props.value ? (0, _moment.default)(props.value, saveFormat) : null;
+  return _react.default.createElement("div", {
+    className: "input-with-label form-group ".concat(props.classes)
+  }, _react.default.createElement("label", {
+    htmlFor: props.name
+  }, "".concat(props.label, " ").concat(props.required ? '*' : '')), _react.default.createElement(_rcTimePicker.default, {
+    showSecond: false,
+    use12Hours: true,
+    value: time,
+    format: displayFormat,
+    name: props.name,
+    id: props.id,
+    onChange: onChange,
+    minuteStep: 15,
+    allowEmpty: true
+  }), props.errorMessage && _react.default.createElement("div", {
+    className: 'error-message minicaps'
+  }, props.errorMessage));
 };
 
-export default TimePickerWithLabel;
+var _default = TimePickerWithLabel;
+exports.default = _default;

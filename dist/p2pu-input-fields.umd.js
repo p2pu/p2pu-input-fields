@@ -1,6 +1,6 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types'), require('react-dom'), require('jsonp'), require('moment'), require('axios'), require('rc-time-picker'), require('rc-time-picker/assets/index.css')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types', 'react-dom', 'jsonp', 'moment', 'axios', 'rc-time-picker', 'rc-time-picker/assets/index.css'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types'), require('react-dom'), require('jsonp'), require('moment'), require('axios'), require('rc-time-picker')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types', 'react-dom', 'jsonp', 'moment', 'axios', 'rc-time-picker'], factory) :
   (factory((global.p2puInputFields = {}),global.React,global.PropTypes,global.ReactDOM,global.jsonp,global.moment,global.axios,global['rc-time-picker']));
 }(this, (function (exports,React,PropTypes,reactDom,jsonp,moment,axios,TimePicker) { 'use strict';
 
@@ -12,106 +12,27 @@
   axios = axios && axios.hasOwnProperty('default') ? axios['default'] : axios;
   TimePicker = TimePicker && TimePicker.hasOwnProperty('default') ? TimePicker['default'] : TimePicker;
 
-  var classCallCheck = function (instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-
-  var createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  var defineProperty = function (obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  };
-
-  var inherits = function (subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  };
-
-  var possibleConstructorReturn = function (self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  };
-
-  var toConsumableArray = function (arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
-    } else {
-      return Array.from(arr);
-    }
-  };
-
   var CheckboxWithLabel = function CheckboxWithLabel(props) {
     var onChange = function onChange(e) {
-      props.handleChange(defineProperty({}, props.name, e.currentTarget.checked));
+      props.handleChange(babelHelpers.defineProperty({}, props.name, e.currentTarget.checked));
     };
 
-    return React__default.createElement(
-      'div',
-      { className: 'checkbox-with-label label-right ' + props.classes },
-      React__default.createElement('input', {
-        type: 'checkbox',
-        name: props.name,
-        id: props.id || props.name,
-        onChange: onChange,
-        checked: props.checked,
-        style: { marginRight: '10px' }
-      }),
-      React__default.createElement(
-        'label',
-        { htmlFor: props.name },
-        props.label
-      ),
-      props.errorMessage && React__default.createElement(
-        'div',
-        { className: 'error-message minicaps' },
-        props.errorMessage
-      )
-    );
+    return React__default.createElement("div", {
+      className: "checkbox-with-label label-right ".concat(props.classes)
+    }, React__default.createElement("input", {
+      type: "checkbox",
+      name: props.name,
+      id: props.id || props.name,
+      onChange: onChange,
+      checked: props.checked,
+      style: {
+        marginRight: '10px'
+      }
+    }), React__default.createElement("label", {
+      htmlFor: props.name
+    }, props.label), props.errorMessage && React__default.createElement("div", {
+      className: 'error-message minicaps'
+    }, props.errorMessage));
   };
 
   function commonjsRequire () {
@@ -621,7 +542,7 @@
   	}
   });
 
-  var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
   } : function (obj) {
     return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
@@ -631,13 +552,13 @@
 
 
 
-  var classCallCheck$1 = function (instance, Constructor) {
+  var classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  var createClass$1 = function () {
+  var createClass = function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -659,7 +580,7 @@
 
 
 
-  var defineProperty$1 = function (obj, key, value) {
+  var defineProperty = function (obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -674,7 +595,7 @@
     return obj;
   };
 
-  var _extends$1 = Object.assign || function (target) {
+  var _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -690,7 +611,7 @@
 
 
 
-  var inherits$1 = function (subClass, superClass) {
+  var inherits = function (subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
     }
@@ -714,7 +635,7 @@
 
 
 
-  var objectWithoutProperties$1 = function (obj, keys) {
+  var objectWithoutProperties = function (obj, keys) {
     var target = {};
 
     for (var i in obj) {
@@ -726,7 +647,7 @@
     return target;
   };
 
-  var possibleConstructorReturn$1 = function (self, call) {
+  var possibleConstructorReturn = function (self, call) {
     if (!self) {
       throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     }
@@ -735,12 +656,12 @@
   };
 
   var Option = function (_React$Component) {
-  	inherits$1(Option, _React$Component);
+  	inherits(Option, _React$Component);
 
   	function Option(props) {
-  		classCallCheck$1(this, Option);
+  		classCallCheck(this, Option);
 
-  		var _this = possibleConstructorReturn$1(this, (Option.__proto__ || Object.getPrototypeOf(Option)).call(this, props));
+  		var _this = possibleConstructorReturn(this, (Option.__proto__ || Object.getPrototypeOf(Option)).call(this, props));
 
   		_this.handleMouseDown = _this.handleMouseDown.bind(_this);
   		_this.handleMouseEnter = _this.handleMouseEnter.bind(_this);
@@ -752,7 +673,7 @@
   		return _this;
   	}
 
-  	createClass$1(Option, [{
+  	createClass(Option, [{
   		key: 'handleMouseDown',
   		value: function handleMouseDown(event) {
   			event.preventDefault();
@@ -849,12 +770,12 @@
   };
 
   var Value = function (_React$Component) {
-  	inherits$1(Value, _React$Component);
+  	inherits(Value, _React$Component);
 
   	function Value(props) {
-  		classCallCheck$1(this, Value);
+  		classCallCheck(this, Value);
 
-  		var _this = possibleConstructorReturn$1(this, (Value.__proto__ || Object.getPrototypeOf(Value)).call(this, props));
+  		var _this = possibleConstructorReturn(this, (Value.__proto__ || Object.getPrototypeOf(Value)).call(this, props));
 
   		_this.handleMouseDown = _this.handleMouseDown.bind(_this);
   		_this.onRemove = _this.onRemove.bind(_this);
@@ -864,7 +785,7 @@
   		return _this;
   	}
 
-  	createClass$1(Value, [{
+  	createClass(Value, [{
   		key: 'handleMouseDown',
   		value: function handleMouseDown(event) {
   			if (event.type === 'mousedown' && event.button !== 0) {
@@ -1009,7 +930,7 @@
    * @param {Object}		 props	- the Select component's props (or nextProps)
    */
   var expandValue = function expandValue(value, props) {
-  	var valueType = typeof value === 'undefined' ? 'undefined' : _typeof$1(value);
+  	var valueType = typeof value === 'undefined' ? 'undefined' : _typeof(value);
   	if (valueType !== 'string' && valueType !== 'number' && valueType !== 'boolean') return value;
   	var options = props.options,
   	    valueKey = props.valueKey;
@@ -1026,12 +947,12 @@
   };
 
   var Select$1 = function (_React$Component) {
-  	inherits$1(Select, _React$Component);
+  	inherits(Select, _React$Component);
 
   	function Select(props) {
-  		classCallCheck$1(this, Select);
+  		classCallCheck(this, Select);
 
-  		var _this = possibleConstructorReturn$1(this, (Select.__proto__ || Object.getPrototypeOf(Select)).call(this, props));
+  		var _this = possibleConstructorReturn(this, (Select.__proto__ || Object.getPrototypeOf(Select)).call(this, props));
 
   		['clearValue', 'focusOption', 'getOptionLabel', 'handleInputBlur', 'handleInputChange', 'handleInputFocus', 'handleInputValueChange', 'handleKeyDown', 'handleMenuScroll', 'handleMouseDown', 'handleMouseDownOnArrow', 'handleMouseDownOnMenu', 'handleTouchEnd', 'handleTouchEndClearValue', 'handleTouchMove', 'handleTouchOutside', 'handleTouchStart', 'handleValueClick', 'onOptionRef', 'removeValue', 'selectValue'].forEach(function (fn) {
   			return _this[fn] = _this[fn].bind(_this);
@@ -1047,7 +968,7 @@
   		return _this;
   	}
 
-  	createClass$1(Select, [{
+  	createClass(Select, [{
   		key: 'componentWillMount',
   		value: function componentWillMount() {
   			this._instancePrefix = 'react-select-' + (this.props.instanceId || ++instanceId) + '-';
@@ -1400,7 +1321,7 @@
   		value: function setInputValue(newValue) {
   			if (this.props.onInputChange) {
   				var nextState = this.props.onInputChange(newValue);
-  				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof$1(nextState)) !== 'object') {
+  				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof(nextState)) !== 'object') {
   					newValue = '' + nextState;
   				}
   			}
@@ -1414,7 +1335,7 @@
   			if (this.props.onInputChange) {
   				var nextState = this.props.onInputChange(newValue);
   				// Note: != used deliberately here to catch undefined and null
-  				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof$1(nextState)) !== 'object') {
+  				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof(nextState)) !== 'object') {
   					newValue = '' + nextState;
   				}
   			}
@@ -1562,7 +1483,7 @@
   			var nextProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
 
   			/** support optionally passing in the `nextProps` so `componentWillReceiveProps` updates will function as expected */
-  			var props = (typeof nextProps === 'undefined' ? 'undefined' : _typeof$1(nextProps)) === 'object' ? nextProps : this.props;
+  			var props = (typeof nextProps === 'undefined' ? 'undefined' : _typeof(nextProps)) === 'object' ? nextProps : this.props;
   			if (props.multi) {
   				if (typeof value === 'string') {
   					value = value.split(props.delimiter);
@@ -1890,7 +1811,7 @@
   			var className = classnames('Select-input', this.props.inputProps.className);
   			var isOpen = this.state.isOpen;
 
-  			var ariaOwns = classnames((_classNames = {}, defineProperty$1(_classNames, this._instancePrefix + '-list', isOpen), defineProperty$1(_classNames, this._instancePrefix + '-backspace-remove-message', this.props.multi && !this.props.disabled && this.state.isFocused && !this.state.inputValue), _classNames));
+  			var ariaOwns = classnames((_classNames = {}, defineProperty(_classNames, this._instancePrefix + '-list', isOpen), defineProperty(_classNames, this._instancePrefix + '-backspace-remove-message', this.props.multi && !this.props.disabled && this.state.isFocused && !this.state.inputValue), _classNames));
 
   			var value = this.state.inputValue;
   			if (value && !this.props.onSelectResetsInput && !this.state.isFocused) {
@@ -1898,7 +1819,7 @@
   				value = '';
   			}
 
-  			var inputProps = _extends$1({}, this.props.inputProps, {
+  			var inputProps = _extends({}, this.props.inputProps, {
   				'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
   				'aria-describedby': this.props['aria-describedby'],
   				'aria-expanded': '' + isOpen,
@@ -1924,11 +1845,11 @@
   			}
 
   			if (this.props.disabled || !this.props.searchable) {
-  				var divProps = objectWithoutProperties$1(this.props.inputProps, []);
+  				var divProps = objectWithoutProperties(this.props.inputProps, []);
 
 
-  				var _ariaOwns = classnames(defineProperty$1({}, this._instancePrefix + '-list', isOpen));
-  				return React__default.createElement('div', _extends$1({}, divProps, {
+  				var _ariaOwns = classnames(defineProperty({}, this._instancePrefix + '-list', isOpen));
+  				return React__default.createElement('div', _extends({}, divProps, {
   					'aria-expanded': isOpen,
   					'aria-owns': _ariaOwns,
   					'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
@@ -1948,12 +1869,12 @@
   			}
 
   			if (this.props.autosize) {
-  				return React__default.createElement(AutosizeInput, _extends$1({ id: this.props.id }, inputProps, { minWidth: '5' }));
+  				return React__default.createElement(AutosizeInput, _extends({ id: this.props.id }, inputProps, { minWidth: '5' }));
   			}
   			return React__default.createElement(
   				'div',
   				{ className: className, key: 'input-wrap', style: { display: 'inline-block' } },
-  				React__default.createElement('input', _extends$1({ id: this.props.id }, inputProps))
+  				React__default.createElement('input', _extends({ id: this.props.id }, inputProps))
   			);
   		}
   	}, {
@@ -2397,12 +2318,12 @@
   };
 
   var Async = function (_Component) {
-  	inherits$1(Async, _Component);
+  	inherits(Async, _Component);
 
   	function Async(props, context) {
-  		classCallCheck$1(this, Async);
+  		classCallCheck(this, Async);
 
-  		var _this = possibleConstructorReturn$1(this, (Async.__proto__ || Object.getPrototypeOf(Async)).call(this, props, context));
+  		var _this = possibleConstructorReturn(this, (Async.__proto__ || Object.getPrototypeOf(Async)).call(this, props, context));
 
   		_this._cache = props.cache === defaultCache ? {} : props.cache;
 
@@ -2416,7 +2337,7 @@
   		return _this;
   	}
 
-  	createClass$1(Async, [{
+  	createClass(Async, [{
   		key: 'componentDidMount',
   		value: function componentDidMount() {
   			var autoload = this.props.autoload;
@@ -2508,7 +2429,7 @@
   			if (onInputChange) {
   				var value = onInputChange(newInputValue);
   				// Note: != used deliberately here to catch undefined and null
-  				if (value != null && (typeof value === 'undefined' ? 'undefined' : _typeof$1(value)) !== 'object') {
+  				if (value != null && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') {
   					newInputValue = '' + value;
   				}
   			}
@@ -2577,7 +2498,7 @@
   				}
   			};
 
-  			return children(_extends$1({}, this.props, props, {
+  			return children(_extends({}, this.props, props, {
   				isLoading: isLoading,
   				onInputChange: this.onInputChange
   			}));
@@ -2590,12 +2511,12 @@
   Async.defaultProps = defaultProps;
 
   var CreatableSelect = function (_React$Component) {
-  	inherits$1(CreatableSelect, _React$Component);
+  	inherits(CreatableSelect, _React$Component);
 
   	function CreatableSelect(props, context) {
-  		classCallCheck$1(this, CreatableSelect);
+  		classCallCheck(this, CreatableSelect);
 
-  		var _this = possibleConstructorReturn$1(this, (CreatableSelect.__proto__ || Object.getPrototypeOf(CreatableSelect)).call(this, props, context));
+  		var _this = possibleConstructorReturn(this, (CreatableSelect.__proto__ || Object.getPrototypeOf(CreatableSelect)).call(this, props, context));
 
   		_this.filterOptions = _this.filterOptions.bind(_this);
   		_this.menuRenderer = _this.menuRenderer.bind(_this);
@@ -2605,7 +2526,7 @@
   		return _this;
   	}
 
-  	createClass$1(CreatableSelect, [{
+  	createClass(CreatableSelect, [{
   		key: 'createNewOption',
   		value: function createNewOption() {
   			var _props = this.props,
@@ -2703,7 +2624,7 @@
   			var menuRenderer$$1 = this.props.menuRenderer;
 
 
-  			return menuRenderer$$1(_extends$1({}, params, {
+  			return menuRenderer$$1(_extends({}, params, {
   				onSelect: this.onOptionSelect,
   				selectValue: this.onOptionSelect
   			}));
@@ -2762,7 +2683,7 @@
 
   			var _props4 = this.props,
   			    refProp = _props4.ref,
-  			    restProps = objectWithoutProperties$1(_props4, ['ref']);
+  			    restProps = objectWithoutProperties(_props4, ['ref']);
   			var children = this.props.children;
 
   			// We can't use destructuring default values to set the children,
@@ -2773,7 +2694,7 @@
   				children = defaultChildren$2;
   			}
 
-  			var props = _extends$1({}, restProps, {
+  			var props = _extends({}, restProps, {
   				allowCreate: true,
   				filterOptions: this.filterOptions,
   				menuRenderer: this.menuRenderer,
@@ -2919,14 +2840,14 @@
   };
 
   var AsyncCreatableSelect = function (_React$Component) {
-  	inherits$1(AsyncCreatableSelect, _React$Component);
+  	inherits(AsyncCreatableSelect, _React$Component);
 
   	function AsyncCreatableSelect() {
-  		classCallCheck$1(this, AsyncCreatableSelect);
-  		return possibleConstructorReturn$1(this, (AsyncCreatableSelect.__proto__ || Object.getPrototypeOf(AsyncCreatableSelect)).apply(this, arguments));
+  		classCallCheck(this, AsyncCreatableSelect);
+  		return possibleConstructorReturn(this, (AsyncCreatableSelect.__proto__ || Object.getPrototypeOf(AsyncCreatableSelect)).apply(this, arguments));
   	}
 
-  	createClass$1(AsyncCreatableSelect, [{
+  	createClass(AsyncCreatableSelect, [{
   		key: 'focus',
   		value: function focus() {
   			this.select.focus();
@@ -2941,7 +2862,7 @@
   				this.props,
   				function (_ref) {
   					var ref = _ref.ref,
-  					    asyncProps = objectWithoutProperties$1(_ref, ['ref']);
+  					    asyncProps = objectWithoutProperties(_ref, ['ref']);
 
   					var asyncRef = ref;
   					return React__default.createElement(
@@ -2949,10 +2870,10 @@
   						asyncProps,
   						function (_ref2) {
   							var ref = _ref2.ref,
-  							    creatableProps = objectWithoutProperties$1(_ref2, ['ref']);
+  							    creatableProps = objectWithoutProperties(_ref2, ['ref']);
 
   							var creatableRef = ref;
-  							return _this2.props.children(_extends$1({}, creatableProps, {
+  							return _this2.props.children(_extends({}, creatableProps, {
   								ref: function ref(select) {
   									creatableRef(select);
   									asyncRef(select);
@@ -2986,44 +2907,55 @@
   Select$1.Value = Value;
   Select$1.Option = Option;
 
-  var CitySelect = function (_Component) {
-    inherits(CitySelect, _Component);
+  var CitySelect =
+  /*#__PURE__*/
+  function (_Component) {
+    babelHelpers.inherits(CitySelect, _Component);
 
     function CitySelect(props) {
-      classCallCheck(this, CitySelect);
+      var _this;
 
-      var _this = possibleConstructorReturn(this, (CitySelect.__proto__ || Object.getPrototypeOf(CitySelect)).call(this, props));
-
+      babelHelpers.classCallCheck(this, CitySelect);
+      _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(CitySelect).call(this, props));
       _this.state = {};
+
       _this.handleChange = function (s) {
         return _this._handleChange(s);
       };
+
       _this.handleInputChange = function (s) {
         return _this._handleInputChange(s);
       };
+
       _this.populateCities = function () {
         return _this._populateCities();
       };
+
       _this.convertCityToSelectOption = function (city) {
         return _this._convertCityToSelectOption(city);
       };
+
       _this.filterCitiesFromResults = function (r) {
         return _this._filterCitiesFromResults(r);
       };
+
       _this.populateCities();
+
       return _this;
     }
 
-    createClass(CitySelect, [{
-      key: 'componentWillReceiveProps',
+    babelHelpers.createClass(CitySelect, [{
+      key: "componentWillReceiveProps",
       value: function componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
           var value = !nextProps.value ? this.state.value : this.convertCityToSelectOption(nextProps.value);
-          this.setState({ value: value });
+          this.setState({
+            value: value
+          });
         }
       }
     }, {
-      key: '_convertCityToSelectOption',
+      key: "_convertCityToSelectOption",
       value: function _convertCityToSelectOption(city) {
         return {
           label: city,
@@ -3031,15 +2963,16 @@
         };
       }
     }, {
-      key: '_handleChange',
+      key: "_handleChange",
       value: function _handleChange(selected) {
         var query = selected ? selected.label : selected;
-
         this.props.handleSelect(query);
-        this.setState({ value: selected });
+        this.setState({
+          value: selected
+        });
       }
     }, {
-      key: '_populateCities',
+      key: "_populateCities",
       value: function _populateCities() {
         var _this2 = this;
 
@@ -3053,7 +2986,7 @@
         });
       }
     }, {
-      key: '_filterCitiesFromResults',
+      key: "_filterCitiesFromResults",
       value: function _filterCitiesFromResults(courses) {
         var _this3 = this;
 
@@ -3062,30 +2995,32 @@
             return _this3.convertCityToSelectOption(course.city);
           }
         });
-
         cities = cities.filter(function (city) {
           return city;
         });
+
         var uniqBy = function uniqBy(arr, fn) {
-          return [].concat(toConsumableArray(new Map(arr.reverse().map(function (x) {
+          return babelHelpers.toConsumableArray(new Map(arr.reverse().map(function (x) {
             return [typeof fn === 'function' ? fn(x) : x[fn], x];
-          })).values()));
+          })).values());
         };
+
         cities = uniqBy(cities, function (el) {
           return el.value;
         });
         cities.sort(function (el) {
           return el.label;
         });
-
-        this.setState({ cities: cities });
+        this.setState({
+          cities: cities
+        });
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
         return React__default.createElement(Select$1, {
           name: this.props.name,
-          className: 'city-select ' + this.props.classes,
+          className: "city-select ".concat(this.props.classes),
           value: this.state.value,
           options: this.state.cities,
           onChange: this.handleChange,
@@ -3097,8 +3032,6 @@
     }]);
     return CitySelect;
   }(React.Component);
-
-
   CitySelect.propTypes = {
     handleSelect: PropTypes.func.isRequired,
     handleInputChange: PropTypes.func,
@@ -3519,7 +3452,7 @@
     tag: 'div'
   };
 
-  var _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  var _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
   function _objectWithoutProperties$2(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
@@ -3544,7 +3477,7 @@
       return children({ targetProps: targetProps, restProps: restProps });
     }
 
-    var componentProps = _extends$2({}, restProps);
+    var componentProps = _extends$1({}, restProps);
 
     if (typeof component === 'string') {
       componentProps.ref = targetRef;
@@ -3918,13 +3851,13 @@
     };
   }
 
-  var classCallCheck$2 = function (instance, Constructor) {
+  var classCallCheck$1 = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  var createClass$2 = function () {
+  var createClass$1 = function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -3946,7 +3879,7 @@
 
 
 
-  var defineProperty$2 = function (obj, key, value) {
+  var defineProperty$1 = function (obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -3961,7 +3894,7 @@
     return obj;
   };
 
-  var _extends$3 = Object.assign || function (target) {
+  var _extends$2 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -3983,7 +3916,7 @@
    * @returns {Object} ClientRect like output
    */
   function getClientRect(offsets) {
-    return _extends$3({}, offsets, {
+    return _extends$2({}, offsets, {
       right: offsets.left + offsets.width,
       bottom: offsets.top + offsets.height
     });
@@ -4265,7 +4198,7 @@
     };
 
     var sortedAreas = Object.keys(rects).map(function (key) {
-      return _extends$3({
+      return _extends$2({
         key: key
       }, rects[key], {
         area: getArea(rects[key])
@@ -4853,9 +4786,9 @@
     };
 
     // Update `data` attributes, styles and arrowStyles
-    data.attributes = _extends$3({}, attributes, data.attributes);
-    data.styles = _extends$3({}, styles, data.styles);
-    data.arrowStyles = _extends$3({}, data.offsets.arrow, data.arrowStyles);
+    data.attributes = _extends$2({}, attributes, data.attributes);
+    data.styles = _extends$2({}, styles, data.styles);
+    data.arrowStyles = _extends$2({}, data.offsets.arrow, data.arrowStyles);
 
     return data;
   }
@@ -4965,7 +4898,7 @@
     sideValue = Math.max(Math.min(popper[len] - arrowElementSize, sideValue), 0);
 
     data.arrowElement = arrowElement;
-    data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty$2(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty$2(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
+    data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty$1(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty$1(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
 
     return data;
   }
@@ -5128,7 +5061,7 @@
 
         // this object contains `position`, we want to preserve it along with
         // any additional property we may add in the future
-        data.offsets.popper = _extends$3({}, data.offsets.popper, getPopperOffsets(data.instance.popper, data.offsets.reference, data.placement));
+        data.offsets.popper = _extends$2({}, data.offsets.popper, getPopperOffsets(data.instance.popper, data.offsets.reference, data.placement));
 
         data = runModifiers(data.instance.modifiers, data, 'flip');
       }
@@ -5388,7 +5321,7 @@
         if (popper[placement] < boundaries[placement] && !options.escapeWithReference) {
           value = Math.max(popper[placement], boundaries[placement]);
         }
-        return defineProperty$2({}, placement, value);
+        return defineProperty$1({}, placement, value);
       },
       secondary: function secondary(placement) {
         var mainSide = placement === 'right' ? 'left' : 'top';
@@ -5396,13 +5329,13 @@
         if (popper[placement] > boundaries[placement] && !options.escapeWithReference) {
           value = Math.min(popper[mainSide], boundaries[placement] - (placement === 'right' ? popper.width : popper.height));
         }
-        return defineProperty$2({}, mainSide, value);
+        return defineProperty$1({}, mainSide, value);
       }
     };
 
     order.forEach(function (placement) {
       var side = ['left', 'top'].indexOf(placement) !== -1 ? 'primary' : 'secondary';
-      popper = _extends$3({}, popper, check[side](placement));
+      popper = _extends$2({}, popper, check[side](placement));
     });
 
     data.offsets.popper = popper;
@@ -5433,11 +5366,11 @@
       var measurement = isVertical ? 'width' : 'height';
 
       var shiftOffsets = {
-        start: defineProperty$2({}, side, reference[side]),
-        end: defineProperty$2({}, side, reference[side] + reference[measurement] - popper[measurement])
+        start: defineProperty$1({}, side, reference[side]),
+        end: defineProperty$1({}, side, reference[side] + reference[measurement] - popper[measurement])
       };
 
-      data.offsets.popper = _extends$3({}, popper, shiftOffsets[shiftvariation]);
+      data.offsets.popper = _extends$2({}, popper, shiftOffsets[shiftvariation]);
     }
 
     return data;
@@ -5943,7 +5876,7 @@
       var _this = this;
 
       var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      classCallCheck$2(this, Popper);
+      classCallCheck$1(this, Popper);
 
       this.scheduleUpdate = function () {
         return requestAnimationFrame(_this.update);
@@ -5953,7 +5886,7 @@
       this.update = debounce(this.update.bind(this));
 
       // with {} we create a new object with the options inside it
-      this.options = _extends$3({}, Popper.Defaults, options);
+      this.options = _extends$2({}, Popper.Defaults, options);
 
       // init state
       this.state = {
@@ -5968,13 +5901,13 @@
 
       // Deep merge modifiers options
       this.options.modifiers = {};
-      Object.keys(_extends$3({}, Popper.Defaults.modifiers, options.modifiers)).forEach(function (name) {
-        _this.options.modifiers[name] = _extends$3({}, Popper.Defaults.modifiers[name] || {}, options.modifiers ? options.modifiers[name] : {});
+      Object.keys(_extends$2({}, Popper.Defaults.modifiers, options.modifiers)).forEach(function (name) {
+        _this.options.modifiers[name] = _extends$2({}, Popper.Defaults.modifiers[name] || {}, options.modifiers ? options.modifiers[name] : {});
       });
 
       // Refactoring modifiers' list (Object => Array)
       this.modifiers = Object.keys(this.options.modifiers).map(function (name) {
-        return _extends$3({
+        return _extends$2({
           name: name
         }, _this.options.modifiers[name]);
       })
@@ -6009,7 +5942,7 @@
     // class prototype and break stuff like Sinon stubs
 
 
-    createClass$2(Popper, [{
+    createClass$1(Popper, [{
       key: 'update',
       value: function update$$1() {
         return update.call(this);
@@ -6083,7 +6016,7 @@
   Popper.placements = placements;
   Popper.Defaults = Defaults;
 
-  var _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  var _extends$3 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
   var _createClass$1 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -6151,7 +6084,7 @@
           };
         }
 
-        return _extends$4({
+        return _extends$3({
           position: data.offsets.popper.position
         }, data.styles);
       }, _this._getPopperPlacement = function () {
@@ -6218,12 +6151,12 @@
             placement = _props.placement,
             eventsEnabled = _props.eventsEnabled;
 
-        var modifiers = _extends$4({}, this.props.modifiers, {
+        var modifiers = _extends$3({}, this.props.modifiers, {
           applyStyle: { enabled: false },
           updateState: this._updateStateModifier
         });
         if (this._arrowNode) {
-          modifiers.arrow = _extends$4({}, this.props.modifiers.arrow || {}, {
+          modifiers.arrow = _extends$3({}, this.props.modifiers.arrow || {}, {
             element: this._arrowNode
           });
         }
@@ -6275,8 +6208,8 @@
           });
         }
 
-        var componentProps = _extends$4({}, restProps, {
-          style: _extends$4({}, restProps.style, popperStyle),
+        var componentProps = _extends$3({}, restProps, {
+          style: _extends$3({}, restProps.style, popperStyle),
           'data-placement': popperPlacement,
           'data-x-out-of-boundaries': popperHide
         });
@@ -6322,7 +6255,7 @@
     modifiers: {}
   };
 
-  var _extends$5 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  var _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
   function _objectWithoutProperties$4(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
@@ -6351,8 +6284,8 @@
       return children({ arrowProps: arrowProps, restProps: restProps });
     }
 
-    var componentProps = _extends$5({}, restProps, {
-      style: _extends$5({}, arrowStyle, restProps.style)
+    var componentProps = _extends$4({}, restProps, {
+      style: _extends$4({}, arrowStyle, restProps.style)
     });
 
     if (typeof component === 'string') {
@@ -6374,7 +6307,7 @@
     children: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
   };
 
-  var _typeof$2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
   } : function (obj) {
     return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
@@ -6388,13 +6321,13 @@
 
 
 
-  var classCallCheck$3 = function (instance, Constructor) {
+  var classCallCheck$2 = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  var createClass$3 = function () {
+  var createClass$2 = function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -6420,7 +6353,7 @@
 
 
 
-  var inherits$2 = function (subClass, superClass) {
+  var inherits$1 = function (subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
     }
@@ -6446,7 +6379,7 @@
 
 
 
-  var possibleConstructorReturn$2 = function (self, call) {
+  var possibleConstructorReturn$1 = function (self, call) {
     if (!self) {
       throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     }
@@ -6477,12 +6410,12 @@
   }
 
   var YearDropdownOptions = function (_React$Component) {
-    inherits$2(YearDropdownOptions, _React$Component);
+    inherits$1(YearDropdownOptions, _React$Component);
 
     function YearDropdownOptions(props) {
-      classCallCheck$3(this, YearDropdownOptions);
+      classCallCheck$2(this, YearDropdownOptions);
 
-      var _this = possibleConstructorReturn$2(this, _React$Component.call(this, props));
+      var _this = possibleConstructorReturn$1(this, _React$Component.call(this, props));
 
       _this.renderOptions = function () {
         var selectedYear = _this.props.year;
@@ -7013,7 +6946,7 @@
           classNamesArr.push(defaultClassName);
           dateClasses.set(key, classNamesArr);
         }
-      } else if ((typeof obj === "undefined" ? "undefined" : _typeof$2(obj)) === "object") {
+      } else if ((typeof obj === "undefined" ? "undefined" : _typeof$1(obj)) === "object") {
         var keys = Object.keys(obj);
         var className = keys[0];
         var arrOfMoments = obj[keys[0]];
@@ -7051,18 +6984,18 @@
   var WrappedYearDropdownOptions = onClickOutsideHOC(YearDropdownOptions);
 
   var YearDropdown = function (_React$Component) {
-    inherits$2(YearDropdown, _React$Component);
+    inherits$1(YearDropdown, _React$Component);
 
     function YearDropdown() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, YearDropdown);
+      classCallCheck$2(this, YearDropdown);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
         dropdownVisible: false
       }, _this.renderSelectOptions = function () {
         var minYear = _this.props.minDate ? getYear(_this.props.minDate) : 1900;
@@ -7150,7 +7083,7 @@
         if (_this.props.setOpen) {
           _this.props.setOpen(true);
         }
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     YearDropdown.prototype.render = function render() {
@@ -7191,18 +7124,18 @@
   };
 
   var MonthDropdownOptions = function (_React$Component) {
-    inherits$2(MonthDropdownOptions, _React$Component);
+    inherits$1(MonthDropdownOptions, _React$Component);
 
     function MonthDropdownOptions() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, MonthDropdownOptions);
+      classCallCheck$2(this, MonthDropdownOptions);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.renderOptions = function () {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.renderOptions = function () {
         return _this.props.monthNames.map(function (month, i) {
           return React__default.createElement(
             "div",
@@ -7224,7 +7157,7 @@
         return _this.props.onChange(month);
       }, _this.handleClickOutside = function () {
         return _this.props.onCancel();
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     MonthDropdownOptions.prototype.render = function render() {
@@ -7248,18 +7181,18 @@
   var WrappedMonthDropdownOptions = onClickOutsideHOC(MonthDropdownOptions);
 
   var MonthDropdown = function (_React$Component) {
-    inherits$2(MonthDropdown, _React$Component);
+    inherits$1(MonthDropdown, _React$Component);
 
     function MonthDropdown() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, MonthDropdown);
+      classCallCheck$2(this, MonthDropdown);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
         dropdownVisible: false
       }, _this.renderSelectOptions = function (monthNames) {
         return monthNames.map(function (M, i) {
@@ -7323,7 +7256,7 @@
         return _this.setState({
           dropdownVisible: !_this.state.dropdownVisible
         });
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     MonthDropdown.prototype.render = function render() {
@@ -7383,12 +7316,12 @@
   }
 
   var MonthYearDropdownOptions = function (_React$Component) {
-    inherits$2(MonthYearDropdownOptions, _React$Component);
+    inherits$1(MonthYearDropdownOptions, _React$Component);
 
     function MonthYearDropdownOptions(props) {
-      classCallCheck$3(this, MonthYearDropdownOptions);
+      classCallCheck$2(this, MonthYearDropdownOptions);
 
-      var _this = possibleConstructorReturn$2(this, _React$Component.call(this, props));
+      var _this = possibleConstructorReturn$1(this, _React$Component.call(this, props));
 
       _this.renderOptions = function () {
         return _this.state.monthYearsList.map(function (monthYear) {
@@ -7457,18 +7390,18 @@
   var WrappedMonthYearDropdownOptions = onClickOutsideHOC(MonthYearDropdownOptions);
 
   var MonthYearDropdown = function (_React$Component) {
-    inherits$2(MonthYearDropdown, _React$Component);
+    inherits$1(MonthYearDropdown, _React$Component);
 
     function MonthYearDropdown() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, MonthYearDropdown);
+      classCallCheck$2(this, MonthYearDropdown);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
         dropdownVisible: false
       }, _this.renderSelectOptions = function () {
         var currDate = getStartOfMonth(localizeDate(_this.props.minDate, _this.props.locale));
@@ -7554,7 +7487,7 @@
         return _this.setState({
           dropdownVisible: !_this.state.dropdownVisible
         });
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     MonthYearDropdown.prototype.render = function render() {
@@ -7592,18 +7525,18 @@
   };
 
   var Day = function (_React$Component) {
-    inherits$2(Day, _React$Component);
+    inherits$1(Day, _React$Component);
 
     function Day() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, Day);
+      classCallCheck$2(this, Day);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
         if (!_this.isDisabled() && _this.props.onClick) {
           _this.props.onClick(event);
         }
@@ -7738,7 +7671,7 @@
           "react-datepicker__day--weekend": _this.isWeekend(),
           "react-datepicker__day--outside-month": _this.isOutsideMonth()
         }, _this.getHighLightedClass("react-datepicker__day--highlighted"));
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     Day.prototype.render = function render() {
@@ -7777,22 +7710,22 @@
   };
 
   var WeekNumber = function (_React$Component) {
-    inherits$2(WeekNumber, _React$Component);
+    inherits$1(WeekNumber, _React$Component);
 
     function WeekNumber() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, WeekNumber);
+      classCallCheck$2(this, WeekNumber);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
         if (_this.props.onClick) {
           _this.props.onClick(event);
         }
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     WeekNumber.prototype.render = function render() {
@@ -7820,18 +7753,18 @@
   };
 
   var Week = function (_React$Component) {
-    inherits$2(Week, _React$Component);
+    inherits$1(Week, _React$Component);
 
     function Week() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, Week);
+      classCallCheck$2(this, Week);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleDayClick = function (day, event) {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleDayClick = function (day, event) {
         if (_this.props.onDayClick) {
           _this.props.onDayClick(day, event);
         }
@@ -7882,7 +7815,7 @@
             utcOffset: _this.props.utcOffset
           });
         }));
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     Week.prototype.render = function render() {
@@ -7925,18 +7858,18 @@
   var FIXED_HEIGHT_STANDARD_WEEK_COUNT = 6;
 
   var Month = function (_React$Component) {
-    inherits$2(Month, _React$Component);
+    inherits$1(Month, _React$Component);
 
     function Month() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, Month);
+      classCallCheck$2(this, Month);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleDayClick = function (day, event) {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleDayClick = function (day, event) {
         if (_this.props.onDayClick) {
           _this.props.onDayClick(day, event);
         }
@@ -8016,7 +7949,7 @@
         return classnames("react-datepicker__month", {
           "react-datepicker__month--selecting-range": selectingDate && (selectsStart || selectsEnd)
         });
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     Month.prototype.render = function render() {
@@ -8063,18 +7996,18 @@
   };
 
   var Time = function (_React$Component) {
-    inherits$2(Time, _React$Component);
+    inherits$1(Time, _React$Component);
 
     function Time() {
       var _temp, _this, _ret;
 
-      classCallCheck$3(this, Time);
+      classCallCheck$2(this, Time);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$2(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (time) {
+      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (time) {
         if ((_this.props.minTime || _this.props.maxTime) && isTimeInDisabledRange(time, _this.props) || _this.props.excludeTimes && isTimeDisabled(time, _this.props.excludeTimes) || _this.props.includeTimes && !isTimeDisabled(time, _this.props.includeTimes)) {
           return;
         }
@@ -8127,7 +8060,7 @@
             formatDate(time, format)
           );
         });
-      }, _temp), possibleConstructorReturn$2(_this, _ret);
+      }, _temp), possibleConstructorReturn$1(_this, _ret);
     }
 
     Time.prototype.componentDidMount = function componentDidMount() {
@@ -8181,7 +8114,7 @@
       );
     };
 
-    createClass$3(Time, null, [{
+    createClass$2(Time, null, [{
       key: "defaultProps",
       get: function get$$1() {
         return {
@@ -8222,8 +8155,8 @@
   };
 
   var Calendar = function (_React$Component) {
-    inherits$2(Calendar, _React$Component);
-    createClass$3(Calendar, null, [{
+    inherits$1(Calendar, _React$Component);
+    createClass$2(Calendar, null, [{
       key: "defaultProps",
       get: function get$$1() {
         return {
@@ -8236,9 +8169,9 @@
     }]);
 
     function Calendar(props) {
-      classCallCheck$3(this, Calendar);
+      classCallCheck$2(this, Calendar);
 
-      var _this = possibleConstructorReturn$2(this, _React$Component.call(this, props));
+      var _this = possibleConstructorReturn$1(this, _React$Component.call(this, props));
 
       _this.handleClickOutside = function (event) {
         _this.props.onClickOutside(event);
@@ -8734,11 +8667,11 @@
   var popperPlacementPositions = ["auto", "auto-left", "auto-right", "bottom", "bottom-end", "bottom-start", "left", "left-end", "left-start", "right", "right-end", "right-start", "top", "top-end", "top-start"];
 
   var PopperComponent = function (_React$Component) {
-    inherits$2(PopperComponent, _React$Component);
+    inherits$1(PopperComponent, _React$Component);
 
     function PopperComponent() {
-      classCallCheck$3(this, PopperComponent);
-      return possibleConstructorReturn$2(this, _React$Component.apply(this, arguments));
+      classCallCheck$2(this, PopperComponent);
+      return possibleConstructorReturn$1(this, _React$Component.apply(this, arguments));
     }
 
     PopperComponent.prototype.render = function render() {
@@ -8782,7 +8715,7 @@
       );
     };
 
-    createClass$3(PopperComponent, null, [{
+    createClass$2(PopperComponent, null, [{
       key: "defaultProps",
       get: function get$$1() {
         return {
@@ -8828,8 +8761,8 @@
    */
 
   var DatePicker = function (_React$Component) {
-    inherits$2(DatePicker, _React$Component);
-    createClass$3(DatePicker, null, [{
+    inherits$1(DatePicker, _React$Component);
+    createClass$2(DatePicker, null, [{
       key: "defaultProps",
       get: function get$$1() {
         return {
@@ -8862,9 +8795,9 @@
     }]);
 
     function DatePicker(props) {
-      classCallCheck$3(this, DatePicker);
+      classCallCheck$2(this, DatePicker);
 
-      var _this = possibleConstructorReturn$2(this, _React$Component.call(this, props));
+      var _this = possibleConstructorReturn$1(this, _React$Component.call(this, props));
 
       _this.getPreSelection = function () {
         return _this.props.openToDate ? newDate(_this.props.openToDate) : _this.props.selectsEnd && _this.props.startDate ? newDate(_this.props.startDate) : _this.props.selectsStart && _this.props.endDate ? newDate(_this.props.endDate) : now(_this.props.utcOffset);
@@ -9386,47 +9319,41 @@
   var DatePickerWithLabel = function DatePickerWithLabel(props) {
     var onChange = function onChange(value) {
       var date = !!value ? value.format('YYYY-MM-DD') : null;
-      props.handleChange(defineProperty({}, props.name, date));
+      props.handleChange(babelHelpers.defineProperty({}, props.name, date));
     };
 
     var date = !!props.value ? moment(props.value) : null;
-
-    return React__default.createElement(
-      'div',
-      { className: 'input-with-label form-group ' + props.classes },
-      React__default.createElement(
-        'label',
-        { htmlFor: props.name },
-        props.label + ' ' + (props.required ? '*' : '')
-      ),
-      React__default.createElement(DatePicker, {
-        selected: date,
-        name: props.name,
-        id: props.id,
-        onChange: onChange,
-        className: 'form-control'
-      }),
-      props.errorMessage && React__default.createElement(
-        'div',
-        { className: 'error-message minicaps' },
-        props.errorMessage
-      )
-    );
+    return React__default.createElement("div", {
+      className: "input-with-label form-group ".concat(props.classes)
+    }, React__default.createElement("label", {
+      htmlFor: props.name
+    }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement(DatePicker, {
+      selected: date,
+      name: props.name,
+      id: props.id,
+      onChange: onChange,
+      className: "form-control",
+      minDate: props.minDate
+    }), props.errorMessage && React__default.createElement("div", {
+      className: 'error-message minicaps'
+    }, props.errorMessage));
   };
 
-  var ImageUploader = function (_Component) {
-    inherits(ImageUploader, _Component);
+  var ImageUploader =
+  /*#__PURE__*/
+  function (_Component) {
+    babelHelpers.inherits(ImageUploader, _Component);
 
     function ImageUploader(props) {
-      classCallCheck(this, ImageUploader);
+      var _this;
 
-      var _this = possibleConstructorReturn(this, (ImageUploader.__proto__ || Object.getPrototypeOf(ImageUploader)).call(this, props));
+      babelHelpers.classCallCheck(this, ImageUploader);
+      _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(ImageUploader).call(this, props));
 
       _this.saveImage = function (opts) {
         var url = opts.url;
         var data = opts.data;
         var config = opts.config;
-
         axios({
           url: url,
           data: data,
@@ -9437,6 +9364,7 @@
           if (res.data.errors) {
             return opts.onError(res.data);
           }
+
           opts.onSuccess(res.data);
         }).catch(function (err) {
           console.log(err);
@@ -9444,15 +9372,19 @@
         });
       };
 
-      _this.state = { image: _this.props.image };
+      _this.state = {
+        image: _this.props.image
+      };
+
       _this.onChange = function (e) {
         return _this._onChange(e);
       };
+
       return _this;
     }
 
-    createClass(ImageUploader, [{
-      key: '_onChange',
+    babelHelpers.createClass(ImageUploader, [{
+      key: "_onChange",
       value: function _onChange(e) {
         var _this2 = this;
 
@@ -9462,59 +9394,70 @@
         data.append('image', file);
 
         var onSuccess = function onSuccess(data) {
-          _this2.setState({ image: data.image_url });
-          _this2.props.handleChange(defineProperty({}, _this2.props.name, data.image_url));
+          _this2.setState({
+            image: data.image_url
+          });
+
+          _this2.props.handleChange(babelHelpers.defineProperty({}, _this2.props.name, data.image_url));
         };
 
         var onError = function onError(data) {
           console.log(data.errors);
-          _this2.props.handleChange(defineProperty({}, _this2.props.name, null));
+
+          _this2.props.handleChange(babelHelpers.defineProperty({}, _this2.props.name, null));
         };
 
         var onFail = function onFail(err) {
           console.log(err);
         };
 
-        var config = { headers: { 'Content-Type': 'multipart/form-data' } };
-        var opts = { url: url, data: data, config: config, onSuccess: onSuccess, onError: onError, onFail: onFail };
-
+        var config = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        };
+        var opts = {
+          url: url,
+          data: data,
+          config: config,
+          onSuccess: onSuccess,
+          onError: onError,
+          onFail: onFail
+        };
         this.saveImage(opts);
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
-        return React__default.createElement(
-          'div',
-          { className: 'input-with-label form-group ' + this.props.classes },
-          React__default.createElement(
-            'label',
-            { htmlFor: this.props.name },
-            this.props.label
-          ),
-          React__default.createElement('input', {
-            className: 'image-upload',
-            type: 'file',
-            name: this.props.name,
-            id: this.props.id,
-            onChange: this.onChange
-          }),
-          this.props.errorMessage && React__default.createElement(
-            'div',
-            { className: 'error-message' },
-            this.props.errorMessage
-          ),
-          this.state.image && React__default.createElement(
-            'div',
-            { className: 'image-preview', style: { width: '250px' } },
-            React__default.createElement('img', { src: this.state.image, alt: 'Image preview', style: { width: '100%', height: '100%' } })
-          )
-        );
+        return React__default.createElement("div", {
+          className: "input-with-label form-group ".concat(this.props.classes)
+        }, React__default.createElement("label", {
+          htmlFor: this.props.name
+        }, this.props.label), React__default.createElement("input", {
+          className: 'image-upload',
+          type: 'file',
+          name: this.props.name,
+          id: this.props.id,
+          onChange: this.onChange
+        }), this.props.errorMessage && React__default.createElement("div", {
+          className: 'error-message'
+        }, this.props.errorMessage), this.state.image && React__default.createElement("div", {
+          className: 'image-preview',
+          style: {
+            width: '250px'
+          }
+        }, React__default.createElement("img", {
+          src: this.state.image,
+          alt: 'Image preview',
+          style: {
+            width: '100%',
+            height: '100%'
+          }
+        })));
       }
     }]);
     return ImageUploader;
   }(React.Component);
-
-
   ImageUploader.propTypes = {
     imageUploadUrl: PropTypes.string.isRequired,
     handleChange: PropTypes.func.isRequired,
@@ -9528,35 +9471,27 @@
 
   var InputWithLabel = function InputWithLabel(props) {
     var onChange = function onChange(e) {
-      props.handleChange(defineProperty({}, props.name, e.currentTarget.value));
+      props.handleChange(babelHelpers.defineProperty({}, props.name, e.currentTarget.value));
     };
 
-    return React__default.createElement(
-      'div',
-      { className: 'input-with-label form-group ' + props.classes },
-      React__default.createElement(
-        'label',
-        { htmlFor: props.name },
-        props.label + ' ' + (props.required ? '*' : '')
-      ),
-      React__default.createElement('input', {
-        className: 'form-control',
-        type: props.type || 'text',
-        name: props.name,
-        id: props.id,
-        onChange: onChange,
-        value: props.value || props.defaultValue,
-        placeholder: props.placeholder,
-        required: props.required || false,
-        min: props.min,
-        max: props.max
-      }),
-      props.errorMessage && React__default.createElement(
-        'div',
-        { className: 'error-message minicaps' },
-        props.errorMessage
-      )
-    );
+    return React__default.createElement("div", {
+      className: "input-with-label form-group ".concat(props.classes)
+    }, React__default.createElement("label", {
+      htmlFor: props.name
+    }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement("input", {
+      className: 'form-control',
+      type: props.type || 'text',
+      name: props.name,
+      id: props.id,
+      onChange: onChange,
+      value: props.value || props.defaultValue,
+      placeholder: props.placeholder,
+      required: props.required || false,
+      min: props.min,
+      max: props.max
+    }), props.errorMessage && React__default.createElement("div", {
+      className: 'error-message minicaps'
+    }, props.errorMessage));
   };
 
   var countUp_min = createCommonjsModule(function (module, exports) {
@@ -11237,69 +11172,66 @@
     }
   });
 
-  var NumberWithLabel = function (_Component) {
-    inherits(NumberWithLabel, _Component);
+  var NumberWithLabel =
+  /*#__PURE__*/
+  function (_Component) {
+    babelHelpers.inherits(NumberWithLabel, _Component);
 
     function NumberWithLabel(props) {
-      classCallCheck(this, NumberWithLabel);
+      var _this;
 
-      var _this = possibleConstructorReturn(this, (NumberWithLabel.__proto__ || Object.getPrototypeOf(NumberWithLabel)).call(this, props));
+      babelHelpers.classCallCheck(this, NumberWithLabel);
+      _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(NumberWithLabel).call(this, props));
 
       _this.triggerCountup = function () {
         return _this._triggerCountup();
       };
+
       _this.handleVisibilityChange = function (e) {
         return _this._handleVisibilityChange(e);
       };
+
       return _this;
     }
 
-    createClass(NumberWithLabel, [{
-      key: '_triggerCountup',
+    babelHelpers.createClass(NumberWithLabel, [{
+      key: "_triggerCountup",
       value: function _triggerCountup() {
         build_1(this.countUpNum);
       }
     }, {
-      key: '_handleVisibilityChange',
+      key: "_handleVisibilityChange",
       value: function _handleVisibilityChange(isVisible) {
         if (isVisible) {
           this.triggerCountup();
         }
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
         var _this2 = this;
 
-        return React__default.createElement(
-          visibilitySensor,
-          { onChange: this.handleVisibilityChange },
-          React__default.createElement(
-            'div',
-            { className: 'stat' },
-            React__default.createElement(CountUp, {
-              className: 'number',
-              start: 0,
-              end: this.props.number,
-              duration: 2,
-              ref: function ref(el) {
-                _this2.countUpNum = el;
-              }
-            }),
-            React__default.createElement(
-              'span',
-              { className: 'text' },
-              this.props.label
-            )
-          )
-        );
+        return React__default.createElement(visibilitySensor, {
+          onChange: this.handleVisibilityChange
+        }, React__default.createElement("div", {
+          className: "stat"
+        }, React__default.createElement(CountUp, {
+          className: "number",
+          start: 0,
+          end: this.props.number,
+          duration: 2,
+          ref: function ref(el) {
+            _this2.countUpNum = el;
+          }
+        }), React__default.createElement("span", {
+          className: 'text'
+        }, this.props.label)));
       }
     }]);
     return NumberWithLabel;
   }(React.Component);
 
   var ALGOLIA_ENDPOINT = 'https://places-dsn.algolia.net/1/places';
-
   var KANSAS_CITY_OPTION = {
     label: 'Kansas City, Missouri, United States of America',
     value: {
@@ -11318,44 +11250,61 @@
     }
   };
 
-  var PlaceSelect = function (_Component) {
-    inherits(PlaceSelect, _Component);
+  var PlaceSelect =
+  /*#__PURE__*/
+  function (_Component) {
+    babelHelpers.inherits(PlaceSelect, _Component);
 
     function PlaceSelect(props) {
-      classCallCheck(this, PlaceSelect);
+      var _this;
 
-      var _this = possibleConstructorReturn(this, (PlaceSelect.__proto__ || Object.getPrototypeOf(PlaceSelect)).call(this, props));
+      babelHelpers.classCallCheck(this, PlaceSelect);
+      _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(PlaceSelect).call(this, props));
+      _this.state = {
+        hits: [],
+        value: null
+      };
 
-      _this.state = { hits: [], value: null };
       _this.handleChange = function (s) {
         return _this._handleChange(s);
       };
+
       _this.searchPlaces = function (query) {
         return _this._searchPlaces(query);
       };
+
       _this.fetchPlaceById = function () {
         return _this._fetchPlaceById();
       };
+
       _this.generateCityOption = function (place) {
         return _this._generateCityOption(place);
       };
+
       return _this;
     }
 
-    createClass(PlaceSelect, [{
-      key: 'componentWillMount',
+    babelHelpers.createClass(PlaceSelect, [{
+      key: "componentWillMount",
       value: function componentWillMount() {
         if (!!this.props.place_id) {
           this.fetchPlaceById();
         } else if (this.props.city === 'Kansas City, Missouri, United States of America') {
-          this.setState({ value: KANSAS_CITY_OPTION });
+          this.setState({
+            value: KANSAS_CITY_OPTION
+          });
         } else if (this.props.city) {
-          var value = { label: this.props.city, value: this.props.city };
-          this.setState({ value: value });
+          var value = {
+            label: this.props.city,
+            value: this.props.city
+          };
+          this.setState({
+            value: value
+          });
         }
       }
     }, {
-      key: '_handleChange',
+      key: "_handleChange",
       value: function _handleChange(selected) {
         console.log(selected);
         var cityData = {};
@@ -11375,21 +11324,22 @@
         }
 
         this.props.handleSelect(cityData);
-        this.setState({ value: selected });
+        this.setState({
+          value: selected
+        });
       }
     }, {
-      key: '_searchPlaces',
+      key: "_searchPlaces",
       value: function _searchPlaces(query) {
         var _this2 = this;
 
-        var url = ALGOLIA_ENDPOINT + '/query/';
+        var url = "".concat(ALGOLIA_ENDPOINT, "/query/");
         var data = {
           "type": "city",
           "hitsPerPage": "10",
           "query": query
         };
         var method = 'post';
-
         return axios({
           data: data,
           url: url,
@@ -11397,68 +11347,65 @@
         }).then(function (res) {
           var options = res.data.hits.map(function (place) {
             return _this2.generateCityOption(place);
-          });
-          // Kansas City, MO is missing from the Algolia places API
+          }); // Kansas City, MO is missing from the Algolia places API
           // so we're manually adding it in
           // TODO: don't do this
+
           if (query.toLowerCase().includes('kansas')) {
             options.unshift(KANSAS_CITY_OPTION);
           }
-          return { options: options };
+
+          return {
+            options: options
+          };
         }).catch(function (err) {
           console.log(err);
         });
       }
     }, {
-      key: '_fetchPlaceById',
+      key: "_fetchPlaceById",
       value: function _fetchPlaceById() {
         var _this3 = this;
 
-        var url = ALGOLIA_ENDPOINT + '/' + this.props.place_id;
-
+        var url = "".concat(ALGOLIA_ENDPOINT, "/").concat(this.props.place_id);
         axios.get(url).then(function (res) {
           var value = _this3.generateCityOption(res.data);
-          _this3.setState({ value: value });
+
+          _this3.setState({
+            value: value
+          });
         }).catch(function (err) {
           console.log(err);
         });
       }
     }, {
-      key: '_generateCityOption',
+      key: "_generateCityOption",
       value: function _generateCityOption(place) {
         return {
-          label: place.locale_names.default[0] + ', ' + place.administrative[0] + ', ' + place.country.default,
+          label: "".concat(place.locale_names.default[0], ", ").concat(place.administrative[0], ", ").concat(place.country.default),
           value: place
         };
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
         var _this4 = this;
 
         var options = this.state.hits.map(function (place) {
           return _this4.generateCityOption(place);
         });
-
-        return React__default.createElement(
-          'div',
-          null,
-          React__default.createElement(Select$1.Async, {
-            name: this.props.name,
-            className: 'city-select ' + this.props.classes,
-            value: this.state.value,
-            options: options,
-            onChange: this.handleChange,
-            noResultsText: 'No results for this city',
-            placeholder: 'Start typing a city name...',
-            loadOptions: this.searchPlaces
-          }),
-          this.props.errorMessage && React__default.createElement(
-            'div',
-            { className: 'error-message minicaps' },
-            this.props.errorMessage
-          )
-        );
+        return React__default.createElement("div", null, React__default.createElement(Select$1.Async, {
+          name: this.props.name,
+          className: "city-select ".concat(this.props.classes),
+          value: this.state.value,
+          options: options,
+          onChange: this.handleChange,
+          noResultsText: 'No results for this city',
+          placeholder: 'Start typing a city name...',
+          loadOptions: this.searchPlaces
+        }), this.props.errorMessage && React__default.createElement("div", {
+          className: "error-message minicaps"
+        }, this.props.errorMessage));
       }
     }]);
     return PlaceSelect;
@@ -13030,81 +12977,76 @@
   var RangeSliderWithLabel = function RangeSliderWithLabel(props) {
     var disabledClass = props.disabled ? 'disabled' : '';
     var onChangeFunction = props.disabled ? null : props.handleChange;
-
-    return React__default.createElement(
-      'div',
-      { className: 'range-slider-with-label label-left ' + props.classes + ' ' + disabledClass },
-      React__default.createElement(
-        'label',
-        { htmlFor: props.name },
-        props.label
-      ),
-      React__default.createElement(Slider, {
-        value: props.value,
-        name: props.name,
-        min: props.min,
-        max: props.max,
-        step: props.step,
-        onChange: onChangeFunction
-      })
-    );
+    return React__default.createElement("div", {
+      className: "range-slider-with-label label-left ".concat(props.classes, " ").concat(disabledClass)
+    }, React__default.createElement("label", {
+      htmlFor: props.name
+    }, props.label), React__default.createElement(Slider, {
+      value: props.value,
+      name: props.name,
+      min: props.min,
+      max: props.max,
+      step: props.step,
+      onChange: onChangeFunction
+    }));
   };
 
   var SelectWithLabel = function SelectWithLabel(props) {
-    return React__default.createElement(
-      'div',
-      { className: '' + props.classes },
-      React__default.createElement(
-        'label',
-        { htmlFor: props.name },
-        props.label + ' ' + (props.required ? '*' : '')
-      ),
-      React__default.createElement(Select$1, {
-        name: props.name,
-        className: props.selectClasses,
-        value: props.value,
-        options: props.options,
-        onChange: props.onChange,
-        onInputChange: props.onInputChange,
-        noResultsText: props.noResultsText,
-        placeholder: props.placeholder,
-        multi: props.multi || false
-      }),
-      props.errorMessage && React__default.createElement(
-        'div',
-        { className: 'error-message minicaps' },
-        props.errorMessage
-      )
-    );
+    return React__default.createElement("div", {
+      className: "".concat(props.classes)
+    }, React__default.createElement("label", {
+      htmlFor: props.name
+    }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement(Select$1, {
+      name: props.name,
+      className: props.selectClasses,
+      value: props.value,
+      options: props.options,
+      onChange: props.onChange,
+      onInputChange: props.onInputChange,
+      noResultsText: props.noResultsText,
+      placeholder: props.placeholder,
+      multi: props.multi || false
+    }), props.errorMessage && React__default.createElement("div", {
+      className: 'error-message minicaps'
+    }, props.errorMessage));
   };
 
-  var SwitchWithLabels = function (_Component) {
-    inherits(SwitchWithLabels, _Component);
+  var SwitchWithLabels =
+  /*#__PURE__*/
+  function (_Component) {
+    babelHelpers.inherits(SwitchWithLabels, _Component);
 
     function SwitchWithLabels(props) {
-      classCallCheck(this, SwitchWithLabels);
+      var _this;
 
-      var _this = possibleConstructorReturn(this, (SwitchWithLabels.__proto__ || Object.getPrototypeOf(SwitchWithLabels)).call(this, props));
+      babelHelpers.classCallCheck(this, SwitchWithLabels);
+      _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(SwitchWithLabels).call(this, props));
+      _this.state = {
+        checked: _this.props.defaultChecked
+      };
 
-      _this.state = { checked: _this.props.defaultChecked };
       _this.handleChange = function (event) {
         return _this._handleChange(event);
       };
+
       _this.handleClickLabel = function (value) {
         return _this._handleClickLabel(value);
       };
+
       _this.handleChange = function (event) {
         return _this._handleChange(event);
       };
+
       return _this;
     }
 
-    createClass(SwitchWithLabels, [{
+    babelHelpers.createClass(SwitchWithLabels, [{
       key: "_handleChange",
       value: function _handleChange(event) {
         var checked = event.currentTarget.checked;
-
-        this.setState({ checked: checked }, this.props.onChange(checked));
+        this.setState({
+          checked: checked
+        }, this.props.onChange(checked));
       }
     }, {
       key: "_handleClickLabel",
@@ -13112,41 +13054,30 @@
         var _this2 = this;
 
         return function () {
-          _this2.setState({ checked: value }, _this2.props.onChange(value));
+          _this2.setState({
+            checked: value
+          }, _this2.props.onChange(value));
         };
       }
     }, {
       key: "render",
       value: function render() {
-        return React__default.createElement(
-          "div",
-          { className: "switch-container" },
-          React__default.createElement(
-            "span",
-            { onClick: this.handleClickLabel(false) },
-            this.props.labelLeft
-          ),
-          React__default.createElement(
-            "label",
-            null,
-            React__default.createElement("input", {
-              checked: this.state.checked,
-              onChange: this.handleChange,
-              className: "switch",
-              type: "checkbox"
-            }),
-            React__default.createElement(
-              "div",
-              { className: "switch-background" },
-              React__default.createElement("div", { className: "switch-button" })
-            )
-          ),
-          React__default.createElement(
-            "span",
-            { onClick: this.handleClickLabel(true) },
-            this.props.labelRight
-          )
-        );
+        return React__default.createElement("div", {
+          className: "switch-container"
+        }, React__default.createElement("span", {
+          onClick: this.handleClickLabel(false)
+        }, this.props.labelLeft), React__default.createElement("label", null, React__default.createElement("input", {
+          checked: this.state.checked,
+          onChange: this.handleChange,
+          className: "switch",
+          type: "checkbox"
+        }), React__default.createElement("div", {
+          className: "switch-background"
+        }, React__default.createElement("div", {
+          className: "switch-button"
+        }))), React__default.createElement("span", {
+          onClick: this.handleClickLabel(true)
+        }, this.props.labelRight));
       }
     }]);
     return SwitchWithLabels;
@@ -13154,32 +13085,24 @@
 
   var TextareaWithLabel = function TextareaWithLabel(props) {
     var onChange = function onChange(e) {
-      props.handleChange(defineProperty({}, props.name, e.currentTarget.value));
+      props.handleChange(babelHelpers.defineProperty({}, props.name, e.currentTarget.value));
     };
 
-    return React__default.createElement(
-      'div',
-      { className: 'input-with-label form-group ' + props.classes },
-      React__default.createElement(
-        'label',
-        { htmlFor: props.name },
-        props.label + ' ' + (props.required ? '*' : '')
-      ),
-      React__default.createElement('textarea', {
-        className: 'form-control',
-        type: props.type || 'text',
-        name: props.name,
-        id: props.id,
-        onChange: onChange,
-        value: props.value,
-        placeholder: props.placeholder
-      }),
-      props.errorMessage && React__default.createElement(
-        'div',
-        { className: 'error-message minicaps' },
-        props.errorMessage
-      )
-    );
+    return React__default.createElement("div", {
+      className: "input-with-label form-group ".concat(props.classes)
+    }, React__default.createElement("label", {
+      htmlFor: props.name
+    }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement("textarea", {
+      className: 'form-control',
+      type: props.type || 'text',
+      name: props.name,
+      id: props.id,
+      onChange: onChange,
+      value: props.value,
+      placeholder: props.placeholder
+    }), props.errorMessage && React__default.createElement("div", {
+      className: 'error-message minicaps'
+    }, props.errorMessage));
   };
 
   var TimePickerWithLabel = function TimePickerWithLabel(props) {
@@ -13188,122 +13111,140 @@
 
     var onChange = function onChange(value) {
       var time = !!value ? value.format(saveFormat) : null;
-      props.handleChange(defineProperty({}, props.name, time));
+      props.handleChange(babelHelpers.defineProperty({}, props.name, time));
     };
 
     var time = !!props.value ? moment(props.value, saveFormat) : null;
-
-    return React__default.createElement(
-      'div',
-      { className: 'input-with-label form-group ' + props.classes },
-      React__default.createElement(
-        'label',
-        { htmlFor: props.name },
-        props.label + ' ' + (props.required ? '*' : '')
-      ),
-      React__default.createElement(TimePicker, {
-        showSecond: false,
-        use12Hours: true,
-        value: time,
-        format: displayFormat,
-        name: props.name,
-        id: props.id,
-        onChange: onChange,
-        minuteStep: 15,
-        allowEmpty: true
-      }),
-      props.errorMessage && React__default.createElement(
-        'div',
-        { className: 'error-message minicaps' },
-        props.errorMessage
-      )
-    );
+    return React__default.createElement("div", {
+      className: "input-with-label form-group ".concat(props.classes)
+    }, React__default.createElement("label", {
+      htmlFor: props.name
+    }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement(TimePicker, {
+      showSecond: false,
+      use12Hours: true,
+      value: time,
+      format: displayFormat,
+      name: props.name,
+      id: props.id,
+      onChange: onChange,
+      minuteStep: 15,
+      allowEmpty: true
+    }), props.errorMessage && React__default.createElement("div", {
+      className: 'error-message minicaps'
+    }, props.errorMessage));
   };
 
   var timezones = ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers", "Africa/Asmara", "Africa/Asmera", "Africa/Bamako", "Africa/Bangui", "Africa/Banjul", "Africa/Bissau", "Africa/Blantyre", "Africa/Brazzaville", "Africa/Bujumbura", "Africa/Cairo", "Africa/Casablanca", "Africa/Ceuta", "Africa/Conakry", "Africa/Dakar", "Africa/Dar_es_Salaam", "Africa/Djibouti", "Africa/Douala", "Africa/El_Aaiun", "Africa/Freetown", "Africa/Gaborone", "Africa/Harare", "Africa/Johannesburg", "Africa/Juba", "Africa/Kampala", "Africa/Khartoum", "Africa/Kigali", "Africa/Kinshasa", "Africa/Lagos", "Africa/Libreville", "Africa/Lome", "Africa/Luanda", "Africa/Lubumbashi", "Africa/Lusaka", "Africa/Malabo", "Africa/Maputo", "Africa/Maseru", "Africa/Mbabane", "Africa/Mogadishu", "Africa/Monrovia", "Africa/Nairobi", "Africa/Ndjamena", "Africa/Niamey", "Africa/Nouakchott", "Africa/Ouagadougou", "Africa/Porto-Novo", "Africa/Sao_Tome", "Africa/Timbuktu", "Africa/Tripoli", "Africa/Tunis", "Africa/Windhoek", "America/Adak", "America/Anchorage", "America/Anguilla", "America/Antigua", "America/Araguaina", "America/Argentina/Buenos_Aires", "America/Argentina/Catamarca", "America/Argentina/ComodRivadavia", "America/Argentina/Cordoba", "America/Argentina/Jujuy", "America/Argentina/La_Rioja", "America/Argentina/Mendoza", "America/Argentina/Rio_Gallegos", "America/Argentina/Salta", "America/Argentina/San_Juan", "America/Argentina/San_Luis", "America/Argentina/Tucuman", "America/Argentina/Ushuaia", "America/Aruba", "America/Asuncion", "America/Atikokan", "America/Atka", "America/Bahia_Banderas", "America/Bahia", "America/Barbados", "America/Belem", "America/Belize", "America/Blanc-Sablon", "America/Boa_Vista", "America/Bogota", "America/Boise", "America/Buenos_Aires", "America/Cambridge_Bay", "America/Campo_Grande", "America/Cancun", "America/Caracas", "America/Catamarca", "America/Cayenne", "America/Cayman", "America/Chicago", "America/Chihuahua", "America/Coral_Harbour", "America/Cordoba", "America/Costa_Rica", "America/Creston", "America/Cuiaba", "America/Curacao", "America/Danmarkshavn", "America/Dawson_Creek", "America/Dawson", "America/Denver", "America/Detroit", "America/Dominica", "America/Edmonton", "America/Eirunepe", "America/El_Salvador", "America/Ensenada", "America/Fort_Nelson", "America/Fort_Wayne", "America/Fortaleza", "America/Glace_Bay", "America/Godthab", "America/Goose_Bay", "America/Grand_Turk", "America/Grenada", "America/Guadeloupe", "America/Guatemala", "America/Guayaquil", "America/Guyana", "America/Halifax", "America/Havana", "America/Hermosillo", "America/Indiana/Indianapolis", "America/Indiana/Knox", "America/Indiana/Marengo", "America/Indiana/Petersburg", "America/Indiana/Tell_City", "America/Indiana/Vevay", "America/Indiana/Vincennes", "America/Indiana/Winamac", "America/Indianapolis", "America/Inuvik", "America/Iqaluit", "America/Jamaica", "America/Jujuy", "America/Juneau", "America/Kentucky/Louisville", "America/Kentucky/Monticello", "America/Knox_IN", "America/Kralendijk", "America/La_Paz", "America/Lima", "America/Los_Angeles", "America/Louisville", "America/Lower_Princes", "America/Maceio", "America/Managua", "America/Manaus", "America/Marigot", "America/Martinique", "America/Matamoros", "America/Mazatlan", "America/Mendoza", "America/Menominee", "America/Merida", "America/Metlakatla", "America/Mexico_City", "America/Miquelon", "America/Moncton", "America/Monterrey", "America/Montevideo", "America/Montreal", "America/Montserrat", "America/Nassau", "America/New_York", "America/Nipigon", "America/Nome", "America/Noronha", "America/North_Dakota/Beulah", "America/North_Dakota/Center", "America/North_Dakota/New_Salem", "America/Ojinaga", "America/Panama", "America/Pangnirtung", "America/Paramaribo", "America/Phoenix", "America/Port_of_Spain", "America/Port-au-Prince", "America/Porto_Acre", "America/Porto_Velho", "America/Puerto_Rico", "America/Punta_Arenas", "America/Rainy_River", "America/Rankin_Inlet", "America/Recife", "America/Regina", "America/Resolute", "America/Rio_Branco", "America/Rosario", "America/Santa_Isabel", "America/Santarem", "America/Santiago", "America/Santo_Domingo", "America/Sao_Paulo", "America/Scoresbysund", "America/Shiprock", "America/Sitka", "America/St_Barthelemy", "America/St_Johns", "America/St_Kitts", "America/St_Lucia", "America/St_Thomas", "America/St_Vincent", "America/Swift_Current", "America/Tegucigalpa", "America/Thule", "America/Thunder_Bay", "America/Tijuana", "America/Toronto", "America/Tortola", "America/Vancouver", "America/Virgin", "America/Whitehorse", "America/Winnipeg", "America/Yakutat", "America/Yellowknife", "Antarctica/Casey", "Antarctica/Davis", "Antarctica/DumontDUrville", "Antarctica/Macquarie", "Antarctica/Mawson", "Antarctica/McMurdo", "Antarctica/Palmer", "Antarctica/Rothera", "Antarctica/South_Pole", "Antarctica/Syowa", "Antarctica/Troll", "Antarctica/Vostok", "Arctic/Longyearbyen", "Asia/Aden", "Asia/Almaty", "Asia/Amman", "Asia/Anadyr", "Asia/Aqtau", "Asia/Aqtobe", "Asia/Ashgabat", "Asia/Ashkhabad", "Asia/Atyrau", "Asia/Baghdad", "Asia/Bahrain", "Asia/Baku", "Asia/Bangkok", "Asia/Barnaul", "Asia/Beirut", "Asia/Bishkek", "Asia/Brunei", "Asia/Calcutta", "Asia/Chita", "Asia/Choibalsan", "Asia/Chongqing", "Asia/Chungking", "Asia/Colombo", "Asia/Dacca", "Asia/Damascus", "Asia/Dhaka", "Asia/Dili", "Asia/Dubai", "Asia/Dushanbe", "Asia/Famagusta", "Asia/Gaza", "Asia/Harbin", "Asia/Hebron", "Asia/Ho_Chi_Minh", "Asia/Hong_Kong", "Asia/Hovd", "Asia/Irkutsk", "Asia/Istanbul", "Asia/Jakarta", "Asia/Jayapura", "Asia/Jerusalem", "Asia/Kabul", "Asia/Kamchatka", "Asia/Karachi", "Asia/Kashgar", "Asia/Kathmandu", "Asia/Katmandu", "Asia/Khandyga", "Asia/Kolkata", "Asia/Krasnoyarsk", "Asia/Kuala_Lumpur", "Asia/Kuching", "Asia/Kuwait", "Asia/Macao", "Asia/Macau", "Asia/Magadan", "Asia/Makassar", "Asia/Manila", "Asia/Muscat", "Asia/Nicosia", "Asia/Novokuznetsk", "Asia/Novosibirsk", "Asia/Omsk", "Asia/Oral", "Asia/Phnom_Penh", "Asia/Pontianak", "Asia/Pyongyang", "Asia/Qatar", "Asia/Qyzylorda", "Asia/Rangoon", "Asia/Riyadh", "Asia/Saigon", "Asia/Sakhalin", "Asia/Samarkand", "Asia/Seoul", "Asia/Shanghai", "Asia/Singapore", "Asia/Srednekolymsk", "Asia/Taipei", "Asia/Tashkent", "Asia/Tbilisi", "Asia/Tehran", "Asia/Tel_Aviv", "Asia/Thimbu", "Asia/Thimphu", "Asia/Tokyo", "Asia/Tomsk", "Asia/Ujung_Pandang", "Asia/Ulaanbaatar", "Asia/Ulan_Bator", "Asia/Urumqi", "Asia/Ust-Nera", "Asia/Vientiane", "Asia/Vladivostok", "Asia/Yakutsk", "Asia/Yangon", "Asia/Yekaterinburg", "Asia/Yerevan", "Atlantic/Azores", "Atlantic/Bermuda", "Atlantic/Canary", "Atlantic/Cape_Verde", "Atlantic/Faeroe", "Atlantic/Faroe", "Atlantic/Jan_Mayen", "Atlantic/Madeira", "Atlantic/Reykjavik", "Atlantic/South_Georgia", "Atlantic/St_Helena", "Atlantic/Stanley", "Australia/ACT", "Australia/Adelaide", "Australia/Brisbane", "Australia/Broken_Hill", "Australia/Canberra", "Australia/Currie", "Australia/Darwin", "Australia/Eucla", "Australia/Hobart", "Australia/LHI", "Australia/Lindeman", "Australia/Lord_Howe", "Australia/Melbourne", "Australia/North", "Australia/NSW", "Australia/Perth", "Australia/Queensland", "Australia/South", "Australia/Sydney", "Australia/Tasmania", "Australia/Victoria", "Australia/West", "Australia/Yancowinna", "Brazil/Acre", "Brazil/DeNoronha", "Brazil/East", "Brazil/West", "Canada/Atlantic", "Canada/Central", "Canada/Eastern", "Canada/Mountain", "Canada/Newfoundland", "Canada/Pacific", "Canada/Saskatchewan", "Canada/Yukon", "CET", "Chile/Continental", "Chile/EasterIsland", "CST6CDT", "Cuba", "EET", "Egypt", "Eire", "EST", "EST5EDT", "Etc/GMT-0", "Etc/GMT-1", "Etc/GMT-10", "Etc/GMT-11", "Etc/GMT-12", "Etc/GMT-13", "Etc/GMT-14", "Etc/GMT-2", "Etc/GMT-3", "Etc/GMT-4", "Etc/GMT-5", "Etc/GMT-6", "Etc/GMT-7", "Etc/GMT-8", "Etc/GMT-9", "Etc/GMT", "Etc/GMT+0", "Etc/GMT+1", "Etc/GMT+10", "Etc/GMT+11", "Etc/GMT+12", "Etc/GMT+2", "Etc/GMT+3", "Etc/GMT+4", "Etc/GMT+5", "Etc/GMT+6", "Etc/GMT+7", "Etc/GMT+8", "Etc/GMT+9", "Etc/GMT0", "Etc/Greenwich", "Etc/UCT", "Etc/Universal", "Etc/UTC", "Etc/Zulu", "Europe/Amsterdam", "Europe/Andorra", "Europe/Astrakhan", "Europe/Athens", "Europe/Belfast", "Europe/Belgrade", "Europe/Berlin", "Europe/Bratislava", "Europe/Brussels", "Europe/Bucharest", "Europe/Budapest", "Europe/Busingen", "Europe/Chisinau", "Europe/Copenhagen", "Europe/Dublin", "Europe/Gibraltar", "Europe/Guernsey", "Europe/Helsinki", "Europe/Isle_of_Man", "Europe/Istanbul", "Europe/Jersey", "Europe/Kaliningrad", "Europe/Kiev", "Europe/Kirov", "Europe/Lisbon", "Europe/Ljubljana", "Europe/London", "Europe/Luxembourg", "Europe/Madrid", "Europe/Malta", "Europe/Mariehamn", "Europe/Minsk", "Europe/Monaco", "Europe/Moscow", "Europe/Nicosia", "Europe/Oslo", "Europe/Paris", "Europe/Podgorica", "Europe/Prague", "Europe/Riga", "Europe/Rome", "Europe/Samara", "Europe/San_Marino", "Europe/Sarajevo", "Europe/Saratov", "Europe/Simferopol", "Europe/Skopje", "Europe/Sofia", "Europe/Stockholm", "Europe/Tallinn", "Europe/Tirane", "Europe/Tiraspol", "Europe/Ulyanovsk", "Europe/Uzhgorod", "Europe/Vaduz", "Europe/Vatican", "Europe/Vienna", "Europe/Vilnius", "Europe/Volgograd", "Europe/Warsaw", "Europe/Zagreb", "Europe/Zaporozhye", "Europe/Zurich", "GB-Eire", "GB", "GMT-0", "GMT", "GMT+0", "GMT0", "Greenwich", "Hongkong", "HST", "Iceland", "Indian/Antananarivo", "Indian/Chagos", "Indian/Christmas", "Indian/Cocos", "Indian/Comoro", "Indian/Kerguelen", "Indian/Mahe", "Indian/Maldives", "Indian/Mauritius", "Indian/Mayotte", "Indian/Reunion", "Iran", "Israel", "Jamaica", "Japan", "Kwajalein", "Libya", "MET", "Mexico/BajaNorte", "Mexico/BajaSur", "Mexico/General", "MST", "MST7MDT", "Navajo", "NZ-CHAT", "NZ", "Pacific/Apia", "Pacific/Auckland", "Pacific/Bougainville", "Pacific/Chatham", "Pacific/Chuuk", "Pacific/Easter", "Pacific/Efate", "Pacific/Enderbury", "Pacific/Fakaofo", "Pacific/Fiji", "Pacific/Funafuti", "Pacific/Galapagos", "Pacific/Gambier", "Pacific/Guadalcanal", "Pacific/Guam", "Pacific/Honolulu", "Pacific/Johnston", "Pacific/Kiritimati", "Pacific/Kosrae", "Pacific/Kwajalein", "Pacific/Majuro", "Pacific/Marquesas", "Pacific/Midway", "Pacific/Nauru", "Pacific/Niue", "Pacific/Norfolk", "Pacific/Noumea", "Pacific/Pago_Pago", "Pacific/Palau", "Pacific/Pitcairn", "Pacific/Pohnpei", "Pacific/Ponape", "Pacific/Port_Moresby", "Pacific/Rarotonga", "Pacific/Saipan", "Pacific/Samoa", "Pacific/Tahiti", "Pacific/Tarawa", "Pacific/Tongatapu", "Pacific/Truk", "Pacific/Wake", "Pacific/Wallis", "Pacific/Yap", "Poland", "Portugal", "PRC", "PST8PDT", "ROC", "ROK", "Singapore", "Turkey", "UCT", "Universal", "US/Alaska", "US/Aleutian", "US/Arizona", "US/Central", "US/East-Indiana", "US/Eastern", "US/Hawaii", "US/Indiana-Starke", "US/Michigan", "US/Mountain", "US/Pacific-New", "US/Pacific", "US/Samoa", "UTC", "W-SU", "WET", "Zulu"];
 
   var GEONAMES_ENDPOINT = 'https://secure.geonames.org/timezoneJSON';
 
-  var TimeZoneSelect = function (_Component) {
-    inherits(TimeZoneSelect, _Component);
+  var TimeZoneSelect =
+  /*#__PURE__*/
+  function (_Component) {
+    babelHelpers.inherits(TimeZoneSelect, _Component);
 
     function TimeZoneSelect(props) {
-      classCallCheck(this, TimeZoneSelect);
+      var _this;
 
-      var _this = possibleConstructorReturn(this, (TimeZoneSelect.__proto__ || Object.getPrototypeOf(TimeZoneSelect)).call(this, props));
+      babelHelpers.classCallCheck(this, TimeZoneSelect);
+      _this = babelHelpers.possibleConstructorReturn(this, babelHelpers.getPrototypeOf(TimeZoneSelect).call(this, props));
+      _this.state = {
+        value: _this.props.timezone
+      };
 
-      _this.state = { value: _this.props.timezone };
       _this.onChange = function (s) {
         return _this._onChange(s);
       };
+
       _this.detectTimeZone = function () {
         return _this._detectTimeZone();
       };
+
       return _this;
     }
 
-    createClass(TimeZoneSelect, [{
-      key: 'componentDidMount',
+    babelHelpers.createClass(TimeZoneSelect, [{
+      key: "componentDidMount",
       value: function componentDidMount() {
         this.detectTimeZone();
       }
     }, {
-      key: '_onChange',
+      key: "_onChange",
       value: function _onChange(selected) {
         var timezone = !!selected ? selected.value : null;
-        this.props.handleChange({ timezone: timezone });
-        this.setState({ value: selected });
+        this.props.handleChange({
+          timezone: timezone
+        });
+        this.setState({
+          value: selected
+        });
       }
     }, {
-      key: '_detectTimeZone',
+      key: "_detectTimeZone",
       value: function _detectTimeZone() {
         var _this2 = this;
 
         if (!!this.props.timezone) {
           // use selected timezone
-          this.setState({ value: { value: this.props.timezone, label: this.props.timezone } });
+          this.setState({
+            value: {
+              value: this.props.timezone,
+              label: this.props.timezone
+            }
+          });
         } else if (!!this.props.latitude && !!this.props.longitude) {
           // use selected city to detect timezone
-          var url = GEONAMES_ENDPOINT + '?lat=' + this.props.latitude + '&lng=' + this.props.longitude + '&username=p2pu';
+          var url = "".concat(GEONAMES_ENDPOINT, "?lat=").concat(this.props.latitude, "&lng=").concat(this.props.longitude, "&username=p2pu");
           axios.get(url).then(function (res) {
             var timezone = res.data.timezoneId;
-            _this2.props.handleChange({ timezone: timezone });
-            _this2.setState({ value: { value: timezone, label: timezone } });
+
+            _this2.props.handleChange({
+              timezone: timezone
+            });
+
+            _this2.setState({
+              value: {
+                value: timezone,
+                label: timezone
+              }
+            });
           }).catch(function (err) {
             return console.log(err);
           });
         } else {
           // detect timezone from browser
           var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          this.props.handleChange({ timezone: timezone });
-          this.setState({ value: { value: timezone, label: timezone } });
+          this.props.handleChange({
+            timezone: timezone
+          });
+          this.setState({
+            value: {
+              value: timezone,
+              label: timezone
+            }
+          });
         }
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
         var _React$createElement;
 
         var timezoneOptions = timezones.map(function (tz) {
-          return { value: tz, label: tz };
+          return {
+            value: tz,
+            label: tz
+          };
         });
-
-        return React__default.createElement(
-          'div',
-          null,
-          React__default.createElement(Select$1, (_React$createElement = {
-            name: this.props.name,
-            className: 'form-group input-with-label',
-            value: this.state.value,
-            onChange: this.onChange,
-            options: timezoneOptions
-          }, defineProperty(_React$createElement, 'name', 'timezone'), defineProperty(_React$createElement, 'id', 'id_timezone'), _React$createElement)),
-          this.props.errorMessage && React__default.createElement(
-            'div',
-            { className: 'error-message minicaps' },
-            this.props.errorMessage
-          )
-        );
+        return React__default.createElement("div", null, React__default.createElement(Select$1, (_React$createElement = {
+          name: this.props.name,
+          className: 'form-group input-with-label',
+          value: this.state.value,
+          onChange: this.onChange,
+          options: timezoneOptions
+        }, babelHelpers.defineProperty(_React$createElement, "name", 'timezone'), babelHelpers.defineProperty(_React$createElement, "id", 'id_timezone'), _React$createElement)), this.props.errorMessage && React__default.createElement("div", {
+          className: "error-message minicaps"
+        }, this.props.errorMessage));
       }
     }]);
     return TimeZoneSelect;

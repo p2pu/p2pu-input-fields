@@ -1,4 +1,13 @@
+"use strict";
 
-import CheckboxWithLabel from './CheckboxWithLabel.js';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
-export default CheckboxWithLabel;
+var _CheckboxWithLabel = _interopRequireDefault(require("./CheckboxWithLabel.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = _CheckboxWithLabel.default;
+exports.default = _default;
