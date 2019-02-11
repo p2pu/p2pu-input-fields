@@ -40,7 +40,8 @@ var TimePickerWithLabel = function TimePickerWithLabel(props) {
     id: props.id,
     onChange: onChange,
     minuteStep: 15,
-    allowEmpty: true
+    allowEmpty: true,
+    disabled: props.disabled
   }), props.errorMessage && _react.default.createElement("div", {
     className: 'error-message minicaps'
   }, props.errorMessage));

@@ -19,6 +19,7 @@ const InputWithLabel = (props) => {
         required={props.required || false}
         min={props.min}
         max={props.max}
+        disabled={props.disabled}
       />
       {
         props.errorMessage &&

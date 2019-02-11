@@ -28,6 +28,7 @@ const TimePickerWithLabel = (props) => {
         onChange={onChange}
         minuteStep={15}
         allowEmpty={true}
+        disabled={props.disabled}
       />
       {
         props.errorMessage &&

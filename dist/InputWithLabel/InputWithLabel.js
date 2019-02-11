@@ -30,7 +30,8 @@ var InputWithLabel = function InputWithLabel(props) {
     placeholder: props.placeholder,
     required: props.required || false,
     min: props.min,
-    max: props.max
+    max: props.max,
+    disabled: props.disabled
   }), props.errorMessage && _react.default.createElement("div", {
     className: 'error-message minicaps'
   }, props.errorMessage));

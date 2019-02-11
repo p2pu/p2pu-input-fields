@@ -9597,7 +9597,8 @@
       placeholder: props.placeholder,
       required: props.required || false,
       min: props.min,
-      max: props.max
+      max: props.max,
+      disabled: props.disabled
     }), props.errorMessage && React__default.createElement("div", {
       className: 'error-message minicaps'
     }, props.errorMessage));
@@ -13243,7 +13244,8 @@
       id: props.id,
       onChange: onChange,
       minuteStep: 15,
-      allowEmpty: true
+      allowEmpty: true,
+      disabled: props.disabled
     }), props.errorMessage && React__default.createElement("div", {
       className: 'error-message minicaps'
     }, props.errorMessage));
