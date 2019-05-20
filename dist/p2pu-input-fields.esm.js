@@ -5,6 +5,7 @@ import jsonp from 'jsonp';
 import moment from 'moment';
 import axios from 'axios';
 import TimePicker from 'rc-time-picker';
+import 'rc-time-picker/assets/index.css';
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {

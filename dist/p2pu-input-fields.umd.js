@@ -1,6 +1,6 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types'), require('react-dom'), require('jsonp'), require('moment'), require('axios'), require('rc-time-picker')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types', 'react-dom', 'jsonp', 'moment', 'axios', 'rc-time-picker'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types'), require('react-dom'), require('jsonp'), require('moment'), require('axios'), require('rc-time-picker'), require('rc-time-picker/assets/index.css')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types', 'react-dom', 'jsonp', 'moment', 'axios', 'rc-time-picker', 'rc-time-picker/assets/index.css'], factory) :
   (factory((global.p2puInputFields = {}),global.React,global.PropTypes,global.ReactDOM,global.jsonp,global.moment,global.axios,global['rc-time-picker']));
 }(this, (function (exports,React,PropTypes,reactDom,jsonp,moment,axios,TimePicker) { 'use strict';
 

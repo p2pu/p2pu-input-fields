@@ -1,6 +1,6 @@
 {
   "name": "p2pu-input-fields",
-  "version": "0.5.22",
+  "version": "0.5.23",
   "description": "Input fields used in P2PU projects",
   "repository": {
     "type": "git",
@@ -8,6 +8,7 @@
   },
   "main": "dist/p2pu-input-fields.umd.js",
   "module": "dist/p2pu-input-fields.esm.js",
+  "sideEffects": false,
   "scripts": {
     "build:umd": "rollup -c",
     "build:es": "NODE_ENV=production babel ./src --out-dir ./dist --ignore ./src/components/*",
@@ -34,8 +35,6 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "css-loader": "^2.1.0",
-    "react": ">=15.0.1",
-    "react-dom": ">=15.0.1",
     "rollup": "^0.60.1",
     "rollup-plugin-analyzer": "^2.0.1",
     "rollup-plugin-babel": "^4.3.2",
@@ -48,6 +47,7 @@
     "rollup-plugin-uglify": "^4.0.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.29.0",
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {

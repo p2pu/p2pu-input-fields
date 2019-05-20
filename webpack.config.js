@@ -1,7 +1,8 @@
-var path = require("path");
-var webpack = require('webpack');
+const path = require("path");
+const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-var fs = require("fs");
+const fs = require("fs");
 
 function getReactChunks(){
   // Add all jsx files in /assets/js as entries
@@ -59,6 +60,7 @@ const reactBuild = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new BundleAnalyzerPlugin(),
   ],
   resolve: {
     modules: [
