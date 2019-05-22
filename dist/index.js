@@ -33,6 +33,12 @@ Object.defineProperty(exports, "InputWithLabel", {
     return _InputWithLabel.default;
   }
 });
+Object.defineProperty(exports, "LanguageSelect", {
+  enumerable: true,
+  get: function get() {
+    return _LanguageSelect.default;
+  }
+});
 Object.defineProperty(exports, "NumberWithLabel", {
   enumerable: true,
   get: function get() {
@@ -91,6 +97,8 @@ var _DatePickerWithLabel = _interopRequireDefault(require("./DatePickerWithLabel
 var _ImageUploader = _interopRequireDefault(require("./ImageUploader/ImageUploader.js"));
 
 var _InputWithLabel = _interopRequireDefault(require("./InputWithLabel/InputWithLabel.js"));
+
+var _LanguageSelect = _interopRequireDefault(require("./LanguageSelect/LanguageSelect.js"));
 
 var _NumberWithLabel = _interopRequireDefault(require("./NumberWithLabel/NumberWithLabel.js"));
 
