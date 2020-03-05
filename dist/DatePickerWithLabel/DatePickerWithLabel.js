@@ -19,7 +19,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var DatePickerWithLabel = function DatePickerWithLabel(props) {
   var onChange = function onChange(value) {
-    var date = !!value ? value.format('YYYY-MM-DD') : null;
+    var date = !!value ? value.format('YYYY-MM-DD') : null; //TODO
+
     props.handleChange(_defineProperty({}, props.name, date));
   };
 

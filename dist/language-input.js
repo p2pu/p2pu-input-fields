@@ -7,11 +7,11 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var _reactSelect = _interopRequireDefault(require("react-select"));
-
-require("react-select/dist/react-select.css");
+var _LanguageSelect = _interopRequireDefault(require("p2pu-input-fields/dist/LanguageSelect"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -33,75 +33,46 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-var LANGUAGES = [{
-  label: 'English',
-  value: 'en'
-}, {
-  label: 'German',
-  value: 'de'
-}, {
-  label: 'Polish',
-  value: 'po'
-}, {
-  label: 'Romanian',
-  value: 'ro'
-}, {
-  label: 'Finnish',
-  value: 'fi'
-}, {
-  label: 'Portuguese',
-  value: 'pt'
-}];
-
-var LanguageSelect =
+var HtmlSelect =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(LanguageSelect, _React$Component);
+  _inherits(HtmlSelect, _React$Component);
 
-  function LanguageSelect(props) {
+  function HtmlSelect(props) {
     var _this;
 
-    _classCallCheck(this, LanguageSelect);
+    _classCallCheck(this, HtmlSelect);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(LanguageSelect).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(HtmlSelect).call(this, props));
     _this.onChange = _this.onChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
-  _createClass(LanguageSelect, [{
+  _createClass(HtmlSelect, [{
     key: "onChange",
-    value: function onChange(selected) {
-      this.props.handleChange(_defineProperty({}, this.props.name, selected.value));
+    value: function onChange(event) {
+      this.props.handleChange(_defineProperty({}, this.props.name, event.target.value));
     }
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
-
-      var _this$props$label = this.props.label,
-          label = _this$props$label === void 0 ? 'Language' : _this$props$label;
       var props = this.props;
-      var value_search = LANGUAGES.filter(function (_ref) {
-        var value = _ref.value,
-            label = _ref.label;
-        return value == _this2.props.value;
-      });
-      var value = value_search.length == 1 ? value_search[0] : null;
       return _react.default.createElement("div", {
-        className: "form-group ".concat(props.classes)
+        className: "input-with-label form-group ".concat(props.classes)
       }, _react.default.createElement("label", {
-        htmlFor: props.name
-      }, "".concat(props.label, " ").concat(props.required ? '*' : '')), _react.default.createElement(_reactSelect.default, {
+        htmlFor: "exampleFormControlSelect1"
+      }, "".concat(props.label, " ").concat(props.required ? '*' : '')), _react.default.createElement("select", {
+        className: "form-control",
         name: props.name,
-        className: props.selectClasses,
-        value: value,
-        options: LANGUAGES,
+        id: props.id,
         onChange: this.onChange,
-        onInputChange: props.onInputChange,
-        noResultsText: props.noResultsText,
+        value: props.value || props.defaultValue,
         placeholder: props.placeholder,
-        multi: props.multi || false
-      }), props.helpText && _react.default.createElement("small", {
+        required: props.required || false,
+        disabled: props.disabled
+      }, this.props.options.map(function (op) {
+        return _react.default.createElement("option", null, op.label);
+      })), props.helpText && _react.default.createElement("small", {
         id: props.id + "Help",
         className: "form-text text-muted"
       }, props.helpText), props.errorMessage && _react.default.createElement("div", {
@@ -110,7 +81,39 @@ function (_React$Component) {
     }
   }]);
 
-  return LanguageSelect;
+  return HtmlSelect;
 }(_react.default.Component);
 
-exports.default = LanguageSelect;
+;
+
+var LanguageInput =
+/*#__PURE__*/
+function (_React$Component2) {
+  _inherits(LanguageInput, _React$Component2);
+
+  function LanguageInput() {
+    _classCallCheck(this, LanguageInput);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(LanguageInput).apply(this, arguments));
+  }
+
+  _createClass(LanguageInput, [{
+    key: "render",
+    value: function render() {
+      var languages = [{
+        label: 'English',
+        value: 'en'
+      }, {
+        label: 'German',
+        value: 'de'
+      }];
+      return _react.default.createElement(HtmlSelect, _extends({}, this.props, {
+        options: languages
+      }));
+    }
+  }]);
+
+  return LanguageInput;
+}(_react.default.Component);
+
+exports.default = LanguageInput;

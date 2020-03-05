@@ -7,9 +7,7 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var _reactSelect = _interopRequireDefault(require("react-select"));
-
-require("react-select/dist/react-select.css");
+var _SelectWithLabel = _interopRequireDefault(require("p2pu-input-fields/dist/SelectWithLabel"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,44 +31,24 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-var LANGUAGES = [{
-  label: 'English',
-  value: 'en'
-}, {
-  label: 'German',
-  value: 'de'
-}, {
-  label: 'Polish',
-  value: 'po'
-}, {
-  label: 'Romanian',
-  value: 'ro'
-}, {
-  label: 'Finnish',
-  value: 'fi'
-}, {
-  label: 'Portuguese',
-  value: 'pt'
-}];
-
-var LanguageSelect =
+var SelectWithLabel =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(LanguageSelect, _React$Component);
+  _inherits(SelectWithLabel, _React$Component);
 
-  function LanguageSelect(props) {
+  function SelectWithLabel(props) {
     var _this;
 
-    _classCallCheck(this, LanguageSelect);
+    _classCallCheck(this, SelectWithLabel);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(LanguageSelect).call(this, props));
-    _this.onChange = _this.onChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SelectWithLabel).call(this, props));
+    _this.handleSelect = _this.handleSelect.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
-  _createClass(LanguageSelect, [{
-    key: "onChange",
-    value: function onChange(selected) {
+  _createClass(SelectWithLabel, [{
+    key: "handleSelect",
+    value: function handleSelect(selected) {
       this.props.handleChange(_defineProperty({}, this.props.name, selected.value));
     }
   }, {
@@ -78,39 +56,27 @@ function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      var _this$props$label = this.props.label,
-          label = _this$props$label === void 0 ? 'Language' : _this$props$label;
-      var props = this.props;
-      var value_search = LANGUAGES.filter(function (_ref) {
+      var value_search = this.props.options.filter(function (_ref) {
         var value = _ref.value,
             label = _ref.label;
         return value == _this2.props.value;
       });
-      var value = value_search.length == 1 ? value_search[0] : null;
-      return _react.default.createElement("div", {
-        className: "form-group ".concat(props.classes)
-      }, _react.default.createElement("label", {
-        htmlFor: props.name
-      }, "".concat(props.label, " ").concat(props.required ? '*' : '')), _react.default.createElement(_reactSelect.default, {
-        name: props.name,
-        className: props.selectClasses,
+      var value = value_search.length == 1 ? value_search[0] : null; // TODO clearable isn't passed to react-select widget :(
+
+      return _react.default.createElement(_SelectWithLabel.default, {
+        label: this.props.label,
+        classes: this.props.classes,
+        options: this.props.options,
+        multi: this.props.multi,
         value: value,
-        options: LANGUAGES,
-        onChange: this.onChange,
-        onInputChange: props.onInputChange,
-        noResultsText: props.noResultsText,
-        placeholder: props.placeholder,
-        multi: props.multi || false
-      }), props.helpText && _react.default.createElement("small", {
-        id: props.id + "Help",
-        className: "form-text text-muted"
-      }, props.helpText), props.errorMessage && _react.default.createElement("div", {
-        className: 'error-message minicaps'
-      }, props.errorMessage));
+        onChange: this.handleSelect,
+        placeholder: this.props.placeholder,
+        clearable: false
+      });
     }
   }]);
 
-  return LanguageSelect;
+  return SelectWithLabel;
 }(_react.default.Component);
 
-exports.default = LanguageSelect;
+exports.default = SelectWithLabel;

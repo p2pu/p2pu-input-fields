@@ -164,8 +164,8 @@ function (_Component) {
         options: this.state.cities,
         onChange: this.handleChange,
         onInputChange: this.props.handleInputChange,
-        noResultsText: 'No results for this city',
-        placeholder: 'Start typing a city name...'
+        noResultsText: this.props.noResultsText | 'No results for this city',
+        placeholder: this.props.placeholder
       });
     }
   }]);
