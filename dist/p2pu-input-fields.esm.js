@@ -90,18 +90,6 @@ function _possibleConstructorReturn(self, call) {
   return _assertThisInitialized(self);
 }
 
-function _taggedTemplateLiteral(strings, raw) {
-  if (!raw) {
-    raw = strings.slice(0);
-  }
-
-  return Object.freeze(Object.defineProperties(strings, {
-    raw: {
-      value: Object.freeze(raw)
-    }
-  }));
-}
-
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
 }
@@ -3137,7 +3125,7 @@ function (_Component) {
         onChange: this.handleChange,
         onInputChange: this.props.handleInputChange,
         noResultsText: this.props.noResultsText | 'No results for this city',
-        placeholder: this.props.placeholder
+        placeholder: this.props.placeholder | 'Start typing a city name...'
       });
     }
   }]);
@@ -11429,25 +11417,6 @@ function (_Component) {
   return NumberWithLabel;
 }(Component);
 
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["Start typing a city name..."]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["No results for this city"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
 var ALGOLIA_ENDPOINT = 'https://places-dsn.algolia.net/1/places';
 var KANSAS_CITY_OPTION = {
   label: 'Kansas City, Missouri, United States of America',
@@ -11618,8 +11587,8 @@ function (_Component) {
         value: this.state.value,
         options: options,
         onChange: this.handleChange,
-        noResultsText: t(_templateObject()),
-        placeholder: t(_templateObject2()),
+        noResultsText: this.props.noResultsText | 'No results for this city',
+        placeholder: this.props.placeholder | 'Start typing a city name...',
         loadOptions: this.searchPlaces
       }), this.props.errorMessage && React.createElement("div", {
         className: "error-message minicaps"
