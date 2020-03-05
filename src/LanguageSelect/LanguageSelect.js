@@ -6,6 +6,10 @@ import 'react-select/dist/react-select.css';
 const LANGUAGES = [
   {label: 'English', value: 'en'},
   {label: 'German', value: 'de'},
+  {label: 'Polish', value: 'po'},
+  {label: 'Romanian', value: 'ro'},
+  {label: 'Finnish', value: 'fi'},
+  {label: 'Portuguese', value: 'pt'},
 ];
 
 export default class LanguageSelect extends React.Component {

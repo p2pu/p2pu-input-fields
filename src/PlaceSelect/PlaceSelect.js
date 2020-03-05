@@ -125,8 +125,8 @@ export default class PlaceSelect extends Component {
           value={ this.state.value }
           options={ options }
           onChange={ this.handleChange }
-          noResultsText='No results for this city'
-          placeholder='Start typing a city name...'
+          noResultsText={t`No results for this city`}
+          placeholder={t`Start typing a city name...`}
           loadOptions={this.searchPlaces}
         />
         {
