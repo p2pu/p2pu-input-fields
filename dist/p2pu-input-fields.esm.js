@@ -3124,8 +3124,8 @@ function (_Component) {
         options: this.state.cities,
         onChange: this.handleChange,
         onInputChange: this.props.handleInputChange,
-        noResultsText: this.props.noResultsText | 'No results for this city',
-        placeholder: this.props.placeholder | 'Start typing a city name...'
+        noResultsText: this.props.noResultsText || 'No results for this city',
+        placeholder: this.props.placeholder || 'Start typing a city name...'
       });
     }
   }]);
@@ -11587,8 +11587,8 @@ function (_Component) {
         value: this.state.value,
         options: options,
         onChange: this.handleChange,
-        noResultsText: this.props.noResultsText | 'No results for this city',
-        placeholder: this.props.placeholder | 'Start typing a city name...',
+        noResultsText: this.props.noResultsText || 'No results for this city',
+        placeholder: this.props.placeholder || 'Start typing a city name...',
         loadOptions: this.searchPlaces
       }), this.props.errorMessage && React.createElement("div", {
         className: "error-message minicaps"

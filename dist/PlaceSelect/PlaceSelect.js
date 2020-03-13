@@ -206,8 +206,8 @@ function (_Component) {
         value: this.state.value,
         options: options,
         onChange: this.handleChange,
-        noResultsText: this.props.noResultsText | 'No results for this city',
-        placeholder: this.props.placeholder | 'Start typing a city name...',
+        noResultsText: this.props.noResultsText || 'No results for this city',
+        placeholder: this.props.placeholder || 'Start typing a city name...',
         loadOptions: this.searchPlaces
       }), this.props.errorMessage && _react.default.createElement("div", {
         className: "error-message minicaps"
