@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types'), require('react-dom'), require('jsonp'), require('moment'), require('axios'), require('react-select/dist/react-select.css'), require('rc-time-picker')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types', 'react-dom', 'jsonp', 'moment', 'axios', 'react-select/dist/react-select.css', 'rc-time-picker'], factory) :
-  (factory((global.p2puInputFields = {}),global.React,global.PropTypes,global.ReactDOM,global.jsonp,global.moment,global.axios,null,global['rc-time-picker']));
-}(this, (function (exports,React,PropTypes,reactDom,jsonp,moment,axios,reactSelect_css,TimePicker) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types'), require('react-dom'), require('jsonp'), require('moment'), require('axios'), require('rc-time-picker')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types', 'react-dom', 'jsonp', 'moment', 'axios', 'rc-time-picker'], factory) :
+  (factory((global.p2puInputFields = {}),global.React,global.PropTypes,global.ReactDOM,global.jsonp,global.moment,global.axios,global['rc-time-picker']));
+}(this, (function (exports,React,PropTypes,reactDom,jsonp,moment,axios,TimePicker) { 'use strict';
 
   var React__default = 'default' in React ? React['default'] : React;
   PropTypes = PropTypes && PropTypes.hasOwnProperty('default') ? PropTypes['default'] : PropTypes;
@@ -47,6 +47,25 @@
     }
 
     return obj;
+  }
+
+  function _objectSpread(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+      var ownKeys = Object.keys(source);
+
+      if (typeof Object.getOwnPropertySymbols === 'function') {
+        ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+          return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+        }));
+      }
+
+      ownKeys.forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    }
+
+    return target;
   }
 
   function _inherits(subClass, superClass) {
@@ -2240,6 +2259,17 @@
     if (typeof value === 'object' && value !== null) return [value];
     return [];
   }; // ==============================
+  // Handle Input Change
+  // ==============================
+
+  function handleInputChange(inputValue, actionMeta, onInputChange) {
+    if (onInputChange) {
+      var newValue = onInputChange(inputValue, actionMeta);
+      if (typeof newValue === 'string') return newValue;
+    }
+
+    return inputValue;
+  } // ==============================
   // Scroll Helpers
   // ==============================
 
@@ -6837,10 +6867,10 @@
     }
 
     _createClass(CitySelect, [{
-      key: "componentWillReceiveProps",
-      value: function componentWillReceiveProps(nextProps) {
-        if (this.props !== nextProps) {
-          var value = !nextProps.value ? this.state.value : this.convertCityToSelectOption(nextProps.value);
+      key: "componentDidUpdate",
+      value: function componentDidUpdate(prevProps) {
+        if (this.props !== prevProps) {
+          var value = !this.props.value ? this.state.value : this.convertCityToSelectOption(this.props.value);
           this.setState({
             value: value
           });
@@ -6858,7 +6888,7 @@
       key: "_handleChange",
       value: function _handleChange(selected) {
         var query = selected ? selected.label : selected;
-        this.props.handleSelect(query);
+        this.props.handleChange(query);
         this.setState({
           value: selected
         });
@@ -6910,26 +6940,54 @@
     }, {
       key: "render",
       value: function render() {
-        return React__default.createElement(index, {
+        return React__default.createElement("div", {
+          className: "".concat(this.props.classes)
+        }, this.props.label && React__default.createElement("label", {
+          htmlFor: this.props.name
+        }, "".concat(this.props.label, " ").concat(this.props.required ? '*' : '')), React__default.createElement(index, {
           name: this.props.name,
-          className: "city-select ".concat(this.props.classes),
+          className: "city-select ".concat(this.props.selectClasses),
           value: this.state.value,
           options: this.state.cities,
           onChange: this.handleChange,
           onInputChange: this.props.handleInputChange,
-          noResultsText: this.props.noResultsText || 'No results for this city',
-          placeholder: this.props.placeholder || 'Start typing a city name...'
-        });
+          noResultsText: this.props.noResultsText,
+          placeholder: this.props.placeholder,
+          isClearable: this.props.isClearable,
+          theme: function theme(_theme) {
+            return _objectSpread({}, _theme, {
+              colors: _objectSpread({}, _theme.colors, {
+                primary: '#05c6b4',
+                primary75: '#D3D8E6',
+                primary50: '#e0f7f5',
+                primary25: '#F3F4F8'
+              })
+            });
+          }
+        }));
       }
     }]);
 
     return CitySelect;
   }(React.Component);
   CitySelect.propTypes = {
-    handleSelect: PropTypes.func.isRequired,
+    handleChange: PropTypes.func.isRequired,
     handleInputChange: PropTypes.func,
     name: PropTypes.string.isRequired,
-    classes: PropTypes.string
+    classes: PropTypes.string,
+    noResultsText: PropTypes.string,
+    placeholder: PropTypes.string,
+    isClearable: PropTypes.bool
+  };
+  CitySelect.defaultProps = {
+    noResultsText: "No results for this city",
+    placeholder: "Start typing a city name...",
+    classes: "",
+    name: "select-city",
+    handleChange: function handleChange(selected) {
+      return console.log("Implement a function to save selection", selected);
+    },
+    isClearable: true
   };
 
   var classnames$1 = createCommonjsModule(function (module) {
@@ -13507,7 +13565,18 @@
           onInputChange: props.onInputChange,
           noResultsText: props.noResultsText,
           placeholder: props.placeholder,
-          multi: props.multi || false
+          multi: props.multi || false,
+          isClearable: props.isClearable,
+          theme: function theme(_theme) {
+            return _objectSpread({}, _theme, {
+              colors: _objectSpread({}, _theme.colors, {
+                primary: '#05c6b4',
+                primary75: '#D3D8E6',
+                primary50: '#e0f7f5',
+                primary25: '#F3F4F8'
+              })
+            });
+          }
         }), props.helpText && React__default.createElement("small", {
           id: props.id + "Help",
           className: "form-text text-muted"
@@ -13519,6 +13588,33 @@
 
     return LanguageSelect;
   }(React__default.Component);
+  LanguageSelect.propTypes = {
+    handleChange: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    handleInputChange: PropTypes.func,
+    classes: PropTypes.string,
+    selectClasses: PropTypes.string,
+    required: PropTypes.bool,
+    noResultsText: PropTypes.string,
+    placeholder: PropTypes.string,
+    multi: PropTypes.bool,
+    options: PropTypes.array,
+    errorMessage: PropTypes.string,
+    helpText: PropTypes.string,
+    id: PropTypes.string,
+    isClearable: PropTypes.bool
+  };
+  LanguageSelect.defaultProps = {
+    noResultsText: "No results",
+    classes: "",
+    name: "select-language",
+    label: "Select a language",
+    handleChange: function handleChange(selected) {
+      return console.log("Implement a function to save selection", selected);
+    },
+    isClearable: true
+  };
 
   var countUp_min = createCommonjsModule(function (module, exports) {
   !function(a,n){"function"==typeof undefined&&undefined.amd?undefined(n):module.exports=n(commonjsRequire,exports,module);}(this,function(a,n,t){var e=function(a,n,t,e,i,r){function o(a){var n,t,e,i,r,o,s=a<0;if(a=Math.abs(a).toFixed(l.decimals),a+="",n=a.split("."),t=n[0],e=n.length>1?l.options.decimal+n[1]:"",l.options.useGrouping){for(i="",r=0,o=t.length;r<o;++r)0!==r&&r%3===0&&(i=l.options.separator+i),i=t[o-r-1]+i;t=i;}return l.options.numerals.length&&(t=t.replace(/[0-9]/g,function(a){return l.options.numerals[+a]}),e=e.replace(/[0-9]/g,function(a){return l.options.numerals[+a]})),(s?"-":"")+l.options.prefix+t+e+l.options.suffix}function s(a,n,t,e){return t*(-Math.pow(2,-10*a/e)+1)*1024/1023+n}function u(a){return "number"==typeof a&&!isNaN(a)}var l=this;if(l.version=function(){return "1.9.3"},l.options={useEasing:!0,useGrouping:!0,separator:",",decimal:".",easingFn:s,formattingFn:o,prefix:"",suffix:"",numerals:[]},r&&"object"==typeof r)for(var m in l.options)r.hasOwnProperty(m)&&null!==r[m]&&(l.options[m]=r[m]);""===l.options.separator?l.options.useGrouping=!1:l.options.separator=""+l.options.separator;for(var d=0,c=["webkit","moz","ms","o"],f=0;f<c.length&&!window.requestAnimationFrame;++f)window.requestAnimationFrame=window[c[f]+"RequestAnimationFrame"],window.cancelAnimationFrame=window[c[f]+"CancelAnimationFrame"]||window[c[f]+"CancelRequestAnimationFrame"];window.requestAnimationFrame||(window.requestAnimationFrame=function(a,n){var t=(new Date).getTime(),e=Math.max(0,16-(t-d)),i=window.setTimeout(function(){a(t+e);},e);return d=t+e,i}),window.cancelAnimationFrame||(window.cancelAnimationFrame=function(a){clearTimeout(a);}),l.initialize=function(){return !!l.initialized||(l.error="",l.d="string"==typeof a?document.getElementById(a):a,l.d?(l.startVal=Number(n),l.endVal=Number(t),u(l.startVal)&&u(l.endVal)?(l.decimals=Math.max(0,e||0),l.dec=Math.pow(10,l.decimals),l.duration=1e3*Number(i)||2e3,l.countDown=l.startVal>l.endVal,l.frameVal=l.startVal,l.initialized=!0,!0):(l.error="[CountUp] startVal ("+n+") or endVal ("+t+") is not a number",!1)):(l.error="[CountUp] target is null or undefined",!1))},l.printValue=function(a){var n=l.options.formattingFn(a);"INPUT"===l.d.tagName?this.d.value=n:"text"===l.d.tagName||"tspan"===l.d.tagName?this.d.textContent=n:this.d.innerHTML=n;},l.count=function(a){l.startTime||(l.startTime=a),l.timestamp=a;var n=a-l.startTime;l.remaining=l.duration-n,l.options.useEasing?l.countDown?l.frameVal=l.startVal-l.options.easingFn(n,0,l.startVal-l.endVal,l.duration):l.frameVal=l.options.easingFn(n,l.startVal,l.endVal-l.startVal,l.duration):l.countDown?l.frameVal=l.startVal-(l.startVal-l.endVal)*(n/l.duration):l.frameVal=l.startVal+(l.endVal-l.startVal)*(n/l.duration),l.countDown?l.frameVal=l.frameVal<l.endVal?l.endVal:l.frameVal:l.frameVal=l.frameVal>l.endVal?l.endVal:l.frameVal,l.frameVal=Math.round(l.frameVal*l.dec)/l.dec,l.printValue(l.frameVal),n<l.duration?l.rAF=requestAnimationFrame(l.count):l.callback&&l.callback();},l.start=function(a){l.initialize()&&(l.callback=a,l.rAF=requestAnimationFrame(l.count));},l.pauseResume=function(){l.paused?(l.paused=!1,delete l.startTime,l.duration=l.remaining,l.startVal=l.frameVal,requestAnimationFrame(l.count)):(l.paused=!0,cancelAnimationFrame(l.rAF));},l.reset=function(){l.paused=!1,delete l.startTime,l.initialized=!1,l.initialize()&&(cancelAnimationFrame(l.rAF),l.printValue(l.startVal));},l.update=function(a){if(l.initialize()){if(a=Number(a),!u(a))return void(l.error="[CountUp] update() - new endVal is not a number: "+a);l.error="",a!==l.frameVal&&(cancelAnimationFrame(l.rAF),l.paused=!1,delete l.startTime,l.startVal=l.frameVal,l.endVal=a,l.countDown=l.startVal>l.endVal,l.rAF=requestAnimationFrame(l.count));}},l.initialize()&&l.printValue(l.startVal);};return e});
@@ -15259,6 +15355,195 @@
     return NumberWithLabel;
   }(React.Component);
 
+  function _extends$h() { _extends$h = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$h.apply(this, arguments); }
+
+  function _objectWithoutPropertiesLoose$5(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+  function _inheritsLoose$8(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+  var defaultProps$2 = {
+    cacheOptions: false,
+    defaultOptions: false,
+    filterOption: null,
+    isLoading: false
+  };
+  var makeAsyncSelect = function makeAsyncSelect(SelectComponent) {
+    var _class, _temp;
+
+    return _temp = _class =
+    /*#__PURE__*/
+    function (_Component) {
+      _inheritsLoose$8(Async, _Component);
+
+      function Async(props) {
+        var _this;
+
+        _this = _Component.call(this) || this;
+        _this.select = void 0;
+        _this.lastRequest = void 0;
+        _this.mounted = false;
+        _this.optionsCache = {};
+
+        _this.handleInputChange = function (newValue, actionMeta) {
+          var _this$props = _this.props,
+              cacheOptions = _this$props.cacheOptions,
+              onInputChange = _this$props.onInputChange; // TODO
+
+          var inputValue = handleInputChange(newValue, actionMeta, onInputChange);
+
+          if (!inputValue) {
+            delete _this.lastRequest;
+
+            _this.setState({
+              inputValue: '',
+              loadedInputValue: '',
+              loadedOptions: [],
+              isLoading: false,
+              passEmptyOptions: false
+            });
+
+            return;
+          }
+
+          if (cacheOptions && _this.optionsCache[inputValue]) {
+            _this.setState({
+              inputValue: inputValue,
+              loadedInputValue: inputValue,
+              loadedOptions: _this.optionsCache[inputValue],
+              isLoading: false,
+              passEmptyOptions: false
+            });
+          } else {
+            var request = _this.lastRequest = {};
+
+            _this.setState({
+              inputValue: inputValue,
+              isLoading: true,
+              passEmptyOptions: !_this.state.loadedInputValue
+            }, function () {
+              _this.loadOptions(inputValue, function (options) {
+                if (!_this.mounted) return;
+
+                if (options) {
+                  _this.optionsCache[inputValue] = options;
+                }
+
+                if (request !== _this.lastRequest) return;
+                delete _this.lastRequest;
+
+                _this.setState({
+                  isLoading: false,
+                  loadedInputValue: inputValue,
+                  loadedOptions: options || [],
+                  passEmptyOptions: false
+                });
+              });
+            });
+          }
+
+          return inputValue;
+        };
+
+        _this.state = {
+          defaultOptions: Array.isArray(props.defaultOptions) ? props.defaultOptions : undefined,
+          inputValue: typeof props.inputValue !== 'undefined' ? props.inputValue : '',
+          isLoading: props.defaultOptions === true,
+          loadedOptions: [],
+          passEmptyOptions: false
+        };
+        return _this;
+      }
+
+      var _proto = Async.prototype;
+
+      _proto.componentDidMount = function componentDidMount() {
+        var _this2 = this;
+
+        this.mounted = true;
+        var defaultOptions = this.props.defaultOptions;
+        var inputValue = this.state.inputValue;
+
+        if (defaultOptions === true) {
+          this.loadOptions(inputValue, function (options) {
+            if (!_this2.mounted) return;
+            var isLoading = !!_this2.lastRequest;
+
+            _this2.setState({
+              defaultOptions: options || [],
+              isLoading: isLoading
+            });
+          });
+        }
+      };
+
+      _proto.UNSAFE_componentWillReceiveProps = function UNSAFE_componentWillReceiveProps(nextProps) {
+        // if the cacheOptions prop changes, clear the cache
+        if (nextProps.cacheOptions !== this.props.cacheOptions) {
+          this.optionsCache = {};
+        }
+
+        if (nextProps.defaultOptions !== this.props.defaultOptions) {
+          this.setState({
+            defaultOptions: Array.isArray(nextProps.defaultOptions) ? nextProps.defaultOptions : undefined
+          });
+        }
+      };
+
+      _proto.componentWillUnmount = function componentWillUnmount() {
+        this.mounted = false;
+      };
+
+      _proto.focus = function focus() {
+        this.select.focus();
+      };
+
+      _proto.blur = function blur() {
+        this.select.blur();
+      };
+
+      _proto.loadOptions = function loadOptions(inputValue, callback) {
+        var loadOptions = this.props.loadOptions;
+        if (!loadOptions) return callback();
+        var loader = loadOptions(inputValue, callback);
+
+        if (loader && typeof loader.then === 'function') {
+          loader.then(callback, function () {
+            return callback();
+          });
+        }
+      };
+
+      _proto.render = function render() {
+        var _this3 = this;
+
+        var _this$props2 = this.props,
+            loadOptions = _this$props2.loadOptions,
+            isLoadingProp = _this$props2.isLoading,
+            props = _objectWithoutPropertiesLoose$5(_this$props2, ["loadOptions", "isLoading"]);
+
+        var _this$state = this.state,
+            defaultOptions = _this$state.defaultOptions,
+            inputValue = _this$state.inputValue,
+            isLoading = _this$state.isLoading,
+            loadedInputValue = _this$state.loadedInputValue,
+            loadedOptions = _this$state.loadedOptions,
+            passEmptyOptions = _this$state.passEmptyOptions;
+        var options = passEmptyOptions ? [] : inputValue && loadedInputValue ? loadedOptions : defaultOptions || [];
+        return React__default.createElement(SelectComponent, _extends$h({}, props, {
+          ref: function ref(_ref) {
+            _this3.select = _ref;
+          },
+          options: options,
+          isLoading: isLoading || isLoadingProp,
+          onInputChange: this.handleInputChange
+        }));
+      };
+
+      return Async;
+    }(React.Component), _class.defaultProps = defaultProps$2, _temp;
+  };
+  var SelectState = manageState(Select);
+  var Async = makeAsyncSelect(SelectState);
+
   var ALGOLIA_ENDPOINT = 'https://places-dsn.algolia.net/1/places';
   var KANSAS_CITY_OPTION = {
     label: 'Kansas City, Missouri, United States of America',
@@ -15314,8 +15599,8 @@
     }
 
     _createClass(PlaceSelect, [{
-      key: "componentWillMount",
-      value: function componentWillMount() {
+      key: "componentDidMount",
+      value: function componentDidMount() {
         if (!!this.props.place_id) {
           this.fetchPlaceById();
         } else if (this.props.city === 'Kansas City, Missouri, United States of America') {
@@ -15352,7 +15637,7 @@
           };
         }
 
-        this.props.handleSelect(cityData);
+        this.props.handleChange(cityData);
         this.setState({
           value: selected
         });
@@ -15384,9 +15669,7 @@
             options.unshift(KANSAS_CITY_OPTION);
           }
 
-          return {
-            options: options
-          };
+          return options;
         }).catch(function (err) {
           console.log(err);
         });
@@ -15423,15 +15706,30 @@
         var options = this.state.hits.map(function (place) {
           return _this4.generateCityOption(place);
         });
-        return React__default.createElement("div", null, React__default.createElement(index.Async, {
+        return React__default.createElement("div", {
+          className: "".concat(this.props.classes)
+        }, this.props.label && React__default.createElement("label", {
+          htmlFor: this.props.name
+        }, "".concat(this.props.label, " ").concat(this.props.required ? '*' : '')), React__default.createElement(Async, {
           name: this.props.name,
-          className: "city-select ".concat(this.props.classes),
+          className: "city-select ".concat(this.props.selectClasses),
           value: this.state.value,
           options: options,
           onChange: this.handleChange,
-          noResultsText: this.props.noResultsText || 'No results for this city',
-          placeholder: this.props.placeholder || 'Start typing a city name...',
-          loadOptions: this.searchPlaces
+          noResultsText: this.props.noResultsText,
+          placeholder: this.props.placeholder,
+          loadOptions: this.searchPlaces,
+          isClearable: this.props.isClearable,
+          theme: function theme(_theme) {
+            return _objectSpread({}, _theme, {
+              colors: _objectSpread({}, _theme.colors, {
+                primary: '#05c6b4',
+                primary75: '#D3D8E6',
+                primary50: '#e0f7f5',
+                primary25: '#F3F4F8'
+              })
+            });
+          }
         }), this.props.errorMessage && React__default.createElement("div", {
           className: "error-message minicaps"
         }, this.props.errorMessage));
@@ -15440,6 +15738,28 @@
 
     return PlaceSelect;
   }(React.Component);
+  PlaceSelect.propTypes = {
+    handleChange: PropTypes.func.isRequired,
+    handleInputChange: PropTypes.func,
+    name: PropTypes.string.isRequired,
+    classes: PropTypes.string,
+    noResultsText: PropTypes.string,
+    placeholder: PropTypes.string,
+    place_id: PropTypes.string,
+    city: PropTypes.string,
+    errorMessage: PropTypes.string,
+    isClearable: PropTypes.bool
+  };
+  PlaceSelect.defaultProps = {
+    noResultsText: "No results for this city",
+    placeholder: "Start typing a city name...",
+    classes: "",
+    name: "select-place",
+    handleChange: function handleChange(selected) {
+      return console.log("Implement a function to save selection", selected);
+    },
+    isClearable: true
+  };
 
   /**
    * A collection of shims that provide minimal functionality of the ES6 collections.
@@ -17031,14 +17351,52 @@
       className: props.selectClasses,
       value: props.value,
       options: props.options,
-      onChange: props.onChange,
+      onChange: props.handleChange,
       onInputChange: props.onInputChange,
       noResultsText: props.noResultsText,
       placeholder: props.placeholder,
-      multi: props.multi || false
+      multi: props.multi || false,
+      isClearable: props.isClearable,
+      theme: function theme(_theme) {
+        return _objectSpread({}, _theme, {
+          colors: _objectSpread({}, _theme.colors, {
+            primary: '#05c6b4',
+            primary75: '#D3D8E6',
+            primary50: '#e0f7f5',
+            primary25: '#F3F4F8'
+          })
+        });
+      }
     }), props.errorMessage && React__default.createElement("div", {
       className: 'error-message minicaps'
     }, props.errorMessage));
+  };
+
+  SelectWithLabel.propTypes = {
+    handleChange: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    handleInputChange: PropTypes.func,
+    classes: PropTypes.string,
+    selectClasses: PropTypes.string,
+    required: PropTypes.bool,
+    noResultsText: PropTypes.string,
+    placeholder: PropTypes.string,
+    multi: PropTypes.bool,
+    options: PropTypes.array,
+    errorMessage: PropTypes.string,
+    isClearable: PropTypes.bool
+  };
+  SelectWithLabel.defaultProps = {
+    noResultsText: "No results",
+    classes: "",
+    name: "select-with-label",
+    label: "Select one",
+    options: [],
+    handleChange: function handleChange(selected) {
+      return console.log("Implement a function to save selection", selected);
+    },
+    isClearable: true
   };
 
   var SwitchWithLabels =
@@ -17270,13 +17628,26 @@
             label: tz
           };
         });
-        return React__default.createElement("div", null, React__default.createElement(index, (_React$createElement = {
+        return React__default.createElement("div", {
+          className: "".concat(this.props.classes)
+        }, this.props.label && React__default.createElement("label", {
+          htmlFor: this.props.name
+        }, "".concat(this.props.label, " ").concat(this.props.required ? '*' : '')), React__default.createElement(index, (_React$createElement = {
           name: this.props.name,
-          className: 'form-group input-with-label',
+          className: "form-group input-with-label ".concat(this.props.selectClasses),
           value: this.state.value,
           onChange: this.onChange,
           options: timezoneOptions
-        }, _defineProperty(_React$createElement, "name", 'timezone'), _defineProperty(_React$createElement, "id", 'id_timezone'), _React$createElement)), this.props.errorMessage && React__default.createElement("div", {
+        }, _defineProperty(_React$createElement, "name", 'timezone'), _defineProperty(_React$createElement, "id", 'id_timezone'), _defineProperty(_React$createElement, "isClearable", this.props.isClearable), _defineProperty(_React$createElement, "theme", function theme(_theme) {
+          return _objectSpread({}, _theme, {
+            colors: _objectSpread({}, _theme.colors, {
+              primary: '#05c6b4',
+              primary75: '#D3D8E6',
+              primary50: '#e0f7f5',
+              primary25: '#F3F4F8'
+            })
+          });
+        }), _React$createElement)), this.props.errorMessage && React__default.createElement("div", {
           className: "error-message minicaps"
         }, this.props.errorMessage));
       }
@@ -17284,6 +17655,24 @@
 
     return TimeZoneSelect;
   }(React.Component);
+  TimeZoneSelect.propTypes = {
+    handleChange: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    classes: PropTypes.string,
+    timezone: PropTypes.string,
+    latitude: PropTypes.string,
+    longitude: PropTypes.string,
+    errorMessage: PropTypes.string,
+    isClearable: PropTypes.bool
+  };
+  TimeZoneSelect.defaultProps = {
+    classes: "",
+    name: "select-timezone",
+    handleChange: function handleChange(selected) {
+      return console.log("Implement a function to save selection", selected);
+    },
+    isClearable: true
+  };
 
   exports.CitySelect = CitySelect;
   exports.CheckboxWithLabel = CheckboxWithLabel;

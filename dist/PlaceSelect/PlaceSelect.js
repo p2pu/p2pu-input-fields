@@ -7,15 +7,21 @@ exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
 var _axios = _interopRequireDefault(require("axios"));
 
-var _reactSelect = _interopRequireDefault(require("react-select"));
+var _async = _interopRequireDefault(require("react-select/async"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -88,8 +94,8 @@ function (_Component) {
   }
 
   _createClass(PlaceSelect, [{
-    key: "componentWillMount",
-    value: function componentWillMount() {
+    key: "componentDidMount",
+    value: function componentDidMount() {
       if (!!this.props.place_id) {
         this.fetchPlaceById();
       } else if (this.props.city === 'Kansas City, Missouri, United States of America') {
@@ -126,7 +132,7 @@ function (_Component) {
         };
       }
 
-      this.props.handleSelect(cityData);
+      this.props.handleChange(cityData);
       this.setState({
         value: selected
       });
@@ -158,9 +164,7 @@ function (_Component) {
           options.unshift(KANSAS_CITY_OPTION);
         }
 
-        return {
-          options: options
-        };
+        return options;
       }).catch(function (err) {
         console.log(err);
       });
@@ -198,15 +202,30 @@ function (_Component) {
       var options = this.state.hits.map(function (place) {
         return _this4.generateCityOption(place);
       });
-      return _react.default.createElement("div", null, _react.default.createElement(_reactSelect.default.Async, {
+      return _react.default.createElement("div", {
+        className: "".concat(this.props.classes)
+      }, this.props.label && _react.default.createElement("label", {
+        htmlFor: this.props.name
+      }, "".concat(this.props.label, " ").concat(this.props.required ? '*' : '')), _react.default.createElement(_async.default, {
         name: this.props.name,
-        className: "city-select ".concat(this.props.classes),
+        className: "city-select ".concat(this.props.selectClasses),
         value: this.state.value,
         options: options,
         onChange: this.handleChange,
-        noResultsText: this.props.noResultsText || 'No results for this city',
-        placeholder: this.props.placeholder || 'Start typing a city name...',
-        loadOptions: this.searchPlaces
+        noResultsText: this.props.noResultsText,
+        placeholder: this.props.placeholder,
+        loadOptions: this.searchPlaces,
+        isClearable: this.props.isClearable,
+        theme: function theme(_theme) {
+          return _objectSpread({}, _theme, {
+            colors: _objectSpread({}, _theme.colors, {
+              primary: '#05c6b4',
+              primary75: '#D3D8E6',
+              primary50: '#e0f7f5',
+              primary25: '#F3F4F8'
+            })
+          });
+        }
       }), this.props.errorMessage && _react.default.createElement("div", {
         className: "error-message minicaps"
       }, this.props.errorMessage));
@@ -217,3 +236,25 @@ function (_Component) {
 }(_react.Component);
 
 exports.default = PlaceSelect;
+PlaceSelect.propTypes = {
+  handleChange: _propTypes.default.func.isRequired,
+  handleInputChange: _propTypes.default.func,
+  name: _propTypes.default.string.isRequired,
+  classes: _propTypes.default.string,
+  noResultsText: _propTypes.default.string,
+  placeholder: _propTypes.default.string,
+  place_id: _propTypes.default.string,
+  city: _propTypes.default.string,
+  errorMessage: _propTypes.default.string,
+  isClearable: _propTypes.default.bool
+};
+PlaceSelect.defaultProps = {
+  noResultsText: "No results for this city",
+  placeholder: "Start typing a city name...",
+  classes: "",
+  name: "select-place",
+  handleChange: function handleChange(selected) {
+    return console.log("Implement a function to save selection", selected);
+  },
+  isClearable: true
+};

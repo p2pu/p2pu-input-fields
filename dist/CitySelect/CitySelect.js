@@ -19,6 +19,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -82,10 +86,10 @@ function (_Component) {
   }
 
   _createClass(CitySelect, [{
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      if (this.props !== nextProps) {
-        var value = !nextProps.value ? this.state.value : this.convertCityToSelectOption(nextProps.value);
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      if (this.props !== prevProps) {
+        var value = !this.props.value ? this.state.value : this.convertCityToSelectOption(this.props.value);
         this.setState({
           value: value
         });
@@ -103,7 +107,7 @@ function (_Component) {
     key: "_handleChange",
     value: function _handleChange(selected) {
       var query = selected ? selected.label : selected;
-      this.props.handleSelect(query);
+      this.props.handleChange(query);
       this.setState({
         value: selected
       });
@@ -155,16 +159,31 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return _react.default.createElement(_reactSelect.default, {
+      return _react.default.createElement("div", {
+        className: "".concat(this.props.classes)
+      }, this.props.label && _react.default.createElement("label", {
+        htmlFor: this.props.name
+      }, "".concat(this.props.label, " ").concat(this.props.required ? '*' : '')), _react.default.createElement(_reactSelect.default, {
         name: this.props.name,
-        className: "city-select ".concat(this.props.classes),
+        className: "city-select ".concat(this.props.selectClasses),
         value: this.state.value,
         options: this.state.cities,
         onChange: this.handleChange,
         onInputChange: this.props.handleInputChange,
-        noResultsText: this.props.noResultsText || 'No results for this city',
-        placeholder: this.props.placeholder || 'Start typing a city name...'
-      });
+        noResultsText: this.props.noResultsText,
+        placeholder: this.props.placeholder,
+        isClearable: this.props.isClearable,
+        theme: function theme(_theme) {
+          return _objectSpread({}, _theme, {
+            colors: _objectSpread({}, _theme.colors, {
+              primary: '#05c6b4',
+              primary75: '#D3D8E6',
+              primary50: '#e0f7f5',
+              primary25: '#F3F4F8'
+            })
+          });
+        }
+      }));
     }
   }]);
 
@@ -173,8 +192,21 @@ function (_Component) {
 
 exports.default = CitySelect;
 CitySelect.propTypes = {
-  handleSelect: _propTypes.default.func.isRequired,
+  handleChange: _propTypes.default.func.isRequired,
   handleInputChange: _propTypes.default.func,
   name: _propTypes.default.string.isRequired,
-  classes: _propTypes.default.string
+  classes: _propTypes.default.string,
+  noResultsText: _propTypes.default.string,
+  placeholder: _propTypes.default.string,
+  isClearable: _propTypes.default.bool
+};
+CitySelect.defaultProps = {
+  noResultsText: "No results for this city",
+  placeholder: "Start typing a city name...",
+  classes: "",
+  name: "select-city",
+  handleChange: function handleChange(selected) {
+    return console.log("Implement a function to save selection", selected);
+  },
+  isClearable: true
 };
