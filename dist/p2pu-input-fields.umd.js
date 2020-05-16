@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types'), require('react-dom'), require('jsonp'), require('moment'), require('axios'), require('rc-time-picker')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types', 'react-dom', 'jsonp', 'moment', 'axios', 'rc-time-picker'], factory) :
-  (factory((global.p2puInputFields = {}),global.React,global.PropTypes,global.ReactDOM,global.jsonp,global.moment,global.axios,global['rc-time-picker']));
-}(this, (function (exports,React,PropTypes,reactDom,jsonp,moment,axios,TimePicker) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types'), require('react-dom'), require('jsonp'), require('moment'), require('axios'), require('react-select/dist/react-select.css'), require('rc-time-picker')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types', 'react-dom', 'jsonp', 'moment', 'axios', 'react-select/dist/react-select.css', 'rc-time-picker'], factory) :
+  (factory((global.p2puInputFields = {}),global.React,global.PropTypes,global.ReactDOM,global.jsonp,global.moment,global.axios,null,global['rc-time-picker']));
+}(this, (function (exports,React,PropTypes,reactDom,jsonp,moment,axios,reactSelect_css,TimePicker) { 'use strict';
 
   var React__default = 'default' in React ? React['default'] : React;
   PropTypes = PropTypes && PropTypes.hasOwnProperty('default') ? PropTypes['default'] : PropTypes;
@@ -139,6 +139,2246 @@
     }, props.errorMessage));
   };
 
+  function areInputsEqual(newInputs, lastInputs) {
+      if (newInputs.length !== lastInputs.length) {
+          return false;
+      }
+      for (var i = 0; i < newInputs.length; i++) {
+          if (newInputs[i] !== lastInputs[i]) {
+              return false;
+          }
+      }
+      return true;
+  }
+
+  function memoizeOne(resultFn, isEqual) {
+      if (isEqual === void 0) { isEqual = areInputsEqual; }
+      var lastThis;
+      var lastArgs = [];
+      var lastResult;
+      var calledOnce = false;
+      function memoized() {
+          var newArgs = [];
+          for (var _i = 0; _i < arguments.length; _i++) {
+              newArgs[_i] = arguments[_i];
+          }
+          if (calledOnce && lastThis === this && isEqual(newArgs, lastArgs)) {
+              return lastResult;
+          }
+          lastResult = resultFn.apply(this, newArgs);
+          calledOnce = true;
+          lastThis = this;
+          lastArgs = newArgs;
+          return lastResult;
+      }
+      return memoized;
+  }
+
+  function _inheritsLoose$1(subClass, superClass) {
+    subClass.prototype = Object.create(superClass.prototype);
+    subClass.prototype.constructor = subClass;
+    subClass.__proto__ = superClass;
+  }
+
+  var inheritsLoose = _inheritsLoose$1;
+
+  /*
+
+  Based off glamor's StyleSheet, thanks Sunil ❤️
+
+  high performance StyleSheet for css-in-js systems
+
+  - uses multiple style tags behind the scenes for millions of rules
+  - uses `insertRule` for appending in production for *much* faster performance
+
+  // usage
+
+  import { StyleSheet } from '@emotion/sheet'
+
+  let styleSheet = new StyleSheet({ key: '', container: document.head })
+
+  styleSheet.insert('#box { border: 1px solid red; }')
+  - appends a css rule into the stylesheet
+
+  styleSheet.flush()
+  - empties the stylesheet of all its contents
+
+  */
+  // $FlowFixMe
+  function sheetForTag(tag) {
+    if (tag.sheet) {
+      // $FlowFixMe
+      return tag.sheet;
+    } // this weirdness brought to you by firefox
+
+    /* istanbul ignore next */
+
+
+    for (var i = 0; i < document.styleSheets.length; i++) {
+      if (document.styleSheets[i].ownerNode === tag) {
+        // $FlowFixMe
+        return document.styleSheets[i];
+      }
+    }
+  }
+
+  function createStyleElement(options) {
+    var tag = document.createElement('style');
+    tag.setAttribute('data-emotion', options.key);
+
+    if (options.nonce !== undefined) {
+      tag.setAttribute('nonce', options.nonce);
+    }
+
+    tag.appendChild(document.createTextNode(''));
+    return tag;
+  }
+
+  var StyleSheet =
+  /*#__PURE__*/
+  function () {
+    function StyleSheet(options) {
+      this.isSpeedy = options.speedy === undefined ? undefined === 'production' : options.speedy;
+      this.tags = [];
+      this.ctr = 0;
+      this.nonce = options.nonce; // key is the value of the data-emotion attribute, it's used to identify different sheets
+
+      this.key = options.key;
+      this.container = options.container;
+      this.before = null;
+    }
+
+    var _proto = StyleSheet.prototype;
+
+    _proto.insert = function insert(rule) {
+      // the max length is how many rules we have per style tag, it's 65000 in speedy mode
+      // it's 1 in dev because we insert source maps that map a single rule to a location
+      // and you can only have one source map per style tag
+      if (this.ctr % (this.isSpeedy ? 65000 : 1) === 0) {
+        var _tag = createStyleElement(this);
+
+        var before;
+
+        if (this.tags.length === 0) {
+          before = this.before;
+        } else {
+          before = this.tags[this.tags.length - 1].nextSibling;
+        }
+
+        this.container.insertBefore(_tag, before);
+        this.tags.push(_tag);
+      }
+
+      var tag = this.tags[this.tags.length - 1];
+
+      if (this.isSpeedy) {
+        var sheet = sheetForTag(tag);
+
+        try {
+          // this is a really hot path
+          // we check the second character first because having "i"
+          // as the second character will happen less often than
+          // having "@" as the first character
+          var isImportRule = rule.charCodeAt(1) === 105 && rule.charCodeAt(0) === 64; // this is the ultrafast version, works across browsers
+          // the big drawback is that the css won't be editable in devtools
+
+          sheet.insertRule(rule, // we need to insert @import rules before anything else
+          // otherwise there will be an error
+          // technically this means that the @import rules will
+          // _usually_(not always since there could be multiple style tags)
+          // be the first ones in prod and generally later in dev
+          // this shouldn't really matter in the real world though
+          // @import is generally only used for font faces from google fonts and etc.
+          // so while this could be technically correct then it would be slower and larger
+          // for a tiny bit of correctness that won't matter in the real world
+          isImportRule ? 0 : sheet.cssRules.length);
+        } catch (e) {
+          if (undefined !== 'production') {
+            console.warn("There was a problem inserting the following rule: \"" + rule + "\"", e);
+          }
+        }
+      } else {
+        tag.appendChild(document.createTextNode(rule));
+      }
+
+      this.ctr++;
+    };
+
+    _proto.flush = function flush() {
+      // $FlowFixMe
+      this.tags.forEach(function (tag) {
+        return tag.parentNode.removeChild(tag);
+      });
+      this.tags = [];
+      this.ctr = 0;
+    };
+
+    return StyleSheet;
+  }();
+
+  function stylis_min (W) {
+    function M(d, c, e, h, a) {
+      for (var m = 0, b = 0, v = 0, n = 0, q, g, x = 0, K = 0, k, u = k = q = 0, l = 0, r = 0, I = 0, t = 0, B = e.length, J = B - 1, y, f = '', p = '', F = '', G = '', C; l < B;) {
+        g = e.charCodeAt(l);
+        l === J && 0 !== b + n + v + m && (0 !== b && (g = 47 === b ? 10 : 47), n = v = m = 0, B++, J++);
+
+        if (0 === b + n + v + m) {
+          if (l === J && (0 < r && (f = f.replace(N, '')), 0 < f.trim().length)) {
+            switch (g) {
+              case 32:
+              case 9:
+              case 59:
+              case 13:
+              case 10:
+                break;
+
+              default:
+                f += e.charAt(l);
+            }
+
+            g = 59;
+          }
+
+          switch (g) {
+            case 123:
+              f = f.trim();
+              q = f.charCodeAt(0);
+              k = 1;
+
+              for (t = ++l; l < B;) {
+                switch (g = e.charCodeAt(l)) {
+                  case 123:
+                    k++;
+                    break;
+
+                  case 125:
+                    k--;
+                    break;
+
+                  case 47:
+                    switch (g = e.charCodeAt(l + 1)) {
+                      case 42:
+                      case 47:
+                        a: {
+                          for (u = l + 1; u < J; ++u) {
+                            switch (e.charCodeAt(u)) {
+                              case 47:
+                                if (42 === g && 42 === e.charCodeAt(u - 1) && l + 2 !== u) {
+                                  l = u + 1;
+                                  break a;
+                                }
+
+                                break;
+
+                              case 10:
+                                if (47 === g) {
+                                  l = u + 1;
+                                  break a;
+                                }
+
+                            }
+                          }
+
+                          l = u;
+                        }
+
+                    }
+
+                    break;
+
+                  case 91:
+                    g++;
+
+                  case 40:
+                    g++;
+
+                  case 34:
+                  case 39:
+                    for (; l++ < J && e.charCodeAt(l) !== g;) {
+                    }
+
+                }
+
+                if (0 === k) break;
+                l++;
+              }
+
+              k = e.substring(t, l);
+              0 === q && (q = (f = f.replace(ca, '').trim()).charCodeAt(0));
+
+              switch (q) {
+                case 64:
+                  0 < r && (f = f.replace(N, ''));
+                  g = f.charCodeAt(1);
+
+                  switch (g) {
+                    case 100:
+                    case 109:
+                    case 115:
+                    case 45:
+                      r = c;
+                      break;
+
+                    default:
+                      r = O;
+                  }
+
+                  k = M(c, r, k, g, a + 1);
+                  t = k.length;
+                  0 < A && (r = X(O, f, I), C = H(3, k, r, c, D, z, t, g, a, h), f = r.join(''), void 0 !== C && 0 === (t = (k = C.trim()).length) && (g = 0, k = ''));
+                  if (0 < t) switch (g) {
+                    case 115:
+                      f = f.replace(da, ea);
+
+                    case 100:
+                    case 109:
+                    case 45:
+                      k = f + '{' + k + '}';
+                      break;
+
+                    case 107:
+                      f = f.replace(fa, '$1 $2');
+                      k = f + '{' + k + '}';
+                      k = 1 === w || 2 === w && L('@' + k, 3) ? '@-webkit-' + k + '@' + k : '@' + k;
+                      break;
+
+                    default:
+                      k = f + k, 112 === h && (k = (p += k, ''));
+                  } else k = '';
+                  break;
+
+                default:
+                  k = M(c, X(c, f, I), k, h, a + 1);
+              }
+
+              F += k;
+              k = I = r = u = q = 0;
+              f = '';
+              g = e.charCodeAt(++l);
+              break;
+
+            case 125:
+            case 59:
+              f = (0 < r ? f.replace(N, '') : f).trim();
+              if (1 < (t = f.length)) switch (0 === u && (q = f.charCodeAt(0), 45 === q || 96 < q && 123 > q) && (t = (f = f.replace(' ', ':')).length), 0 < A && void 0 !== (C = H(1, f, c, d, D, z, p.length, h, a, h)) && 0 === (t = (f = C.trim()).length) && (f = '\x00\x00'), q = f.charCodeAt(0), g = f.charCodeAt(1), q) {
+                case 0:
+                  break;
+
+                case 64:
+                  if (105 === g || 99 === g) {
+                    G += f + e.charAt(l);
+                    break;
+                  }
+
+                default:
+                  58 !== f.charCodeAt(t - 1) && (p += P(f, q, g, f.charCodeAt(2)));
+              }
+              I = r = u = q = 0;
+              f = '';
+              g = e.charCodeAt(++l);
+          }
+        }
+
+        switch (g) {
+          case 13:
+          case 10:
+            47 === b ? b = 0 : 0 === 1 + q && 107 !== h && 0 < f.length && (r = 1, f += '\x00');
+            0 < A * Y && H(0, f, c, d, D, z, p.length, h, a, h);
+            z = 1;
+            D++;
+            break;
+
+          case 59:
+          case 125:
+            if (0 === b + n + v + m) {
+              z++;
+              break;
+            }
+
+          default:
+            z++;
+            y = e.charAt(l);
+
+            switch (g) {
+              case 9:
+              case 32:
+                if (0 === n + m + b) switch (x) {
+                  case 44:
+                  case 58:
+                  case 9:
+                  case 32:
+                    y = '';
+                    break;
+
+                  default:
+                    32 !== g && (y = ' ');
+                }
+                break;
+
+              case 0:
+                y = '\\0';
+                break;
+
+              case 12:
+                y = '\\f';
+                break;
+
+              case 11:
+                y = '\\v';
+                break;
+
+              case 38:
+                0 === n + b + m && (r = I = 1, y = '\f' + y);
+                break;
+
+              case 108:
+                if (0 === n + b + m + E && 0 < u) switch (l - u) {
+                  case 2:
+                    112 === x && 58 === e.charCodeAt(l - 3) && (E = x);
+
+                  case 8:
+                    111 === K && (E = K);
+                }
+                break;
+
+              case 58:
+                0 === n + b + m && (u = l);
+                break;
+
+              case 44:
+                0 === b + v + n + m && (r = 1, y += '\r');
+                break;
+
+              case 34:
+              case 39:
+                0 === b && (n = n === g ? 0 : 0 === n ? g : n);
+                break;
+
+              case 91:
+                0 === n + b + v && m++;
+                break;
+
+              case 93:
+                0 === n + b + v && m--;
+                break;
+
+              case 41:
+                0 === n + b + m && v--;
+                break;
+
+              case 40:
+                if (0 === n + b + m) {
+                  if (0 === q) switch (2 * x + 3 * K) {
+                    case 533:
+                      break;
+
+                    default:
+                      q = 1;
+                  }
+                  v++;
+                }
+
+                break;
+
+              case 64:
+                0 === b + v + n + m + u + k && (k = 1);
+                break;
+
+              case 42:
+              case 47:
+                if (!(0 < n + m + v)) switch (b) {
+                  case 0:
+                    switch (2 * g + 3 * e.charCodeAt(l + 1)) {
+                      case 235:
+                        b = 47;
+                        break;
+
+                      case 220:
+                        t = l, b = 42;
+                    }
+
+                    break;
+
+                  case 42:
+                    47 === g && 42 === x && t + 2 !== l && (33 === e.charCodeAt(t + 2) && (p += e.substring(t, l + 1)), y = '', b = 0);
+                }
+            }
+
+            0 === b && (f += y);
+        }
+
+        K = x;
+        x = g;
+        l++;
+      }
+
+      t = p.length;
+
+      if (0 < t) {
+        r = c;
+        if (0 < A && (C = H(2, p, r, d, D, z, t, h, a, h), void 0 !== C && 0 === (p = C).length)) return G + p + F;
+        p = r.join(',') + '{' + p + '}';
+
+        if (0 !== w * E) {
+          2 !== w || L(p, 2) || (E = 0);
+
+          switch (E) {
+            case 111:
+              p = p.replace(ha, ':-moz-$1') + p;
+              break;
+
+            case 112:
+              p = p.replace(Q, '::-webkit-input-$1') + p.replace(Q, '::-moz-$1') + p.replace(Q, ':-ms-input-$1') + p;
+          }
+
+          E = 0;
+        }
+      }
+
+      return G + p + F;
+    }
+
+    function X(d, c, e) {
+      var h = c.trim().split(ia);
+      c = h;
+      var a = h.length,
+          m = d.length;
+
+      switch (m) {
+        case 0:
+        case 1:
+          var b = 0;
+
+          for (d = 0 === m ? '' : d[0] + ' '; b < a; ++b) {
+            c[b] = Z(d, c[b], e).trim();
+          }
+
+          break;
+
+        default:
+          var v = b = 0;
+
+          for (c = []; b < a; ++b) {
+            for (var n = 0; n < m; ++n) {
+              c[v++] = Z(d[n] + ' ', h[b], e).trim();
+            }
+          }
+
+      }
+
+      return c;
+    }
+
+    function Z(d, c, e) {
+      var h = c.charCodeAt(0);
+      33 > h && (h = (c = c.trim()).charCodeAt(0));
+
+      switch (h) {
+        case 38:
+          return c.replace(F, '$1' + d.trim());
+
+        case 58:
+          return d.trim() + c.replace(F, '$1' + d.trim());
+
+        default:
+          if (0 < 1 * e && 0 < c.indexOf('\f')) return c.replace(F, (58 === d.charCodeAt(0) ? '' : '$1') + d.trim());
+      }
+
+      return d + c;
+    }
+
+    function P(d, c, e, h) {
+      var a = d + ';',
+          m = 2 * c + 3 * e + 4 * h;
+
+      if (944 === m) {
+        d = a.indexOf(':', 9) + 1;
+        var b = a.substring(d, a.length - 1).trim();
+        b = a.substring(0, d).trim() + b + ';';
+        return 1 === w || 2 === w && L(b, 1) ? '-webkit-' + b + b : b;
+      }
+
+      if (0 === w || 2 === w && !L(a, 1)) return a;
+
+      switch (m) {
+        case 1015:
+          return 97 === a.charCodeAt(10) ? '-webkit-' + a + a : a;
+
+        case 951:
+          return 116 === a.charCodeAt(3) ? '-webkit-' + a + a : a;
+
+        case 963:
+          return 110 === a.charCodeAt(5) ? '-webkit-' + a + a : a;
+
+        case 1009:
+          if (100 !== a.charCodeAt(4)) break;
+
+        case 969:
+        case 942:
+          return '-webkit-' + a + a;
+
+        case 978:
+          return '-webkit-' + a + '-moz-' + a + a;
+
+        case 1019:
+        case 983:
+          return '-webkit-' + a + '-moz-' + a + '-ms-' + a + a;
+
+        case 883:
+          if (45 === a.charCodeAt(8)) return '-webkit-' + a + a;
+          if (0 < a.indexOf('image-set(', 11)) return a.replace(ja, '$1-webkit-$2') + a;
+          break;
+
+        case 932:
+          if (45 === a.charCodeAt(4)) switch (a.charCodeAt(5)) {
+            case 103:
+              return '-webkit-box-' + a.replace('-grow', '') + '-webkit-' + a + '-ms-' + a.replace('grow', 'positive') + a;
+
+            case 115:
+              return '-webkit-' + a + '-ms-' + a.replace('shrink', 'negative') + a;
+
+            case 98:
+              return '-webkit-' + a + '-ms-' + a.replace('basis', 'preferred-size') + a;
+          }
+          return '-webkit-' + a + '-ms-' + a + a;
+
+        case 964:
+          return '-webkit-' + a + '-ms-flex-' + a + a;
+
+        case 1023:
+          if (99 !== a.charCodeAt(8)) break;
+          b = a.substring(a.indexOf(':', 15)).replace('flex-', '').replace('space-between', 'justify');
+          return '-webkit-box-pack' + b + '-webkit-' + a + '-ms-flex-pack' + b + a;
+
+        case 1005:
+          return ka.test(a) ? a.replace(aa, ':-webkit-') + a.replace(aa, ':-moz-') + a : a;
+
+        case 1e3:
+          b = a.substring(13).trim();
+          c = b.indexOf('-') + 1;
+
+          switch (b.charCodeAt(0) + b.charCodeAt(c)) {
+            case 226:
+              b = a.replace(G, 'tb');
+              break;
+
+            case 232:
+              b = a.replace(G, 'tb-rl');
+              break;
+
+            case 220:
+              b = a.replace(G, 'lr');
+              break;
+
+            default:
+              return a;
+          }
+
+          return '-webkit-' + a + '-ms-' + b + a;
+
+        case 1017:
+          if (-1 === a.indexOf('sticky', 9)) break;
+
+        case 975:
+          c = (a = d).length - 10;
+          b = (33 === a.charCodeAt(c) ? a.substring(0, c) : a).substring(d.indexOf(':', 7) + 1).trim();
+
+          switch (m = b.charCodeAt(0) + (b.charCodeAt(7) | 0)) {
+            case 203:
+              if (111 > b.charCodeAt(8)) break;
+
+            case 115:
+              a = a.replace(b, '-webkit-' + b) + ';' + a;
+              break;
+
+            case 207:
+            case 102:
+              a = a.replace(b, '-webkit-' + (102 < m ? 'inline-' : '') + 'box') + ';' + a.replace(b, '-webkit-' + b) + ';' + a.replace(b, '-ms-' + b + 'box') + ';' + a;
+          }
+
+          return a + ';';
+
+        case 938:
+          if (45 === a.charCodeAt(5)) switch (a.charCodeAt(6)) {
+            case 105:
+              return b = a.replace('-items', ''), '-webkit-' + a + '-webkit-box-' + b + '-ms-flex-' + b + a;
+
+            case 115:
+              return '-webkit-' + a + '-ms-flex-item-' + a.replace(ba, '') + a;
+
+            default:
+              return '-webkit-' + a + '-ms-flex-line-pack' + a.replace('align-content', '').replace(ba, '') + a;
+          }
+          break;
+
+        case 973:
+        case 989:
+          if (45 !== a.charCodeAt(3) || 122 === a.charCodeAt(4)) break;
+
+        case 931:
+        case 953:
+          if (!0 === la.test(d)) return 115 === (b = d.substring(d.indexOf(':') + 1)).charCodeAt(0) ? P(d.replace('stretch', 'fill-available'), c, e, h).replace(':fill-available', ':stretch') : a.replace(b, '-webkit-' + b) + a.replace(b, '-moz-' + b.replace('fill-', '')) + a;
+          break;
+
+        case 962:
+          if (a = '-webkit-' + a + (102 === a.charCodeAt(5) ? '-ms-' + a : '') + a, 211 === e + h && 105 === a.charCodeAt(13) && 0 < a.indexOf('transform', 10)) return a.substring(0, a.indexOf(';', 27) + 1).replace(ma, '$1-webkit-$2') + a;
+      }
+
+      return a;
+    }
+
+    function L(d, c) {
+      var e = d.indexOf(1 === c ? ':' : '{'),
+          h = d.substring(0, 3 !== c ? e : 10);
+      e = d.substring(e + 1, d.length - 1);
+      return R(2 !== c ? h : h.replace(na, '$1'), e, c);
+    }
+
+    function ea(d, c) {
+      var e = P(c, c.charCodeAt(0), c.charCodeAt(1), c.charCodeAt(2));
+      return e !== c + ';' ? e.replace(oa, ' or ($1)').substring(4) : '(' + c + ')';
+    }
+
+    function H(d, c, e, h, a, m, b, v, n, q) {
+      for (var g = 0, x = c, w; g < A; ++g) {
+        switch (w = S[g].call(B, d, x, e, h, a, m, b, v, n, q)) {
+          case void 0:
+          case !1:
+          case !0:
+          case null:
+            break;
+
+          default:
+            x = w;
+        }
+      }
+
+      if (x !== c) return x;
+    }
+
+    function T(d) {
+      switch (d) {
+        case void 0:
+        case null:
+          A = S.length = 0;
+          break;
+
+        default:
+          if ('function' === typeof d) S[A++] = d;else if ('object' === typeof d) for (var c = 0, e = d.length; c < e; ++c) {
+            T(d[c]);
+          } else Y = !!d | 0;
+      }
+
+      return T;
+    }
+
+    function U(d) {
+      d = d.prefix;
+      void 0 !== d && (R = null, d ? 'function' !== typeof d ? w = 1 : (w = 2, R = d) : w = 0);
+      return U;
+    }
+
+    function B(d, c) {
+      var e = d;
+      33 > e.charCodeAt(0) && (e = e.trim());
+      V = e;
+      e = [V];
+
+      if (0 < A) {
+        var h = H(-1, c, e, e, D, z, 0, 0, 0, 0);
+        void 0 !== h && 'string' === typeof h && (c = h);
+      }
+
+      var a = M(O, e, c, 0, 0);
+      0 < A && (h = H(-2, a, e, e, D, z, a.length, 0, 0, 0), void 0 !== h && (a = h));
+      V = '';
+      E = 0;
+      z = D = 1;
+      return a;
+    }
+
+    var ca = /^\0+/g,
+        N = /[\0\r\f]/g,
+        aa = /: */g,
+        ka = /zoo|gra/,
+        ma = /([,: ])(transform)/g,
+        ia = /,\r+?/g,
+        F = /([\t\r\n ])*\f?&/g,
+        fa = /@(k\w+)\s*(\S*)\s*/,
+        Q = /::(place)/g,
+        ha = /:(read-only)/g,
+        G = /[svh]\w+-[tblr]{2}/,
+        da = /\(\s*(.*)\s*\)/g,
+        oa = /([\s\S]*?);/g,
+        ba = /-self|flex-/g,
+        na = /[^]*?(:[rp][el]a[\w-]+)[^]*/,
+        la = /stretch|:\s*\w+\-(?:conte|avail)/,
+        ja = /([^-])(image-set\()/,
+        z = 1,
+        D = 1,
+        E = 0,
+        w = 1,
+        O = [],
+        S = [],
+        A = 0,
+        R = null,
+        Y = 0,
+        V = '';
+    B.use = T;
+    B.set = U;
+    void 0 !== W && U(W);
+    return B;
+  }
+
+  var weakMemoize = function weakMemoize(func) {
+    // $FlowFixMe flow doesn't include all non-primitive types as allowed for weakmaps
+    var cache = new WeakMap();
+    return function (arg) {
+      if (cache.has(arg)) {
+        // $FlowFixMe
+        return cache.get(arg);
+      }
+
+      var ret = func(arg);
+      cache.set(arg, ret);
+      return ret;
+    };
+  };
+
+  // https://github.com/thysultan/stylis.js/tree/master/plugins/rule-sheet
+  // inlined to avoid umd wrapper and peerDep warnings/installing stylis
+  // since we use stylis after closure compiler
+  var delimiter = '/*|*/';
+  var needle = delimiter + '}';
+
+  function toSheet(block) {
+    if (block) {
+      Sheet.current.insert(block + '}');
+    }
+  }
+
+  var Sheet = {
+    current: null
+  };
+  var ruleSheet = function ruleSheet(context, content, selectors, parents, line, column, length, ns, depth, at) {
+    switch (context) {
+      // property
+      case 1:
+        {
+          switch (content.charCodeAt(0)) {
+            case 64:
+              {
+                // @import
+                Sheet.current.insert(content + ';');
+                return '';
+              }
+            // charcode for l
+
+            case 108:
+              {
+                // charcode for b
+                // this ignores label
+                if (content.charCodeAt(2) === 98) {
+                  return '';
+                }
+              }
+          }
+
+          break;
+        }
+      // selector
+
+      case 2:
+        {
+          if (ns === 0) return content + delimiter;
+          break;
+        }
+      // at-rule
+
+      case 3:
+        {
+          switch (ns) {
+            // @font-face, @page
+            case 102:
+            case 112:
+              {
+                Sheet.current.insert(selectors[0] + content);
+                return '';
+              }
+
+            default:
+              {
+                return content + (at === 0 ? delimiter : '');
+              }
+          }
+        }
+
+      case -2:
+        {
+          content.split(needle).forEach(toSheet);
+        }
+    }
+  };
+  var removeLabel = function removeLabel(context, content) {
+    if (context === 1 && // charcode for l
+    content.charCodeAt(0) === 108 && // charcode for b
+    content.charCodeAt(2) === 98 // this ignores label
+    ) {
+        return '';
+      }
+  };
+
+  var isBrowser = typeof document !== 'undefined';
+  var rootServerStylisCache = {};
+  var getServerStylisCache = isBrowser ? undefined : weakMemoize(function () {
+    var getCache = weakMemoize(function () {
+      return {};
+    });
+    var prefixTrueCache = {};
+    var prefixFalseCache = {};
+    return function (prefix) {
+      if (prefix === undefined || prefix === true) {
+        return prefixTrueCache;
+      }
+
+      if (prefix === false) {
+        return prefixFalseCache;
+      }
+
+      return getCache(prefix);
+    };
+  });
+
+  var createCache = function createCache(options) {
+    if (options === undefined) options = {};
+    var key = options.key || 'css';
+    var stylisOptions;
+
+    if (options.prefix !== undefined) {
+      stylisOptions = {
+        prefix: options.prefix
+      };
+    }
+
+    var stylis = new stylis_min(stylisOptions);
+
+    if (undefined !== 'production') {
+      // $FlowFixMe
+      if (/[^a-z-]/.test(key)) {
+        throw new Error("Emotion key must only contain lower case alphabetical characters and - but \"" + key + "\" was passed");
+      }
+    }
+
+    var inserted = {}; // $FlowFixMe
+
+    var container;
+
+    if (isBrowser) {
+      container = options.container || document.head;
+      var nodes = document.querySelectorAll("style[data-emotion-" + key + "]");
+      Array.prototype.forEach.call(nodes, function (node) {
+        var attrib = node.getAttribute("data-emotion-" + key); // $FlowFixMe
+
+        attrib.split(' ').forEach(function (id) {
+          inserted[id] = true;
+        });
+
+        if (node.parentNode !== container) {
+          container.appendChild(node);
+        }
+      });
+    }
+
+    var _insert;
+
+    if (isBrowser) {
+      stylis.use(options.stylisPlugins)(ruleSheet);
+
+      _insert = function insert(selector, serialized, sheet, shouldCache) {
+        var name = serialized.name;
+        Sheet.current = sheet;
+
+        if (undefined !== 'production' && serialized.map !== undefined) {
+          var map = serialized.map;
+          Sheet.current = {
+            insert: function insert(rule) {
+              sheet.insert(rule + map);
+            }
+          };
+        }
+
+        stylis(selector, serialized.styles);
+
+        if (shouldCache) {
+          cache.inserted[name] = true;
+        }
+      };
+    } else {
+      stylis.use(removeLabel);
+      var serverStylisCache = rootServerStylisCache;
+
+      if (options.stylisPlugins || options.prefix !== undefined) {
+        stylis.use(options.stylisPlugins); // $FlowFixMe
+
+        serverStylisCache = getServerStylisCache(options.stylisPlugins || rootServerStylisCache)(options.prefix);
+      }
+
+      var getRules = function getRules(selector, serialized) {
+        var name = serialized.name;
+
+        if (serverStylisCache[name] === undefined) {
+          serverStylisCache[name] = stylis(selector, serialized.styles);
+        }
+
+        return serverStylisCache[name];
+      };
+
+      _insert = function _insert(selector, serialized, sheet, shouldCache) {
+        var name = serialized.name;
+        var rules = getRules(selector, serialized);
+
+        if (cache.compat === undefined) {
+          // in regular mode, we don't set the styles on the inserted cache
+          // since we don't need to and that would be wasting memory
+          // we return them so that they are rendered in a style tag
+          if (shouldCache) {
+            cache.inserted[name] = true;
+          }
+
+          if ( // using === development instead of !== production
+          // because if people do ssr in tests, the source maps showing up would be annoying
+          undefined === 'development' && serialized.map !== undefined) {
+            return rules + serialized.map;
+          }
+
+          return rules;
+        } else {
+          // in compat mode, we put the styles on the inserted cache so
+          // that emotion-server can pull out the styles
+          // except when we don't want to cache it which was in Global but now
+          // is nowhere but we don't want to do a major right now
+          // and just in case we're going to leave the case here
+          // it's also not affecting client side bundle size
+          // so it's really not a big deal
+          if (shouldCache) {
+            cache.inserted[name] = rules;
+          } else {
+            return rules;
+          }
+        }
+      };
+    }
+
+    if (undefined !== 'production') {
+      // https://esbench.com/bench/5bf7371a4cd7e6009ef61d0a
+      var commentStart = /\/\*/g;
+      var commentEnd = /\*\//g;
+      stylis.use(function (context, content) {
+        switch (context) {
+          case -1:
+            {
+              while (commentStart.test(content)) {
+                commentEnd.lastIndex = commentStart.lastIndex;
+
+                if (commentEnd.test(content)) {
+                  commentStart.lastIndex = commentEnd.lastIndex;
+                  continue;
+                }
+
+                throw new Error('Your styles have an unterminated comment ("/*" without corresponding "*/").');
+              }
+
+              commentStart.lastIndex = 0;
+              break;
+            }
+        }
+      });
+      stylis.use(function (context, content, selectors) {
+        switch (context) {
+          case -1:
+            {
+              var flag = 'emotion-disable-server-rendering-unsafe-selector-warning-please-do-not-use-this-the-warning-exists-for-a-reason';
+              var unsafePseudoClasses = content.match(/(:first|:nth|:nth-last)-child/g);
+
+              if (unsafePseudoClasses && cache.compat !== true) {
+                unsafePseudoClasses.forEach(function (unsafePseudoClass) {
+                  var ignoreRegExp = new RegExp(unsafePseudoClass + ".*\\/\\* " + flag + " \\*\\/");
+                  var ignore = ignoreRegExp.test(content);
+
+                  if (unsafePseudoClass && !ignore) {
+                    console.error("The pseudo class \"" + unsafePseudoClass + "\" is potentially unsafe when doing server-side rendering. Try changing it to \"" + unsafePseudoClass.split('-child')[0] + "-of-type\".");
+                  }
+                });
+              }
+
+              break;
+            }
+        }
+      });
+    }
+
+    var cache = {
+      key: key,
+      sheet: new StyleSheet({
+        key: key,
+        container: container,
+        nonce: options.nonce,
+        speedy: options.speedy
+      }),
+      nonce: options.nonce,
+      inserted: inserted,
+      registered: {},
+      insert: _insert
+    };
+    return cache;
+  };
+
+  var isBrowser$1 = typeof document !== 'undefined';
+  function getRegisteredStyles(registered, registeredStyles, classNames) {
+    var rawClassName = '';
+    classNames.split(' ').forEach(function (className) {
+      if (registered[className] !== undefined) {
+        registeredStyles.push(registered[className]);
+      } else {
+        rawClassName += className + " ";
+      }
+    });
+    return rawClassName;
+  }
+  var insertStyles = function insertStyles(cache, serialized, isStringTag) {
+    var className = cache.key + "-" + serialized.name;
+
+    if ( // we only need to add the styles to the registered cache if the
+    // class name could be used further down
+    // the tree but if it's a string tag, we know it won't
+    // so we don't have to add it to registered cache.
+    // this improves memory usage since we can avoid storing the whole style string
+    (isStringTag === false || // we need to always store it if we're in compat mode and
+    // in node since emotion-server relies on whether a style is in
+    // the registered cache to know whether a style is global or not
+    // also, note that this check will be dead code eliminated in the browser
+    isBrowser$1 === false && cache.compat !== undefined) && cache.registered[className] === undefined) {
+      cache.registered[className] = serialized.styles;
+    }
+
+    if (cache.inserted[serialized.name] === undefined) {
+      var stylesForSSR = '';
+      var current = serialized;
+
+      do {
+        var maybeStyles = cache.insert("." + className, current, cache.sheet, true);
+
+        if (!isBrowser$1 && maybeStyles !== undefined) {
+          stylesForSSR += maybeStyles;
+        }
+
+        current = current.next;
+      } while (current !== undefined);
+
+      if (!isBrowser$1 && stylesForSSR.length !== 0) {
+        return stylesForSSR;
+      }
+    }
+  };
+
+  /* eslint-disable */
+  // Inspired by https://github.com/garycourt/murmurhash-js
+  // Ported from https://github.com/aappleby/smhasher/blob/61a0530f28277f2e850bfc39600ce61d02b518de/src/MurmurHash2.cpp#L37-L86
+  function murmur2(str) {
+    // 'm' and 'r' are mixing constants generated offline.
+    // They're not really 'magic', they just happen to work well.
+    // const m = 0x5bd1e995;
+    // const r = 24;
+    // Initialize the hash
+    var h = 0; // Mix 4 bytes at a time into the hash
+
+    var k,
+        i = 0,
+        len = str.length;
+
+    for (; len >= 4; ++i, len -= 4) {
+      k = str.charCodeAt(i) & 0xff | (str.charCodeAt(++i) & 0xff) << 8 | (str.charCodeAt(++i) & 0xff) << 16 | (str.charCodeAt(++i) & 0xff) << 24;
+      k =
+      /* Math.imul(k, m): */
+      (k & 0xffff) * 0x5bd1e995 + ((k >>> 16) * 0xe995 << 16);
+      k ^=
+      /* k >>> r: */
+      k >>> 24;
+      h =
+      /* Math.imul(k, m): */
+      (k & 0xffff) * 0x5bd1e995 + ((k >>> 16) * 0xe995 << 16) ^
+      /* Math.imul(h, m): */
+      (h & 0xffff) * 0x5bd1e995 + ((h >>> 16) * 0xe995 << 16);
+    } // Handle the last few bytes of the input array
+
+
+    switch (len) {
+      case 3:
+        h ^= (str.charCodeAt(i + 2) & 0xff) << 16;
+
+      case 2:
+        h ^= (str.charCodeAt(i + 1) & 0xff) << 8;
+
+      case 1:
+        h ^= str.charCodeAt(i) & 0xff;
+        h =
+        /* Math.imul(h, m): */
+        (h & 0xffff) * 0x5bd1e995 + ((h >>> 16) * 0xe995 << 16);
+    } // Do a few final mixes of the hash to ensure the last few
+    // bytes are well-incorporated.
+
+
+    h ^= h >>> 13;
+    h =
+    /* Math.imul(h, m): */
+    (h & 0xffff) * 0x5bd1e995 + ((h >>> 16) * 0xe995 << 16);
+    return ((h ^ h >>> 15) >>> 0).toString(36);
+  }
+
+  var unitlessKeys = {
+    animationIterationCount: 1,
+    borderImageOutset: 1,
+    borderImageSlice: 1,
+    borderImageWidth: 1,
+    boxFlex: 1,
+    boxFlexGroup: 1,
+    boxOrdinalGroup: 1,
+    columnCount: 1,
+    columns: 1,
+    flex: 1,
+    flexGrow: 1,
+    flexPositive: 1,
+    flexShrink: 1,
+    flexNegative: 1,
+    flexOrder: 1,
+    gridRow: 1,
+    gridRowEnd: 1,
+    gridRowSpan: 1,
+    gridRowStart: 1,
+    gridColumn: 1,
+    gridColumnEnd: 1,
+    gridColumnSpan: 1,
+    gridColumnStart: 1,
+    msGridRow: 1,
+    msGridRowSpan: 1,
+    msGridColumn: 1,
+    msGridColumnSpan: 1,
+    fontWeight: 1,
+    lineHeight: 1,
+    opacity: 1,
+    order: 1,
+    orphans: 1,
+    tabSize: 1,
+    widows: 1,
+    zIndex: 1,
+    zoom: 1,
+    WebkitLineClamp: 1,
+    // SVG-related properties
+    fillOpacity: 1,
+    floodOpacity: 1,
+    stopOpacity: 1,
+    strokeDasharray: 1,
+    strokeDashoffset: 1,
+    strokeMiterlimit: 1,
+    strokeOpacity: 1,
+    strokeWidth: 1
+  };
+
+  function memoize(fn) {
+    var cache = {};
+    return function (arg) {
+      if (cache[arg] === undefined) cache[arg] = fn(arg);
+      return cache[arg];
+    };
+  }
+
+  var ILLEGAL_ESCAPE_SEQUENCE_ERROR = "You have illegal escape sequence in your template literal, most likely inside content's property value.\nBecause you write your CSS inside a JavaScript string you actually have to do double escaping, so for example \"content: '\\00d7';\" should become \"content: '\\\\00d7';\".\nYou can read more about this here:\nhttps://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#ES2018_revision_of_illegal_escape_sequences";
+  var UNDEFINED_AS_OBJECT_KEY_ERROR = "You have passed in falsy value as style object's key (can happen when in example you pass unexported component as computed key).";
+  var hyphenateRegex = /[A-Z]|^ms/g;
+  var animationRegex = /_EMO_([^_]+?)_([^]*?)_EMO_/g;
+
+  var isCustomProperty = function isCustomProperty(property) {
+    return property.charCodeAt(1) === 45;
+  };
+
+  var isProcessableValue = function isProcessableValue(value) {
+    return value != null && typeof value !== 'boolean';
+  };
+
+  var processStyleName = memoize(function (styleName) {
+    return isCustomProperty(styleName) ? styleName : styleName.replace(hyphenateRegex, '-$&').toLowerCase();
+  });
+
+  var processStyleValue = function processStyleValue(key, value) {
+    switch (key) {
+      case 'animation':
+      case 'animationName':
+        {
+          if (typeof value === 'string') {
+            return value.replace(animationRegex, function (match, p1, p2) {
+              cursor = {
+                name: p1,
+                styles: p2,
+                next: cursor
+              };
+              return p1;
+            });
+          }
+        }
+    }
+
+    if (unitlessKeys[key] !== 1 && !isCustomProperty(key) && typeof value === 'number' && value !== 0) {
+      return value + 'px';
+    }
+
+    return value;
+  };
+
+  if (undefined !== 'production') {
+    var contentValuePattern = /(attr|calc|counters?|url)\(/;
+    var contentValues = ['normal', 'none', 'counter', 'open-quote', 'close-quote', 'no-open-quote', 'no-close-quote', 'initial', 'inherit', 'unset'];
+    var oldProcessStyleValue = processStyleValue;
+    var msPattern = /^-ms-/;
+    var hyphenPattern = /-(.)/g;
+    var hyphenatedCache = {};
+
+    processStyleValue = function processStyleValue(key, value) {
+      if (key === 'content') {
+        if (typeof value !== 'string' || contentValues.indexOf(value) === -1 && !contentValuePattern.test(value) && (value.charAt(0) !== value.charAt(value.length - 1) || value.charAt(0) !== '"' && value.charAt(0) !== "'")) {
+          console.error("You seem to be using a value for 'content' without quotes, try replacing it with `content: '\"" + value + "\"'`");
+        }
+      }
+
+      var processed = oldProcessStyleValue(key, value);
+
+      if (processed !== '' && !isCustomProperty(key) && key.indexOf('-') !== -1 && hyphenatedCache[key] === undefined) {
+        hyphenatedCache[key] = true;
+        console.error("Using kebab-case for css properties in objects is not supported. Did you mean " + key.replace(msPattern, 'ms-').replace(hyphenPattern, function (str, _char) {
+          return _char.toUpperCase();
+        }) + "?");
+      }
+
+      return processed;
+    };
+  }
+
+  var shouldWarnAboutInterpolatingClassNameFromCss = true;
+
+  function handleInterpolation(mergedProps, registered, interpolation, couldBeSelectorInterpolation) {
+    if (interpolation == null) {
+      return '';
+    }
+
+    if (interpolation.__emotion_styles !== undefined) {
+      if (undefined !== 'production' && interpolation.toString() === 'NO_COMPONENT_SELECTOR') {
+        throw new Error('Component selectors can only be used in conjunction with babel-plugin-emotion.');
+      }
+
+      return interpolation;
+    }
+
+    switch (typeof interpolation) {
+      case 'boolean':
+        {
+          return '';
+        }
+
+      case 'object':
+        {
+          if (interpolation.anim === 1) {
+            cursor = {
+              name: interpolation.name,
+              styles: interpolation.styles,
+              next: cursor
+            };
+            return interpolation.name;
+          }
+
+          if (interpolation.styles !== undefined) {
+            var next = interpolation.next;
+
+            if (next !== undefined) {
+              // not the most efficient thing ever but this is a pretty rare case
+              // and there will be very few iterations of this generally
+              while (next !== undefined) {
+                cursor = {
+                  name: next.name,
+                  styles: next.styles,
+                  next: cursor
+                };
+                next = next.next;
+              }
+            }
+
+            var styles = interpolation.styles + ";";
+
+            if (undefined !== 'production' && interpolation.map !== undefined) {
+              styles += interpolation.map;
+            }
+
+            return styles;
+          }
+
+          return createStringFromObject(mergedProps, registered, interpolation);
+        }
+
+      case 'function':
+        {
+          if (mergedProps !== undefined) {
+            var previousCursor = cursor;
+            var result = interpolation(mergedProps);
+            cursor = previousCursor;
+            return handleInterpolation(mergedProps, registered, result, couldBeSelectorInterpolation);
+          } else if (undefined !== 'production') {
+            console.error('Functions that are interpolated in css calls will be stringified.\n' + 'If you want to have a css call based on props, create a function that returns a css call like this\n' + 'let dynamicStyle = (props) => css`color: ${props.color}`\n' + 'It can be called directly with props or interpolated in a styled call like this\n' + "let SomeComponent = styled('div')`${dynamicStyle}`");
+          }
+
+          break;
+        }
+
+      case 'string':
+        if (undefined !== 'production') {
+          var matched = [];
+          var replaced = interpolation.replace(animationRegex, function (match, p1, p2) {
+            var fakeVarName = "animation" + matched.length;
+            matched.push("const " + fakeVarName + " = keyframes`" + p2.replace(/^@keyframes animation-\w+/, '') + "`");
+            return "${" + fakeVarName + "}";
+          });
+
+          if (matched.length) {
+            console.error('`keyframes` output got interpolated into plain string, please wrap it with `css`.\n\n' + 'Instead of doing this:\n\n' + [].concat(matched, ["`" + replaced + "`"]).join('\n') + '\n\nYou should wrap it with `css` like this:\n\n' + ("css`" + replaced + "`"));
+          }
+        }
+
+        break;
+    } // finalize string values (regular strings and functions interpolated into css calls)
+
+
+    if (registered == null) {
+      return interpolation;
+    }
+
+    var cached = registered[interpolation];
+
+    if (undefined !== 'production' && couldBeSelectorInterpolation && shouldWarnAboutInterpolatingClassNameFromCss && cached !== undefined) {
+      console.error('Interpolating a className from css`` is not recommended and will cause problems with composition.\n' + 'Interpolating a className from css`` will be completely unsupported in a future major version of Emotion');
+      shouldWarnAboutInterpolatingClassNameFromCss = false;
+    }
+
+    return cached !== undefined && !couldBeSelectorInterpolation ? cached : interpolation;
+  }
+
+  function createStringFromObject(mergedProps, registered, obj) {
+    var string = '';
+
+    if (Array.isArray(obj)) {
+      for (var i = 0; i < obj.length; i++) {
+        string += handleInterpolation(mergedProps, registered, obj[i], false);
+      }
+    } else {
+      for (var _key in obj) {
+        var value = obj[_key];
+
+        if (typeof value !== 'object') {
+          if (registered != null && registered[value] !== undefined) {
+            string += _key + "{" + registered[value] + "}";
+          } else if (isProcessableValue(value)) {
+            string += processStyleName(_key) + ":" + processStyleValue(_key, value) + ";";
+          }
+        } else {
+          if (_key === 'NO_COMPONENT_SELECTOR' && undefined !== 'production') {
+            throw new Error('Component selectors can only be used in conjunction with babel-plugin-emotion.');
+          }
+
+          if (Array.isArray(value) && typeof value[0] === 'string' && (registered == null || registered[value[0]] === undefined)) {
+            for (var _i = 0; _i < value.length; _i++) {
+              if (isProcessableValue(value[_i])) {
+                string += processStyleName(_key) + ":" + processStyleValue(_key, value[_i]) + ";";
+              }
+            }
+          } else {
+            var interpolated = handleInterpolation(mergedProps, registered, value, false);
+
+            switch (_key) {
+              case 'animation':
+              case 'animationName':
+                {
+                  string += processStyleName(_key) + ":" + interpolated + ";";
+                  break;
+                }
+
+              default:
+                {
+                  if (undefined !== 'production' && _key === 'undefined') {
+                    console.error(UNDEFINED_AS_OBJECT_KEY_ERROR);
+                  }
+
+                  string += _key + "{" + interpolated + "}";
+                }
+            }
+          }
+        }
+      }
+    }
+
+    return string;
+  }
+
+  var labelPattern = /label:\s*([^\s;\n{]+)\s*;/g;
+  var sourceMapPattern;
+
+  if (undefined !== 'production') {
+    sourceMapPattern = /\/\*#\ssourceMappingURL=data:application\/json;\S+\s+\*\//;
+  } // this is the cursor for keyframes
+  // keyframes are stored on the SerializedStyles object as a linked list
+
+
+  var cursor;
+  var serializeStyles = function serializeStyles(args, registered, mergedProps) {
+    if (args.length === 1 && typeof args[0] === 'object' && args[0] !== null && args[0].styles !== undefined) {
+      return args[0];
+    }
+
+    var stringMode = true;
+    var styles = '';
+    cursor = undefined;
+    var strings = args[0];
+
+    if (strings == null || strings.raw === undefined) {
+      stringMode = false;
+      styles += handleInterpolation(mergedProps, registered, strings, false);
+    } else {
+      if (undefined !== 'production' && strings[0] === undefined) {
+        console.error(ILLEGAL_ESCAPE_SEQUENCE_ERROR);
+      }
+
+      styles += strings[0];
+    } // we start at 1 since we've already handled the first arg
+
+
+    for (var i = 1; i < args.length; i++) {
+      styles += handleInterpolation(mergedProps, registered, args[i], styles.charCodeAt(styles.length - 1) === 46);
+
+      if (stringMode) {
+        if (undefined !== 'production' && strings[i] === undefined) {
+          console.error(ILLEGAL_ESCAPE_SEQUENCE_ERROR);
+        }
+
+        styles += strings[i];
+      }
+    }
+
+    var sourceMap;
+
+    if (undefined !== 'production') {
+      styles = styles.replace(sourceMapPattern, function (match) {
+        sourceMap = match;
+        return '';
+      });
+    } // using a global regex with .exec is stateful so lastIndex has to be reset each time
+
+
+    labelPattern.lastIndex = 0;
+    var identifierName = '';
+    var match; // https://esbench.com/bench/5b809c2cf2949800a0f61fb5
+
+    while ((match = labelPattern.exec(styles)) !== null) {
+      identifierName += '-' + // $FlowFixMe we know it's not null
+      match[1];
+    }
+
+    var name = murmur2(styles) + identifierName;
+
+    if (undefined !== 'production') {
+      // $FlowFixMe SerializedStyles type doesn't have toString property (and we don't want to add it)
+      return {
+        name: name,
+        styles: styles,
+        map: sourceMap,
+        next: cursor,
+        toString: function toString() {
+          return "You have tried to stringify object returned from `css` function. It isn't supposed to be used directly (e.g. as value of the `className` prop), but rather handed to emotion so it can handle it (e.g. as value of `css` prop).";
+        }
+      };
+    }
+
+    return {
+      name: name,
+      styles: styles,
+      next: cursor
+    };
+  };
+
+  function css() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return serializeStyles(args);
+  }
+
+  var isBrowser$2 = typeof document !== 'undefined';
+
+  var EmotionCacheContext = React.createContext( // we're doing this to avoid preconstruct's dead code elimination in this one case
+  // because this module is primarily intended for the browser and node
+  // but it's also required in react native and similar environments sometimes
+  // and we could have a special build just for that
+  // but this is much easier and the native packages
+  // might use a different theme context in the future anyway
+  typeof HTMLElement !== 'undefined' ? createCache() : null);
+  var ThemeContext = React.createContext({});
+  var CacheProvider = EmotionCacheContext.Provider;
+
+  var withEmotionCache = function withEmotionCache(func) {
+    var render = function render(props, ref) {
+      return React.createElement(EmotionCacheContext.Consumer, null, function (cache) {
+        return func(props, cache, ref);
+      });
+    }; // $FlowFixMe
+
+
+    return React.forwardRef(render);
+  };
+
+  if (!isBrowser$2) {
+    var BasicProvider =
+    /*#__PURE__*/
+    function (_React$Component) {
+      inheritsLoose(BasicProvider, _React$Component);
+
+      function BasicProvider(props, context, updater) {
+        var _this;
+
+        _this = _React$Component.call(this, props, context, updater) || this;
+        _this.state = {
+          value: createCache()
+        };
+        return _this;
+      }
+
+      var _proto = BasicProvider.prototype;
+
+      _proto.render = function render() {
+        return React.createElement(EmotionCacheContext.Provider, this.state, this.props.children(this.state.value));
+      };
+
+      return BasicProvider;
+    }(React.Component);
+
+    withEmotionCache = function withEmotionCache(func) {
+      return function (props) {
+        return React.createElement(EmotionCacheContext.Consumer, null, function (context) {
+          if (context === null) {
+            return React.createElement(BasicProvider, null, function (newContext) {
+              return func(props, newContext);
+            });
+          } else {
+            return func(props, context);
+          }
+        });
+      };
+    };
+  }
+
+  // thus we only need to replace what is a valid character for JS, but not for CSS
+
+  var sanitizeIdentifier = function sanitizeIdentifier(identifier) {
+    return identifier.replace(/\$/g, '-');
+  };
+
+  var typePropName = '__EMOTION_TYPE_PLEASE_DO_NOT_USE__';
+  var labelPropName = '__EMOTION_LABEL_PLEASE_DO_NOT_USE__';
+  var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+  var render = function render(cache, props, theme, ref) {
+    var cssProp = theme === null ? props.css : props.css(theme); // so that using `css` from `emotion` and passing the result to the css prop works
+    // not passing the registered cache to serializeStyles because it would
+    // make certain babel optimisations not possible
+
+    if (typeof cssProp === 'string' && cache.registered[cssProp] !== undefined) {
+      cssProp = cache.registered[cssProp];
+    }
+
+    var type = props[typePropName];
+    var registeredStyles = [cssProp];
+    var className = '';
+
+    if (typeof props.className === 'string') {
+      className = getRegisteredStyles(cache.registered, registeredStyles, props.className);
+    } else if (props.className != null) {
+      className = props.className + " ";
+    }
+
+    var serialized = serializeStyles(registeredStyles);
+
+    if (undefined !== 'production' && serialized.name.indexOf('-') === -1) {
+      var labelFromStack = props[labelPropName];
+
+      if (labelFromStack) {
+        serialized = serializeStyles([serialized, 'label:' + labelFromStack + ';']);
+      }
+    }
+
+    var rules = insertStyles(cache, serialized, typeof type === 'string');
+    className += cache.key + "-" + serialized.name;
+    var newProps = {};
+
+    for (var key in props) {
+      if (hasOwnProperty.call(props, key) && key !== 'css' && key !== typePropName && (undefined === 'production' || key !== labelPropName)) {
+        newProps[key] = props[key];
+      }
+    }
+
+    newProps.ref = ref;
+    newProps.className = className;
+    var ele = React.createElement(type, newProps);
+
+    if (!isBrowser$2 && rules !== undefined) {
+      var _ref;
+
+      var serializedNames = serialized.name;
+      var next = serialized.next;
+
+      while (next !== undefined) {
+        serializedNames += ' ' + next.name;
+        next = next.next;
+      }
+
+      return React.createElement(React.Fragment, null, React.createElement("style", (_ref = {}, _ref["data-emotion-" + cache.key] = serializedNames, _ref.dangerouslySetInnerHTML = {
+        __html: rules
+      }, _ref.nonce = cache.sheet.nonce, _ref)), ele);
+    }
+
+    return ele;
+  };
+
+  var Emotion =
+  /* #__PURE__ */
+  withEmotionCache(function (props, cache, ref) {
+    // use Context.read for the theme when it's stable
+    if (typeof props.css === 'function') {
+      return React.createElement(ThemeContext.Consumer, null, function (theme) {
+        return render(cache, props, theme, ref);
+      });
+    }
+
+    return render(cache, props, null, ref);
+  });
+
+  if (undefined !== 'production') {
+    Emotion.displayName = 'EmotionCssPropInternal';
+  } // $FlowFixMe
+
+
+  var jsx = function jsx(type, props) {
+    var args = arguments;
+
+    if (props == null || !hasOwnProperty.call(props, 'css')) {
+      // $FlowFixMe
+      return React.createElement.apply(undefined, args);
+    }
+
+    if (undefined !== 'production' && typeof props.css === 'string' && // check if there is a css declaration
+    props.css.indexOf(':') !== -1) {
+      throw new Error("Strings are not allowed as css prop values, please wrap it in a css template literal from '@emotion/css' like this: css`" + props.css + "`");
+    }
+
+    var argsLength = args.length;
+    var createElementArgArray = new Array(argsLength);
+    createElementArgArray[0] = Emotion;
+    var newProps = {};
+
+    for (var key in props) {
+      if (hasOwnProperty.call(props, key)) {
+        newProps[key] = props[key];
+      }
+    }
+
+    newProps[typePropName] = type;
+
+    if (undefined !== 'production') {
+      var error = new Error();
+
+      if (error.stack) {
+        // chrome
+        var match = error.stack.match(/at (?:Object\.|)jsx.*\n\s+at ([A-Z][A-Za-z$]+) /);
+
+        if (!match) {
+          // safari and firefox
+          match = error.stack.match(/.*\n([A-Z][A-Za-z$]+)@/);
+        }
+
+        if (match) {
+          newProps[labelPropName] = sanitizeIdentifier(match[1]);
+        }
+      }
+    }
+
+    createElementArgArray[1] = newProps;
+
+    for (var i = 2; i < argsLength; i++) {
+      createElementArgArray[i] = args[i];
+    } // $FlowFixMe
+
+
+    return React.createElement.apply(null, createElementArgArray);
+  };
+
+  var warnedAboutCssPropForGlobal = false;
+  var Global =
+  /* #__PURE__ */
+  withEmotionCache(function (props, cache) {
+    if (undefined !== 'production' && !warnedAboutCssPropForGlobal && ( // check for className as well since the user is
+    // probably using the custom createElement which
+    // means it will be turned into a className prop
+    // $FlowFixMe I don't really want to add it to the type since it shouldn't be used
+    props.className || props.css)) {
+      console.error("It looks like you're using the css prop on Global, did you mean to use the styles prop instead?");
+      warnedAboutCssPropForGlobal = true;
+    }
+
+    var styles = props.styles;
+
+    if (typeof styles === 'function') {
+      return React.createElement(ThemeContext.Consumer, null, function (theme) {
+        var serialized = serializeStyles([styles(theme)]);
+        return React.createElement(InnerGlobal, {
+          serialized: serialized,
+          cache: cache
+        });
+      });
+    }
+
+    var serialized = serializeStyles([styles]);
+    return React.createElement(InnerGlobal, {
+      serialized: serialized,
+      cache: cache
+    });
+  });
+
+  // maintain place over rerenders.
+  // initial render from browser, insertBefore context.sheet.tags[0] or if a style hasn't been inserted there yet, appendChild
+  // initial client-side render from SSR, use place of hydrating tag
+  var InnerGlobal =
+  /*#__PURE__*/
+  function (_React$Component) {
+    inheritsLoose(InnerGlobal, _React$Component);
+
+    function InnerGlobal(props, context, updater) {
+      return _React$Component.call(this, props, context, updater) || this;
+    }
+
+    var _proto = InnerGlobal.prototype;
+
+    _proto.componentDidMount = function componentDidMount() {
+      this.sheet = new StyleSheet({
+        key: this.props.cache.key + "-global",
+        nonce: this.props.cache.sheet.nonce,
+        container: this.props.cache.sheet.container
+      }); // $FlowFixMe
+
+      var node = document.querySelector("style[data-emotion-" + this.props.cache.key + "=\"" + this.props.serialized.name + "\"]");
+
+      if (node !== null) {
+        this.sheet.tags.push(node);
+      }
+
+      if (this.props.cache.sheet.tags.length) {
+        this.sheet.before = this.props.cache.sheet.tags[0];
+      }
+
+      this.insertStyles();
+    };
+
+    _proto.componentDidUpdate = function componentDidUpdate(prevProps) {
+      if (prevProps.serialized.name !== this.props.serialized.name) {
+        this.insertStyles();
+      }
+    };
+
+    _proto.insertStyles = function insertStyles$1() {
+      if (this.props.serialized.next !== undefined) {
+        // insert keyframes
+        insertStyles(this.props.cache, this.props.serialized.next, true);
+      }
+
+      if (this.sheet.tags.length) {
+        // if this doesn't exist then it will be null so the style element will be appended
+        var element = this.sheet.tags[this.sheet.tags.length - 1].nextElementSibling;
+        this.sheet.before = element;
+        this.sheet.flush();
+      }
+
+      this.props.cache.insert("", this.props.serialized, this.sheet, false);
+    };
+
+    _proto.componentWillUnmount = function componentWillUnmount() {
+      this.sheet.flush();
+    };
+
+    _proto.render = function render() {
+      if (!isBrowser$2) {
+        var serialized = this.props.serialized;
+        var serializedNames = serialized.name;
+        var serializedStyles = serialized.styles;
+        var next = serialized.next;
+
+        while (next !== undefined) {
+          serializedNames += ' ' + next.name;
+          serializedStyles += next.styles;
+          next = next.next;
+        }
+
+        var shouldCache = this.props.cache.compat === true;
+        var rules = this.props.cache.insert("", {
+          name: serializedNames,
+          styles: serializedStyles
+        }, this.sheet, shouldCache);
+
+        if (!shouldCache) {
+          var _ref;
+
+          return React.createElement("style", (_ref = {}, _ref["data-emotion-" + this.props.cache.key] = serializedNames, _ref.dangerouslySetInnerHTML = {
+            __html: rules
+          }, _ref.nonce = this.props.cache.sheet.nonce, _ref));
+        }
+      }
+
+      return null;
+    };
+
+    return InnerGlobal;
+  }(React.Component);
+
+  var keyframes = function keyframes() {
+    var insertable = css.apply(void 0, arguments);
+    var name = "animation-" + insertable.name; // $FlowFixMe
+
+    return {
+      name: name,
+      styles: "@keyframes " + name + "{" + insertable.styles + "}",
+      anim: 1,
+      toString: function toString() {
+        return "_EMO_" + this.name + "_" + this.styles + "_EMO_";
+      }
+    };
+  };
+
+  var classnames = function classnames(args) {
+    var len = args.length;
+    var i = 0;
+    var cls = '';
+
+    for (; i < len; i++) {
+      var arg = args[i];
+      if (arg == null) continue;
+      var toAdd = void 0;
+
+      switch (typeof arg) {
+        case 'boolean':
+          break;
+
+        case 'object':
+          {
+            if (Array.isArray(arg)) {
+              toAdd = classnames(arg);
+            } else {
+              toAdd = '';
+
+              for (var k in arg) {
+                if (arg[k] && k) {
+                  toAdd && (toAdd += ' ');
+                  toAdd += k;
+                }
+              }
+            }
+
+            break;
+          }
+
+        default:
+          {
+            toAdd = arg;
+          }
+      }
+
+      if (toAdd) {
+        cls && (cls += ' ');
+        cls += toAdd;
+      }
+    }
+
+    return cls;
+  };
+
+  function merge(registered, css$$1, className) {
+    var registeredStyles = [];
+    var rawClassName = getRegisteredStyles(registered, registeredStyles, className);
+
+    if (registeredStyles.length < 2) {
+      return className;
+    }
+
+    return rawClassName + css$$1(registeredStyles);
+  }
+
+  var ClassNames = withEmotionCache(function (props, context) {
+    return React.createElement(ThemeContext.Consumer, null, function (theme) {
+      var rules = '';
+      var serializedHashes = '';
+      var hasRendered = false;
+
+      var css$$1 = function css$$1() {
+        if (hasRendered && undefined !== 'production') {
+          throw new Error('css can only be used during render');
+        }
+
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        var serialized = serializeStyles(args, context.registered);
+
+        if (isBrowser$2) {
+          insertStyles(context, serialized, false);
+        } else {
+          var res = insertStyles(context, serialized, false);
+
+          if (res !== undefined) {
+            rules += res;
+          }
+        }
+
+        if (!isBrowser$2) {
+          serializedHashes += " " + serialized.name;
+        }
+
+        return context.key + "-" + serialized.name;
+      };
+
+      var cx = function cx() {
+        if (hasRendered && undefined !== 'production') {
+          throw new Error('cx can only be used during render');
+        }
+
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
+
+        return merge(context.registered, css$$1, classnames(args));
+      };
+
+      var content = {
+        css: css$$1,
+        cx: cx,
+        theme: theme
+      };
+      var ele = props.children(content);
+      hasRendered = true;
+
+      if (!isBrowser$2 && rules.length !== 0) {
+        var _ref;
+
+        return React.createElement(React.Fragment, null, React.createElement("style", (_ref = {}, _ref["data-emotion-" + context.key] = serializedHashes.substring(1), _ref.dangerouslySetInnerHTML = {
+          __html: rules
+        }, _ref.nonce = context.sheet.nonce, _ref)), ele);
+      }
+
+      return ele;
+    });
+  });
+
+  // ==============================
+  // NO OP
+  // ==============================
+  var noop = function noop() {};
+  // Class Name Prefixer
+  // ==============================
+
+  /**
+   String representation of component state for styling with class names.
+
+   Expects an array of strings OR a string/object pair:
+   - className(['comp', 'comp-arg', 'comp-arg-2'])
+     @returns 'react-select__comp react-select__comp-arg react-select__comp-arg-2'
+   - className('comp', { some: true, state: false })
+     @returns 'react-select__comp react-select__comp--some'
+  */
+
+  function applyPrefixToName(prefix, name) {
+    if (!name) {
+      return prefix;
+    } else if (name[0] === '-') {
+      return prefix + name;
+    } else {
+      return prefix + '__' + name;
+    }
+  }
+
+  function classNames(prefix, state, className) {
+    var arr = [className];
+
+    if (state && prefix) {
+      for (var key in state) {
+        if (state.hasOwnProperty(key) && state[key]) {
+          arr.push("" + applyPrefixToName(prefix, key));
+        }
+      }
+    }
+
+    return arr.filter(function (i) {
+      return i;
+    }).map(function (i) {
+      return String(i).trim();
+    }).join(' ');
+  } // ==============================
+  // Clean Value
+  // ==============================
+
+  var cleanValue = function cleanValue(value) {
+    if (Array.isArray(value)) return value.filter(Boolean);
+    if (typeof value === 'object' && value !== null) return [value];
+    return [];
+  }; // ==============================
+  // Scroll Helpers
+  // ==============================
+
+  function isDocumentElement(el) {
+    return [document.documentElement, document.body, window].indexOf(el) > -1;
+  } // Normalized Scroll Top
+  // ------------------------------
+
+  function getScrollTop(el) {
+    if (isDocumentElement(el)) {
+      return window.pageYOffset;
+    }
+
+    return el.scrollTop;
+  }
+  function scrollTo(el, top) {
+    // with a scroll distance, we perform scroll on the element
+    if (isDocumentElement(el)) {
+      window.scrollTo(0, top);
+      return;
+    }
+
+    el.scrollTop = top;
+  } // Get Scroll Parent
+  // ------------------------------
+
+  function getScrollParent(element) {
+    var style = getComputedStyle(element);
+    var excludeStaticParent = style.position === 'absolute';
+    var overflowRx = /(auto|scroll)/;
+    var docEl = document.documentElement; // suck it, flow...
+
+    if (style.position === 'fixed') return docEl;
+
+    for (var parent = element; parent = parent.parentElement;) {
+      style = getComputedStyle(parent);
+
+      if (excludeStaticParent && style.position === 'static') {
+        continue;
+      }
+
+      if (overflowRx.test(style.overflow + style.overflowY + style.overflowX)) {
+        return parent;
+      }
+    }
+
+    return docEl;
+  } // Animated Scroll To
+  // ------------------------------
+
+  /**
+    @param t: time (elapsed)
+    @param b: initial value
+    @param c: amount of change
+    @param d: duration
+  */
+
+  function easeOutCubic(t, b, c, d) {
+    return c * ((t = t / d - 1) * t * t + 1) + b;
+  }
+
+  function animatedScrollTo(element, to, duration, callback) {
+    if (duration === void 0) {
+      duration = 200;
+    }
+
+    if (callback === void 0) {
+      callback = noop;
+    }
+
+    var start = getScrollTop(element);
+    var change = to - start;
+    var increment = 10;
+    var currentTime = 0;
+
+    function animateScroll() {
+      currentTime += increment;
+      var val = easeOutCubic(currentTime, start, change, duration);
+      scrollTo(element, val);
+
+      if (currentTime < duration) {
+        window.requestAnimationFrame(animateScroll);
+      } else {
+        callback(element);
+      }
+    }
+
+    animateScroll();
+  } // Scroll Into View
+  // ------------------------------
+
+  function scrollIntoView(menuEl, focusedEl) {
+    var menuRect = menuEl.getBoundingClientRect();
+    var focusedRect = focusedEl.getBoundingClientRect();
+    var overScroll = focusedEl.offsetHeight / 3;
+
+    if (focusedRect.bottom + overScroll > menuRect.bottom) {
+      scrollTo(menuEl, Math.min(focusedEl.offsetTop + focusedEl.clientHeight - menuEl.offsetHeight + overScroll, menuEl.scrollHeight));
+    } else if (focusedRect.top - overScroll < menuRect.top) {
+      scrollTo(menuEl, Math.max(focusedEl.offsetTop - overScroll, 0));
+    }
+  } // ==============================
+  // Get bounding client object
+  // ==============================
+  // cannot get keys using array notation with DOMRect
+
+  function getBoundingClientObj(element) {
+    var rect = element.getBoundingClientRect();
+    return {
+      bottom: rect.bottom,
+      height: rect.height,
+      left: rect.left,
+      right: rect.right,
+      top: rect.top,
+      width: rect.width
+    };
+  }
+  // Touch Capability Detector
+  // ==============================
+
+  function isTouchCapable() {
+    try {
+      document.createEvent('TouchEvent');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  } // ==============================
+  // Mobile Device Detector
+  // ==============================
+
+  function isMobileDevice() {
+    try {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    } catch (e) {
+      return false;
+    }
+  }
+
   function commonjsRequire () {
   	throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
   }
@@ -253,8 +2493,8 @@
   			this.updateInputWidth();
   		}
   	}, {
-  		key: 'componentWillReceiveProps',
-  		value: function componentWillReceiveProps(nextProps) {
+  		key: 'UNSAFE_componentWillReceiveProps',
+  		value: function UNSAFE_componentWillReceiveProps(nextProps) {
   			var id = nextProps.id;
 
   			if (id !== this.props.id) {
@@ -423,2593 +2663,4140 @@
 
   var AutosizeInput = unwrapExports(AutosizeInput_1);
 
-  var classnames = createCommonjsModule(function (module) {
-  /*!
-    Copyright (c) 2016 Jed Watson.
-    Licensed under the MIT License (MIT), see
-    http://jedwatson.github.io/classnames
-  */
-  /* global define */
+  function _extends$1() { _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$1.apply(this, arguments); }
 
-  (function () {
+  function _inheritsLoose$2(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+  function getMenuPlacement(_ref) {
+    var maxHeight = _ref.maxHeight,
+        menuEl = _ref.menuEl,
+        minHeight = _ref.minHeight,
+        placement = _ref.placement,
+        shouldScroll = _ref.shouldScroll,
+        isFixedPosition = _ref.isFixedPosition,
+        theme = _ref.theme;
+    var spacing = theme.spacing;
+    var scrollParent = getScrollParent(menuEl);
+    var defaultState = {
+      placement: 'bottom',
+      maxHeight: maxHeight
+    }; // something went wrong, return default state
 
-  	var hasOwn = {}.hasOwnProperty;
+    if (!menuEl || !menuEl.offsetParent) return defaultState; // we can't trust `scrollParent.scrollHeight` --> it may increase when
+    // the menu is rendered
 
-  	function classNames () {
-  		var classes = [];
+    var _scrollParent$getBoun = scrollParent.getBoundingClientRect(),
+        scrollHeight = _scrollParent$getBoun.height;
 
-  		for (var i = 0; i < arguments.length; i++) {
-  			var arg = arguments[i];
-  			if (!arg) continue;
+    var _menuEl$getBoundingCl = menuEl.getBoundingClientRect(),
+        menuBottom = _menuEl$getBoundingCl.bottom,
+        menuHeight = _menuEl$getBoundingCl.height,
+        menuTop = _menuEl$getBoundingCl.top;
 
-  			var argType = typeof arg;
+    var _menuEl$offsetParent$ = menuEl.offsetParent.getBoundingClientRect(),
+        containerTop = _menuEl$offsetParent$.top;
 
-  			if (argType === 'string' || argType === 'number') {
-  				classes.push(arg);
-  			} else if (Array.isArray(arg)) {
-  				classes.push(classNames.apply(null, arg));
-  			} else if (argType === 'object') {
-  				for (var key in arg) {
-  					if (hasOwn.call(arg, key) && arg[key]) {
-  						classes.push(key);
-  					}
-  				}
-  			}
-  		}
+    var viewHeight = window.innerHeight;
+    var scrollTop = getScrollTop(scrollParent);
+    var marginBottom = parseInt(getComputedStyle(menuEl).marginBottom, 10);
+    var marginTop = parseInt(getComputedStyle(menuEl).marginTop, 10);
+    var viewSpaceAbove = containerTop - marginTop;
+    var viewSpaceBelow = viewHeight - menuTop;
+    var scrollSpaceAbove = viewSpaceAbove + scrollTop;
+    var scrollSpaceBelow = scrollHeight - scrollTop - menuTop;
+    var scrollDown = menuBottom - viewHeight + scrollTop + marginBottom;
+    var scrollUp = scrollTop + menuTop - marginTop;
+    var scrollDuration = 160;
 
-  		return classes.join(' ');
-  	}
+    switch (placement) {
+      case 'auto':
+      case 'bottom':
+        // 1: the menu will fit, do nothing
+        if (viewSpaceBelow >= menuHeight) {
+          return {
+            placement: 'bottom',
+            maxHeight: maxHeight
+          };
+        } // 2: the menu will fit, if scrolled
 
-  	if (module.exports) {
-  		module.exports = classNames;
-  	} else if (typeof undefined === 'function' && typeof undefined.amd === 'object' && undefined.amd) {
-  		// register as 'classnames', consistent with npm package name
-  		undefined('classnames', [], function () {
-  			return classNames;
-  		});
-  	} else {
-  		window.classNames = classNames;
-  	}
-  }());
-  });
 
-  var arrowRenderer = function arrowRenderer(_ref) {
-  	var onMouseDown = _ref.onMouseDown;
+        if (scrollSpaceBelow >= menuHeight && !isFixedPosition) {
+          if (shouldScroll) {
+            animatedScrollTo(scrollParent, scrollDown, scrollDuration);
+          }
 
-  	return React__default.createElement('span', {
-  		className: 'Select-arrow',
-  		onMouseDown: onMouseDown
-  	});
+          return {
+            placement: 'bottom',
+            maxHeight: maxHeight
+          };
+        } // 3: the menu will fit, if constrained
+
+
+        if (!isFixedPosition && scrollSpaceBelow >= minHeight || isFixedPosition && viewSpaceBelow >= minHeight) {
+          if (shouldScroll) {
+            animatedScrollTo(scrollParent, scrollDown, scrollDuration);
+          } // we want to provide as much of the menu as possible to the user,
+          // so give them whatever is available below rather than the minHeight.
+
+
+          var constrainedHeight = isFixedPosition ? viewSpaceBelow - marginBottom : scrollSpaceBelow - marginBottom;
+          return {
+            placement: 'bottom',
+            maxHeight: constrainedHeight
+          };
+        } // 4. Forked beviour when there isn't enough space below
+        // AUTO: flip the menu, render above
+
+
+        if (placement === 'auto' || isFixedPosition) {
+          // may need to be constrained after flipping
+          var _constrainedHeight = maxHeight;
+          var spaceAbove = isFixedPosition ? viewSpaceAbove : scrollSpaceAbove;
+
+          if (spaceAbove >= minHeight) {
+            _constrainedHeight = Math.min(spaceAbove - marginBottom - spacing.controlHeight, maxHeight);
+          }
+
+          return {
+            placement: 'top',
+            maxHeight: _constrainedHeight
+          };
+        } // BOTTOM: allow browser to increase scrollable area and immediately set scroll
+
+
+        if (placement === 'bottom') {
+          scrollTo(scrollParent, scrollDown);
+          return {
+            placement: 'bottom',
+            maxHeight: maxHeight
+          };
+        }
+
+        break;
+
+      case 'top':
+        // 1: the menu will fit, do nothing
+        if (viewSpaceAbove >= menuHeight) {
+          return {
+            placement: 'top',
+            maxHeight: maxHeight
+          };
+        } // 2: the menu will fit, if scrolled
+
+
+        if (scrollSpaceAbove >= menuHeight && !isFixedPosition) {
+          if (shouldScroll) {
+            animatedScrollTo(scrollParent, scrollUp, scrollDuration);
+          }
+
+          return {
+            placement: 'top',
+            maxHeight: maxHeight
+          };
+        } // 3: the menu will fit, if constrained
+
+
+        if (!isFixedPosition && scrollSpaceAbove >= minHeight || isFixedPosition && viewSpaceAbove >= minHeight) {
+          var _constrainedHeight2 = maxHeight; // we want to provide as much of the menu as possible to the user,
+          // so give them whatever is available below rather than the minHeight.
+
+          if (!isFixedPosition && scrollSpaceAbove >= minHeight || isFixedPosition && viewSpaceAbove >= minHeight) {
+            _constrainedHeight2 = isFixedPosition ? viewSpaceAbove - marginTop : scrollSpaceAbove - marginTop;
+          }
+
+          if (shouldScroll) {
+            animatedScrollTo(scrollParent, scrollUp, scrollDuration);
+          }
+
+          return {
+            placement: 'top',
+            maxHeight: _constrainedHeight2
+          };
+        } // 4. not enough space, the browser WILL NOT increase scrollable area when
+        // absolutely positioned element rendered above the viewport (only below).
+        // Flip the menu, render below
+
+
+        return {
+          placement: 'bottom',
+          maxHeight: maxHeight
+        };
+
+      default:
+        throw new Error("Invalid placement provided \"" + placement + "\".");
+    } // fulfil contract with flow: implicit return value of undefined
+
+
+    return defaultState;
+  } // Menu Component
+  // ------------------------------
+
+  function alignToControl(placement) {
+    var placementToCSSProp = {
+      bottom: 'top',
+      top: 'bottom'
+    };
+    return placement ? placementToCSSProp[placement] : 'bottom';
+  }
+
+  var coercePlacement = function coercePlacement(p) {
+    return p === 'auto' ? 'bottom' : p;
   };
 
-  arrowRenderer.propTypes = {
-  	onMouseDown: PropTypes.func
+  var menuCSS = function menuCSS(_ref2) {
+    var _ref3;
+
+    var placement = _ref2.placement,
+        _ref2$theme = _ref2.theme,
+        borderRadius = _ref2$theme.borderRadius,
+        spacing = _ref2$theme.spacing,
+        colors = _ref2$theme.colors;
+    return _ref3 = {
+      label: 'menu'
+    }, _ref3[alignToControl(placement)] = '100%', _ref3.backgroundColor = colors.neutral0, _ref3.borderRadius = borderRadius, _ref3.boxShadow = '0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1)', _ref3.marginBottom = spacing.menuGutter, _ref3.marginTop = spacing.menuGutter, _ref3.position = 'absolute', _ref3.width = '100%', _ref3.zIndex = 1, _ref3;
+  }; // NOTE: internal only
+
+  var MenuPlacer =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose$2(MenuPlacer, _Component);
+
+    function MenuPlacer() {
+      var _this;
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+      _this.state = {
+        maxHeight: _this.props.maxMenuHeight,
+        placement: null
+      };
+
+      _this.getPlacement = function (ref) {
+        var _this$props = _this.props,
+            minMenuHeight = _this$props.minMenuHeight,
+            maxMenuHeight = _this$props.maxMenuHeight,
+            menuPlacement = _this$props.menuPlacement,
+            menuPosition = _this$props.menuPosition,
+            menuShouldScrollIntoView = _this$props.menuShouldScrollIntoView,
+            theme = _this$props.theme;
+        var getPortalPlacement = _this.context.getPortalPlacement;
+        if (!ref) return; // DO NOT scroll if position is fixed
+
+        var isFixedPosition = menuPosition === 'fixed';
+        var shouldScroll = menuShouldScrollIntoView && !isFixedPosition;
+        var state = getMenuPlacement({
+          maxHeight: maxMenuHeight,
+          menuEl: ref,
+          minHeight: minMenuHeight,
+          placement: menuPlacement,
+          shouldScroll: shouldScroll,
+          isFixedPosition: isFixedPosition,
+          theme: theme
+        });
+        if (getPortalPlacement) getPortalPlacement(state);
+
+        _this.setState(state);
+      };
+
+      _this.getUpdatedProps = function () {
+        var menuPlacement = _this.props.menuPlacement;
+        var placement = _this.state.placement || coercePlacement(menuPlacement);
+        return _extends$1({}, _this.props, {
+          placement: placement,
+          maxHeight: _this.state.maxHeight
+        });
+      };
+
+      return _this;
+    }
+
+    var _proto = MenuPlacer.prototype;
+
+    _proto.render = function render() {
+      var children = this.props.children;
+      return children({
+        ref: this.getPlacement,
+        placerProps: this.getUpdatedProps()
+      });
+    };
+
+    return MenuPlacer;
+  }(React.Component);
+  MenuPlacer.contextTypes = {
+    getPortalPlacement: PropTypes.func
   };
 
-  var clearRenderer = function clearRenderer() {
-  	return React__default.createElement('span', {
-  		className: 'Select-clear',
-  		dangerouslySetInnerHTML: { __html: '&times;' }
-  	});
+  var Menu = function Menu(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerRef = props.innerRef,
+        innerProps = props.innerProps;
+    return jsx("div", _extends$1({
+      css: getStyles('menu', props),
+      className: cx({
+        menu: true
+      }, className)
+    }, innerProps, {
+      ref: innerRef
+    }), children);
+  };
+  // Menu List
+  // ==============================
+
+  var menuListCSS = function menuListCSS(_ref4) {
+    var maxHeight = _ref4.maxHeight,
+        baseUnit = _ref4.theme.spacing.baseUnit;
+    return {
+      maxHeight: maxHeight,
+      overflowY: 'auto',
+      paddingBottom: baseUnit,
+      paddingTop: baseUnit,
+      position: 'relative',
+      // required for offset[Height, Top] > keyboard scroll
+      WebkitOverflowScrolling: 'touch'
+    };
+  };
+  var MenuList = function MenuList(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        isMulti = props.isMulti,
+        innerRef = props.innerRef;
+    return jsx("div", {
+      css: getStyles('menuList', props),
+      className: cx({
+        'menu-list': true,
+        'menu-list--is-multi': isMulti
+      }, className),
+      ref: innerRef
+    }, children);
+  }; // ==============================
+  // Menu Notices
+  // ==============================
+
+  var noticeCSS = function noticeCSS(_ref5) {
+    var _ref5$theme = _ref5.theme,
+        baseUnit = _ref5$theme.spacing.baseUnit,
+        colors = _ref5$theme.colors;
+    return {
+      color: colors.neutral40,
+      padding: baseUnit * 2 + "px " + baseUnit * 3 + "px",
+      textAlign: 'center'
+    };
   };
 
-  var map = [{ 'base': 'A', 'letters': /[\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F]/g }, { 'base': 'AA', 'letters': /[\uA732]/g }, { 'base': 'AE', 'letters': /[\u00C6\u01FC\u01E2]/g }, { 'base': 'AO', 'letters': /[\uA734]/g }, { 'base': 'AU', 'letters': /[\uA736]/g }, { 'base': 'AV', 'letters': /[\uA738\uA73A]/g }, { 'base': 'AY', 'letters': /[\uA73C]/g }, { 'base': 'B', 'letters': /[\u0042\u24B7\uFF22\u1E02\u1E04\u1E06\u0243\u0182\u0181]/g }, { 'base': 'C', 'letters': /[\u0043\u24B8\uFF23\u0106\u0108\u010A\u010C\u00C7\u1E08\u0187\u023B\uA73E]/g }, { 'base': 'D', 'letters': /[\u0044\u24B9\uFF24\u1E0A\u010E\u1E0C\u1E10\u1E12\u1E0E\u0110\u018B\u018A\u0189\uA779]/g }, { 'base': 'DZ', 'letters': /[\u01F1\u01C4]/g }, { 'base': 'Dz', 'letters': /[\u01F2\u01C5]/g }, { 'base': 'E', 'letters': /[\u0045\u24BA\uFF25\u00C8\u00C9\u00CA\u1EC0\u1EBE\u1EC4\u1EC2\u1EBC\u0112\u1E14\u1E16\u0114\u0116\u00CB\u1EBA\u011A\u0204\u0206\u1EB8\u1EC6\u0228\u1E1C\u0118\u1E18\u1E1A\u0190\u018E]/g }, { 'base': 'F', 'letters': /[\u0046\u24BB\uFF26\u1E1E\u0191\uA77B]/g }, { 'base': 'G', 'letters': /[\u0047\u24BC\uFF27\u01F4\u011C\u1E20\u011E\u0120\u01E6\u0122\u01E4\u0193\uA7A0\uA77D\uA77E]/g }, { 'base': 'H', 'letters': /[\u0048\u24BD\uFF28\u0124\u1E22\u1E26\u021E\u1E24\u1E28\u1E2A\u0126\u2C67\u2C75\uA78D]/g }, { 'base': 'I', 'letters': /[\u0049\u24BE\uFF29\u00CC\u00CD\u00CE\u0128\u012A\u012C\u0130\u00CF\u1E2E\u1EC8\u01CF\u0208\u020A\u1ECA\u012E\u1E2C\u0197]/g }, { 'base': 'J', 'letters': /[\u004A\u24BF\uFF2A\u0134\u0248]/g }, { 'base': 'K', 'letters': /[\u004B\u24C0\uFF2B\u1E30\u01E8\u1E32\u0136\u1E34\u0198\u2C69\uA740\uA742\uA744\uA7A2]/g }, { 'base': 'L', 'letters': /[\u004C\u24C1\uFF2C\u013F\u0139\u013D\u1E36\u1E38\u013B\u1E3C\u1E3A\u0141\u023D\u2C62\u2C60\uA748\uA746\uA780]/g }, { 'base': 'LJ', 'letters': /[\u01C7]/g }, { 'base': 'Lj', 'letters': /[\u01C8]/g }, { 'base': 'M', 'letters': /[\u004D\u24C2\uFF2D\u1E3E\u1E40\u1E42\u2C6E\u019C]/g }, { 'base': 'N', 'letters': /[\u004E\u24C3\uFF2E\u01F8\u0143\u00D1\u1E44\u0147\u1E46\u0145\u1E4A\u1E48\u0220\u019D\uA790\uA7A4]/g }, { 'base': 'NJ', 'letters': /[\u01CA]/g }, { 'base': 'Nj', 'letters': /[\u01CB]/g }, { 'base': 'O', 'letters': /[\u004F\u24C4\uFF2F\u00D2\u00D3\u00D4\u1ED2\u1ED0\u1ED6\u1ED4\u00D5\u1E4C\u022C\u1E4E\u014C\u1E50\u1E52\u014E\u022E\u0230\u00D6\u022A\u1ECE\u0150\u01D1\u020C\u020E\u01A0\u1EDC\u1EDA\u1EE0\u1EDE\u1EE2\u1ECC\u1ED8\u01EA\u01EC\u00D8\u01FE\u0186\u019F\uA74A\uA74C]/g }, { 'base': 'OI', 'letters': /[\u01A2]/g }, { 'base': 'OO', 'letters': /[\uA74E]/g }, { 'base': 'OU', 'letters': /[\u0222]/g }, { 'base': 'P', 'letters': /[\u0050\u24C5\uFF30\u1E54\u1E56\u01A4\u2C63\uA750\uA752\uA754]/g }, { 'base': 'Q', 'letters': /[\u0051\u24C6\uFF31\uA756\uA758\u024A]/g }, { 'base': 'R', 'letters': /[\u0052\u24C7\uFF32\u0154\u1E58\u0158\u0210\u0212\u1E5A\u1E5C\u0156\u1E5E\u024C\u2C64\uA75A\uA7A6\uA782]/g }, { 'base': 'S', 'letters': /[\u0053\u24C8\uFF33\u1E9E\u015A\u1E64\u015C\u1E60\u0160\u1E66\u1E62\u1E68\u0218\u015E\u2C7E\uA7A8\uA784]/g }, { 'base': 'T', 'letters': /[\u0054\u24C9\uFF34\u1E6A\u0164\u1E6C\u021A\u0162\u1E70\u1E6E\u0166\u01AC\u01AE\u023E\uA786]/g }, { 'base': 'TZ', 'letters': /[\uA728]/g }, { 'base': 'U', 'letters': /[\u0055\u24CA\uFF35\u00D9\u00DA\u00DB\u0168\u1E78\u016A\u1E7A\u016C\u00DC\u01DB\u01D7\u01D5\u01D9\u1EE6\u016E\u0170\u01D3\u0214\u0216\u01AF\u1EEA\u1EE8\u1EEE\u1EEC\u1EF0\u1EE4\u1E72\u0172\u1E76\u1E74\u0244]/g }, { 'base': 'V', 'letters': /[\u0056\u24CB\uFF36\u1E7C\u1E7E\u01B2\uA75E\u0245]/g }, { 'base': 'VY', 'letters': /[\uA760]/g }, { 'base': 'W', 'letters': /[\u0057\u24CC\uFF37\u1E80\u1E82\u0174\u1E86\u1E84\u1E88\u2C72]/g }, { 'base': 'X', 'letters': /[\u0058\u24CD\uFF38\u1E8A\u1E8C]/g }, { 'base': 'Y', 'letters': /[\u0059\u24CE\uFF39\u1EF2\u00DD\u0176\u1EF8\u0232\u1E8E\u0178\u1EF6\u1EF4\u01B3\u024E\u1EFE]/g }, { 'base': 'Z', 'letters': /[\u005A\u24CF\uFF3A\u0179\u1E90\u017B\u017D\u1E92\u1E94\u01B5\u0224\u2C7F\u2C6B\uA762]/g }, { 'base': 'a', 'letters': /[\u0061\u24D0\uFF41\u1E9A\u00E0\u00E1\u00E2\u1EA7\u1EA5\u1EAB\u1EA9\u00E3\u0101\u0103\u1EB1\u1EAF\u1EB5\u1EB3\u0227\u01E1\u00E4\u01DF\u1EA3\u00E5\u01FB\u01CE\u0201\u0203\u1EA1\u1EAD\u1EB7\u1E01\u0105\u2C65\u0250]/g }, { 'base': 'aa', 'letters': /[\uA733]/g }, { 'base': 'ae', 'letters': /[\u00E6\u01FD\u01E3]/g }, { 'base': 'ao', 'letters': /[\uA735]/g }, { 'base': 'au', 'letters': /[\uA737]/g }, { 'base': 'av', 'letters': /[\uA739\uA73B]/g }, { 'base': 'ay', 'letters': /[\uA73D]/g }, { 'base': 'b', 'letters': /[\u0062\u24D1\uFF42\u1E03\u1E05\u1E07\u0180\u0183\u0253]/g }, { 'base': 'c', 'letters': /[\u0063\u24D2\uFF43\u0107\u0109\u010B\u010D\u00E7\u1E09\u0188\u023C\uA73F\u2184]/g }, { 'base': 'd', 'letters': /[\u0064\u24D3\uFF44\u1E0B\u010F\u1E0D\u1E11\u1E13\u1E0F\u0111\u018C\u0256\u0257\uA77A]/g }, { 'base': 'dz', 'letters': /[\u01F3\u01C6]/g }, { 'base': 'e', 'letters': /[\u0065\u24D4\uFF45\u00E8\u00E9\u00EA\u1EC1\u1EBF\u1EC5\u1EC3\u1EBD\u0113\u1E15\u1E17\u0115\u0117\u00EB\u1EBB\u011B\u0205\u0207\u1EB9\u1EC7\u0229\u1E1D\u0119\u1E19\u1E1B\u0247\u025B\u01DD]/g }, { 'base': 'f', 'letters': /[\u0066\u24D5\uFF46\u1E1F\u0192\uA77C]/g }, { 'base': 'g', 'letters': /[\u0067\u24D6\uFF47\u01F5\u011D\u1E21\u011F\u0121\u01E7\u0123\u01E5\u0260\uA7A1\u1D79\uA77F]/g }, { 'base': 'h', 'letters': /[\u0068\u24D7\uFF48\u0125\u1E23\u1E27\u021F\u1E25\u1E29\u1E2B\u1E96\u0127\u2C68\u2C76\u0265]/g }, { 'base': 'hv', 'letters': /[\u0195]/g }, { 'base': 'i', 'letters': /[\u0069\u24D8\uFF49\u00EC\u00ED\u00EE\u0129\u012B\u012D\u00EF\u1E2F\u1EC9\u01D0\u0209\u020B\u1ECB\u012F\u1E2D\u0268\u0131]/g }, { 'base': 'j', 'letters': /[\u006A\u24D9\uFF4A\u0135\u01F0\u0249]/g }, { 'base': 'k', 'letters': /[\u006B\u24DA\uFF4B\u1E31\u01E9\u1E33\u0137\u1E35\u0199\u2C6A\uA741\uA743\uA745\uA7A3]/g }, { 'base': 'l', 'letters': /[\u006C\u24DB\uFF4C\u0140\u013A\u013E\u1E37\u1E39\u013C\u1E3D\u1E3B\u017F\u0142\u019A\u026B\u2C61\uA749\uA781\uA747]/g }, { 'base': 'lj', 'letters': /[\u01C9]/g }, { 'base': 'm', 'letters': /[\u006D\u24DC\uFF4D\u1E3F\u1E41\u1E43\u0271\u026F]/g }, { 'base': 'n', 'letters': /[\u006E\u24DD\uFF4E\u01F9\u0144\u00F1\u1E45\u0148\u1E47\u0146\u1E4B\u1E49\u019E\u0272\u0149\uA791\uA7A5]/g }, { 'base': 'nj', 'letters': /[\u01CC]/g }, { 'base': 'o', 'letters': /[\u006F\u24DE\uFF4F\u00F2\u00F3\u00F4\u1ED3\u1ED1\u1ED7\u1ED5\u00F5\u1E4D\u022D\u1E4F\u014D\u1E51\u1E53\u014F\u022F\u0231\u00F6\u022B\u1ECF\u0151\u01D2\u020D\u020F\u01A1\u1EDD\u1EDB\u1EE1\u1EDF\u1EE3\u1ECD\u1ED9\u01EB\u01ED\u00F8\u01FF\u0254\uA74B\uA74D\u0275]/g }, { 'base': 'oi', 'letters': /[\u01A3]/g }, { 'base': 'ou', 'letters': /[\u0223]/g }, { 'base': 'oo', 'letters': /[\uA74F]/g }, { 'base': 'p', 'letters': /[\u0070\u24DF\uFF50\u1E55\u1E57\u01A5\u1D7D\uA751\uA753\uA755]/g }, { 'base': 'q', 'letters': /[\u0071\u24E0\uFF51\u024B\uA757\uA759]/g }, { 'base': 'r', 'letters': /[\u0072\u24E1\uFF52\u0155\u1E59\u0159\u0211\u0213\u1E5B\u1E5D\u0157\u1E5F\u024D\u027D\uA75B\uA7A7\uA783]/g }, { 'base': 's', 'letters': /[\u0073\u24E2\uFF53\u00DF\u015B\u1E65\u015D\u1E61\u0161\u1E67\u1E63\u1E69\u0219\u015F\u023F\uA7A9\uA785\u1E9B]/g }, { 'base': 't', 'letters': /[\u0074\u24E3\uFF54\u1E6B\u1E97\u0165\u1E6D\u021B\u0163\u1E71\u1E6F\u0167\u01AD\u0288\u2C66\uA787]/g }, { 'base': 'tz', 'letters': /[\uA729]/g }, { 'base': 'u', 'letters': /[\u0075\u24E4\uFF55\u00F9\u00FA\u00FB\u0169\u1E79\u016B\u1E7B\u016D\u00FC\u01DC\u01D8\u01D6\u01DA\u1EE7\u016F\u0171\u01D4\u0215\u0217\u01B0\u1EEB\u1EE9\u1EEF\u1EED\u1EF1\u1EE5\u1E73\u0173\u1E77\u1E75\u0289]/g }, { 'base': 'v', 'letters': /[\u0076\u24E5\uFF56\u1E7D\u1E7F\u028B\uA75F\u028C]/g }, { 'base': 'vy', 'letters': /[\uA761]/g }, { 'base': 'w', 'letters': /[\u0077\u24E6\uFF57\u1E81\u1E83\u0175\u1E87\u1E85\u1E98\u1E89\u2C73]/g }, { 'base': 'x', 'letters': /[\u0078\u24E7\uFF58\u1E8B\u1E8D]/g }, { 'base': 'y', 'letters': /[\u0079\u24E8\uFF59\u1EF3\u00FD\u0177\u1EF9\u0233\u1E8F\u00FF\u1EF7\u1E99\u1EF5\u01B4\u024F\u1EFF]/g }, { 'base': 'z', 'letters': /[\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763]/g }];
+  var noOptionsMessageCSS = noticeCSS;
+  var loadingMessageCSS = noticeCSS;
+  var NoOptionsMessage = function NoOptionsMessage(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps;
+    return jsx("div", _extends$1({
+      css: getStyles('noOptionsMessage', props),
+      className: cx({
+        'menu-notice': true,
+        'menu-notice--no-options': true
+      }, className)
+    }, innerProps), children);
+  };
+  NoOptionsMessage.defaultProps = {
+    children: 'No options'
+  };
+  var LoadingMessage = function LoadingMessage(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps;
+    return jsx("div", _extends$1({
+      css: getStyles('loadingMessage', props),
+      className: cx({
+        'menu-notice': true,
+        'menu-notice--loading': true
+      }, className)
+    }, innerProps), children);
+  };
+  LoadingMessage.defaultProps = {
+    children: 'Loading...'
+  }; // ==============================
+  // Menu Portal
+  // ==============================
 
+  var menuPortalCSS = function menuPortalCSS(_ref6) {
+    var rect = _ref6.rect,
+        offset = _ref6.offset,
+        position = _ref6.position;
+    return {
+      left: rect.left,
+      position: position,
+      top: offset,
+      width: rect.width,
+      zIndex: 1
+    };
+  };
+  var MenuPortal =
+  /*#__PURE__*/
+  function (_Component2) {
+    _inheritsLoose$2(MenuPortal, _Component2);
+
+    function MenuPortal() {
+      var _this2;
+
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      _this2 = _Component2.call.apply(_Component2, [this].concat(args)) || this;
+      _this2.state = {
+        placement: null
+      };
+
+      _this2.getPortalPlacement = function (_ref7) {
+        var placement = _ref7.placement;
+        var initialPlacement = coercePlacement(_this2.props.menuPlacement); // avoid re-renders if the placement has not changed
+
+        if (placement !== initialPlacement) {
+          _this2.setState({
+            placement: placement
+          });
+        }
+      };
+
+      return _this2;
+    }
+
+    var _proto2 = MenuPortal.prototype;
+
+    _proto2.getChildContext = function getChildContext() {
+      return {
+        getPortalPlacement: this.getPortalPlacement
+      };
+    } // callback for occassions where the menu must "flip"
+    ;
+
+    _proto2.render = function render() {
+      var _this$props2 = this.props,
+          appendTo = _this$props2.appendTo,
+          children = _this$props2.children,
+          controlElement = _this$props2.controlElement,
+          menuPlacement = _this$props2.menuPlacement,
+          position = _this$props2.menuPosition,
+          getStyles = _this$props2.getStyles;
+      var isFixed = position === 'fixed'; // bail early if required elements aren't present
+
+      if (!appendTo && !isFixed || !controlElement) {
+        return null;
+      }
+
+      var placement = this.state.placement || coercePlacement(menuPlacement);
+      var rect = getBoundingClientObj(controlElement);
+      var scrollDistance = isFixed ? 0 : window.pageYOffset;
+      var offset = rect[placement] + scrollDistance;
+      var state = {
+        offset: offset,
+        position: position,
+        rect: rect
+      }; // same wrapper element whether fixed or portalled
+
+      var menuWrapper = jsx("div", {
+        css: getStyles('menuPortal', state)
+      }, children);
+      return appendTo ? reactDom.createPortal(menuWrapper, appendTo) : menuWrapper;
+    };
+
+    return MenuPortal;
+  }(React.Component);
+  MenuPortal.childContextTypes = {
+    getPortalPlacement: PropTypes.func
+  };
+
+  var isArray = Array.isArray;
+  var keyList = Object.keys;
+  var hasProp = Object.prototype.hasOwnProperty;
+
+  function equal(a$$1, b$$1) {
+    // fast-deep-equal index.js 2.0.1
+    if (a$$1 === b$$1) return true;
+
+    if (a$$1 && b$$1 && typeof a$$1 == 'object' && typeof b$$1 == 'object') {
+      var arrA = isArray(a$$1),
+          arrB = isArray(b$$1),
+          i,
+          length,
+          key;
+
+      if (arrA && arrB) {
+        length = a$$1.length;
+        if (length != b$$1.length) return false;
+
+        for (i = length; i-- !== 0;) {
+          if (!equal(a$$1[i], b$$1[i])) return false;
+        }
+
+        return true;
+      }
+
+      if (arrA != arrB) return false;
+      var dateA = a$$1 instanceof Date,
+          dateB = b$$1 instanceof Date;
+      if (dateA != dateB) return false;
+      if (dateA && dateB) return a$$1.getTime() == b$$1.getTime();
+      var regexpA = a$$1 instanceof RegExp,
+          regexpB = b$$1 instanceof RegExp;
+      if (regexpA != regexpB) return false;
+      if (regexpA && regexpB) return a$$1.toString() == b$$1.toString();
+      var keys = keyList(a$$1);
+      length = keys.length;
+
+      if (length !== keyList(b$$1).length) {
+        return false;
+      }
+
+      for (i = length; i-- !== 0;) {
+        if (!hasProp.call(b$$1, keys[i])) return false;
+      } // end fast-deep-equal
+      // Custom handling for React
+
+
+      for (i = length; i-- !== 0;) {
+        key = keys[i];
+
+        if (key === '_owner' && a$$1.$$typeof) {
+          // React-specific: avoid traversing React elements' _owner.
+          //  _owner contains circular references
+          // and is not needed when comparing the actual elements (and not their owners)
+          // .$$typeof and ._store on just reasonable markers of a react element
+          continue;
+        } else {
+          // all other properties should be traversed as usual
+          if (!equal(a$$1[key], b$$1[key])) return false;
+        }
+      } // fast-deep-equal index.js 2.0.1
+
+
+      return true;
+    }
+
+    return a$$1 !== a$$1 && b$$1 !== b$$1;
+  } // end fast-deep-equal
+
+
+  function exportedEqual(a$$1, b$$1) {
+    try {
+      return equal(a$$1, b$$1);
+    } catch (error) {
+      if (error.message && error.message.match(/stack|recursion/i)) {
+        // warn on circular references, don't crash
+        // browsers give this different errors name and messages:
+        // chrome/safari: "RangeError", "Maximum call stack size exceeded"
+        // firefox: "InternalError", too much recursion"
+        // edge: "Error", "Out of stack space"
+        console.warn('Warning: react-fast-compare does not handle circular references.', error.name, error.message);
+        return false;
+      } // some other error. we should definitely know about these
+
+
+      throw error;
+    }
+  }
+
+  function _extends$1$1() { _extends$1$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$1$1.apply(this, arguments); }
+  var containerCSS = function containerCSS(_ref) {
+    var isDisabled = _ref.isDisabled,
+        isRtl = _ref.isRtl;
+    return {
+      label: 'container',
+      direction: isRtl ? 'rtl' : null,
+      pointerEvents: isDisabled ? 'none' : null,
+      // cancel mouse events when disabled
+      position: 'relative'
+    };
+  };
+  var SelectContainer = function SelectContainer(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps,
+        isDisabled = props.isDisabled,
+        isRtl = props.isRtl;
+    return jsx("div", _extends$1$1({
+      css: getStyles('container', props),
+      className: cx({
+        '--is-disabled': isDisabled,
+        '--is-rtl': isRtl
+      }, className)
+    }, innerProps), children);
+  }; // ==============================
+  // Value Container
+  // ==============================
+
+  var valueContainerCSS = function valueContainerCSS(_ref2) {
+    var spacing = _ref2.theme.spacing;
+    return {
+      alignItems: 'center',
+      display: 'flex',
+      flex: 1,
+      flexWrap: 'wrap',
+      padding: spacing.baseUnit / 2 + "px " + spacing.baseUnit * 2 + "px",
+      WebkitOverflowScrolling: 'touch',
+      position: 'relative',
+      overflow: 'hidden'
+    };
+  };
+  var ValueContainer = function ValueContainer(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        isMulti = props.isMulti,
+        getStyles = props.getStyles,
+        hasValue = props.hasValue;
+    return jsx("div", {
+      css: getStyles('valueContainer', props),
+      className: cx({
+        'value-container': true,
+        'value-container--is-multi': isMulti,
+        'value-container--has-value': hasValue
+      }, className)
+    }, children);
+  }; // ==============================
+  // Indicator Container
+  // ==============================
+
+  var indicatorsContainerCSS = function indicatorsContainerCSS() {
+    return {
+      alignItems: 'center',
+      alignSelf: 'stretch',
+      display: 'flex',
+      flexShrink: 0
+    };
+  };
+  var IndicatorsContainer = function IndicatorsContainer(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles;
+    return jsx("div", {
+      css: getStyles('indicatorsContainer', props),
+      className: cx({
+        indicators: true
+      }, className)
+    }, children);
+  };
+
+  function _templateObject() {
+    var data = _taggedTemplateLiteralLoose$1(["\n  0%, 80%, 100% { opacity: 0; }\n  40% { opacity: 1; }\n"]);
+
+    _templateObject = function _templateObject() {
+      return data;
+    };
+
+    return data;
+  }
+
+  function _taggedTemplateLiteralLoose$1(strings, raw) { if (!raw) { raw = strings.slice(0); } strings.raw = raw; return strings; }
+
+  function _extends$2() { _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$2.apply(this, arguments); }
+
+  function _objectWithoutPropertiesLoose$1(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+  var _ref2 = undefined === "production" ? {
+    name: "19bqh2r",
+    styles: "display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;"
+  } : {
+    name: "19bqh2r",
+    styles: "display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;",
+    map: "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluZGljYXRvcnMuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBa0JJIiwiZmlsZSI6ImluZGljYXRvcnMuanMiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBAZmxvd1xuLyoqIEBqc3gganN4ICovXG5pbXBvcnQgeyB0eXBlIE5vZGUgfSBmcm9tICdyZWFjdCc7XG5pbXBvcnQgeyBqc3gsIGtleWZyYW1lcyB9IGZyb20gJ0BlbW90aW9uL2NvcmUnO1xuXG5pbXBvcnQgdHlwZSB7IENvbW1vblByb3BzLCBUaGVtZSB9IGZyb20gJy4uL3R5cGVzJztcblxuLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG4vLyBEcm9wZG93biAmIENsZWFyIEljb25zXG4vLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cblxuY29uc3QgU3ZnID0gKHsgc2l6ZSwgLi4ucHJvcHMgfTogeyBzaXplOiBudW1iZXIgfSkgPT4gKFxuICA8c3ZnXG4gICAgaGVpZ2h0PXtzaXplfVxuICAgIHdpZHRoPXtzaXplfVxuICAgIHZpZXdCb3g9XCIwIDAgMjAgMjBcIlxuICAgIGFyaWEtaGlkZGVuPVwidHJ1ZVwiXG4gICAgZm9jdXNhYmxlPVwiZmFsc2VcIlxuICAgIGNzcz17e1xuICAgICAgZGlzcGxheTogJ2lubGluZS1ibG9jaycsXG4gICAgICBmaWxsOiAnY3VycmVudENvbG9yJyxcbiAgICAgIGxpbmVIZWlnaHQ6IDEsXG4gICAgICBzdHJva2U6ICdjdXJyZW50Q29sb3InLFxuICAgICAgc3Ryb2tlV2lkdGg6IDAsXG4gICAgfX1cbiAgICB7Li4ucHJvcHN9XG4gIC8+XG4pO1xuXG5leHBvcnQgY29uc3QgQ3Jvc3NJY29uID0gKHByb3BzOiBhbnkpID0+IChcbiAgPFN2ZyBzaXplPXsyMH0gey4uLnByb3BzfT5cbiAgICA8cGF0aCBkPVwiTTE0LjM0OCAxNC44NDljLTAuNDY5IDAuNDY5LTEuMjI5IDAuNDY5LTEuNjk3IDBsLTIuNjUxLTMuMDMwLTIuNjUxIDMuMDI5Yy0wLjQ2OSAwLjQ2OS0xLjIyOSAwLjQ2OS0xLjY5NyAwLTAuNDY5LTAuNDY5LTAuNDY5LTEuMjI5IDAtMS42OTdsMi43NTgtMy4xNS0yLjc1OS0zLjE1MmMtMC40NjktMC40NjktMC40NjktMS4yMjggMC0xLjY5N3MxLjIyOC0wLjQ2OSAxLjY5NyAwbDIuNjUyIDMuMDMxIDIuNjUxLTMuMDMxYzAuNDY5LTAuNDY5IDEuMjI4LTAuNDY5IDEuNjk3IDBzMC40NjkgMS4yMjkgMCAxLjY5N2wtMi43NTggMy4xNTIgMi43NTggMy4xNWMwLjQ2OSAwLjQ2OSAwLjQ2OSAxLjIyOSAwIDEuNjk4elwiIC8+XG4gIDwvU3ZnPlxuKTtcbmV4cG9ydCBjb25zdCBEb3duQ2hldnJvbiA9IChwcm9wczogYW55KSA9PiAoXG4gIDxTdmcgc2l6ZT17MjB9IHsuLi5wcm9wc30+XG4gICAgPHBhdGggZD1cIk00LjUxNiA3LjU0OGMwLjQzNi0wLjQ0NiAxLjA0My0wLjQ4MSAxLjU3NiAwbDMuOTA4IDMuNzQ3IDMuOTA4LTMuNzQ3YzAuNTMzLTAuNDgxIDEuMTQxLTAuNDQ2IDEuNTc0IDAgMC40MzYgMC40NDUgMC40MDggMS4xOTcgMCAxLjYxNS0wLjQwNiAwLjQxOC00LjY5NSA0LjUwMi00LjY5NSA0LjUwMi0wLjIxNyAwLjIyMy0wLjUwMiAwLjMzNS0wLjc4NyAwLjMzNXMtMC41Ny0wLjExMi0wLjc4OS0wLjMzNWMwIDAtNC4yODctNC4wODQtNC42OTUtNC41MDJzLTAuNDM2LTEuMTcgMC0xLjYxNXpcIiAvPlxuICA8L1N2Zz5cbik7XG5cbi8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuLy8gRHJvcGRvd24gJiBDbGVhciBCdXR0b25zXG4vLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cblxuZXhwb3J0IHR5cGUgSW5kaWNhdG9yUHJvcHMgPSBDb21tb25Qcm9wcyAmIHtcbiAgLyoqIFRoZSBjaGlsZHJlbiB0byBiZSByZW5kZXJlZCBpbnNpZGUgdGhlIGluZGljYXRvci4gKi9cbiAgY2hpbGRyZW46IE5vZGUsXG4gIC8qKiBQcm9wcyB0aGF0IHdpbGwgYmUgcGFzc2VkIG9uIHRvIHRoZSBjaGlsZHJlbi4gKi9cbiAgaW5uZXJQcm9wczogYW55LFxuICAvKiogVGhlIGZvY3VzZWQgc3RhdGUgb2YgdGhlIHNlbGVjdC4gKi9cbiAgaXNGb2N1c2VkOiBib29sZWFuLFxuICAvKiogV2hldGhlciB0aGUgdGV4dCBpcyByaWdodCB0byBsZWZ0ICovXG4gIGlzUnRsOiBib29sZWFuLFxufTtcblxuY29uc3QgYmFzZUNTUyA9ICh7XG4gIGlzRm9jdXNlZCxcbiAgdGhlbWU6IHtcbiAgICBzcGFjaW5nOiB7IGJhc2VVbml0IH0sXG4gICAgY29sb3JzLFxuICB9LFxufTogSW5kaWNhdG9yUHJvcHMpID0+ICh7XG4gIGxhYmVsOiAnaW5kaWNhdG9yQ29udGFpbmVyJyxcbiAgY29sb3I6IGlzRm9jdXNlZCA/IGNvbG9ycy5uZXV0cmFsNjAgOiBjb2xvcnMubmV1dHJhbDIwLFxuICBkaXNwbGF5OiAnZmxleCcsXG4gIHBhZGRpbmc6IGJhc2VVbml0ICogMixcbiAgdHJhbnNpdGlvbjogJ2NvbG9yIDE1MG1zJyxcblxuICAnOmhvdmVyJzoge1xuICAgIGNvbG9yOiBpc0ZvY3VzZWQgPyBjb2xvcnMubmV1dHJhbDgwIDogY29sb3JzLm5ldXRyYWw0MCxcbiAgfSxcbn0pO1xuXG5leHBvcnQgY29uc3QgZHJvcGRvd25JbmRpY2F0b3JDU1MgPSBiYXNlQ1NTO1xuZXhwb3J0IGNvbnN0IERyb3Bkb3duSW5kaWNhdG9yID0gKHByb3BzOiBJbmRpY2F0b3JQcm9wcykgPT4ge1xuICBjb25zdCB7IGNoaWxkcmVuLCBjbGFzc05hbWUsIGN4LCBnZXRTdHlsZXMsIGlubmVyUHJvcHMgfSA9IHByb3BzO1xuICByZXR1cm4gKFxuICAgIDxkaXZcbiAgICAgIHsuLi5pbm5lclByb3BzfVxuICAgICAgY3NzPXtnZXRTdHlsZXMoJ2Ryb3Bkb3duSW5kaWNhdG9yJywgcHJvcHMpfVxuICAgICAgY2xhc3NOYW1lPXtjeChcbiAgICAgICAge1xuICAgICAgICAgIGluZGljYXRvcjogdHJ1ZSxcbiAgICAgICAgICAnZHJvcGRvd24taW5kaWNhdG9yJzogdHJ1ZSxcbiAgICAgICAgfSxcbiAgICAgICAgY2xhc3NOYW1lXG4gICAgICApfVxuICAgID5cbiAgICAgIHtjaGlsZHJlbiB8fCA8RG93bkNoZXZyb24gLz59XG4gICAgPC9kaXY+XG4gICk7XG59O1xuXG5leHBvcnQgY29uc3QgY2xlYXJJbmRpY2F0b3JDU1MgPSBiYXNlQ1NTO1xuZXhwb3J0IGNvbnN0IENsZWFySW5kaWNhdG9yID0gKHByb3BzOiBJbmRpY2F0b3JQcm9wcykgPT4ge1xuICBjb25zdCB7IGNoaWxkcmVuLCBjbGFzc05hbWUsIGN4LCBnZXRTdHlsZXMsIGlubmVyUHJvcHMgfSA9IHByb3BzO1xuICByZXR1cm4gKFxuICAgIDxkaXZcbiAgICAgIHsuLi5pbm5lclByb3BzfVxuICAgICAgY3NzPXtnZXRTdHlsZXMoJ2NsZWFySW5kaWNhdG9yJywgcHJvcHMpfVxuICAgICAgY2xhc3NOYW1lPXtjeChcbiAgICAgICAge1xuICAgICAgICAgIGluZGljYXRvcjogdHJ1ZSxcbiAgICAgICAgICAnY2xlYXItaW5kaWNhdG9yJzogdHJ1ZSxcbiAgICAgICAgfSxcbiAgICAgICAgY2xhc3NOYW1lXG4gICAgICApfVxuICAgID5cbiAgICAgIHtjaGlsZHJlbiB8fCA8Q3Jvc3NJY29uIC8+fVxuICAgIDwvZGl2PlxuICApO1xufTtcblxuLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG4vLyBTZXBhcmF0b3Jcbi8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuXG50eXBlIFNlcGFyYXRvclN0YXRlID0geyBpc0Rpc2FibGVkOiBib29sZWFuIH07XG5cbmV4cG9ydCBjb25zdCBpbmRpY2F0b3JTZXBhcmF0b3JDU1MgPSAoe1xuICBpc0Rpc2FibGVkLFxuICB0aGVtZToge1xuICAgIHNwYWNpbmc6IHsgYmFzZVVuaXQgfSxcbiAgICBjb2xvcnMsXG4gIH0sXG59OiBDb21tb25Qcm9wcyAmIFNlcGFyYXRvclN0YXRlKSA9PiAoe1xuICBsYWJlbDogJ2luZGljYXRvclNlcGFyYXRvcicsXG4gIGFsaWduU2VsZjogJ3N0cmV0Y2gnLFxuICBiYWNrZ3JvdW5kQ29sb3I6IGlzRGlzYWJsZWQgPyBjb2xvcnMubmV1dHJhbDEwIDogY29sb3JzLm5ldXRyYWwyMCxcbiAgbWFyZ2luQm90dG9tOiBiYXNlVW5pdCAqIDIsXG4gIG1hcmdpblRvcDogYmFzZVVuaXQgKiAyLFxuICB3aWR0aDogMSxcbn0pO1xuXG5leHBvcnQgY29uc3QgSW5kaWNhdG9yU2VwYXJhdG9yID0gKHByb3BzOiBJbmRpY2F0b3JQcm9wcykgPT4ge1xuICBjb25zdCB7IGNsYXNzTmFtZSwgY3gsIGdldFN0eWxlcywgaW5uZXJQcm9wcyB9ID0gcHJvcHM7XG4gIHJldHVybiAoXG4gICAgPHNwYW5cbiAgICAgIHsuLi5pbm5lclByb3BzfVxuICAgICAgY3NzPXtnZXRTdHlsZXMoJ2luZGljYXRvclNlcGFyYXRvcicsIHByb3BzKX1cbiAgICAgIGNsYXNzTmFtZT17Y3goeyAnaW5kaWNhdG9yLXNlcGFyYXRvcic6IHRydWUgfSwgY2xhc3NOYW1lKX1cbiAgICAvPlxuICApO1xufTtcblxuLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG4vLyBMb2FkaW5nXG4vLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cblxuY29uc3QgbG9hZGluZ0RvdEFuaW1hdGlvbnMgPSBrZXlmcmFtZXNgXG4gIDAlLCA4MCUsIDEwMCUgeyBvcGFjaXR5OiAwOyB9XG4gIDQwJSB7IG9wYWNpdHk6IDE7IH1cbmA7XG5cbmV4cG9ydCBjb25zdCBsb2FkaW5nSW5kaWNhdG9yQ1NTID0gKHtcbiAgaXNGb2N1c2VkLFxuICBzaXplLFxuICB0aGVtZToge1xuICAgIGNvbG9ycyxcbiAgICBzcGFjaW5nOiB7IGJhc2VVbml0IH0sXG4gIH0sXG59OiB7XG4gIGlzRm9jdXNlZDogYm9vbGVhbixcbiAgc2l6ZTogbnVtYmVyLFxuICB0aGVtZTogVGhlbWUsXG59KSA9PiAoe1xuICBsYWJlbDogJ2xvYWRpbmdJbmRpY2F0b3InLFxuICBjb2xvcjogaXNGb2N1c2VkID8gY29sb3JzLm5ldXRyYWw2MCA6IGNvbG9ycy5uZXV0cmFsMjAsXG4gIGRpc3BsYXk6ICdmbGV4JyxcbiAgcGFkZGluZzogYmFzZVVuaXQgKiAyLFxuICB0cmFuc2l0aW9uOiAnY29sb3IgMTUwbXMnLFxuICBhbGlnblNlbGY6ICdjZW50ZXInLFxuICBmb250U2l6ZTogc2l6ZSxcbiAgbGluZUhlaWdodDogMSxcbiAgbWFyZ2luUmlnaHQ6IHNpemUsXG4gIHRleHRBbGlnbjogJ2NlbnRlcicsXG4gIHZlcnRpY2FsQWxpZ246ICdtaWRkbGUnLFxufSk7XG5cbnR5cGUgRG90UHJvcHMgPSB7IGRlbGF5OiBudW1iZXIsIG9mZnNldDogYm9vbGVhbiB9O1xuY29uc3QgTG9hZGluZ0RvdCA9ICh7IGRlbGF5LCBvZmZzZXQgfTogRG90UHJvcHMpID0+IChcbiAgPHNwYW5cbiAgICBjc3M9e3tcbiAgICAgIGFuaW1hdGlvbjogYCR7bG9hZGluZ0RvdEFuaW1hdGlvbnN9IDFzIGVhc2UtaW4tb3V0ICR7ZGVsYXl9bXMgaW5maW5pdGU7YCxcbiAgICAgIGJhY2tncm91bmRDb2xvcjogJ2N1cnJlbnRDb2xvcicsXG4gICAgICBib3JkZXJSYWRpdXM6ICcxZW0nLFxuICAgICAgZGlzcGxheTogJ2lubGluZS1ibG9jaycsXG4gICAgICBtYXJnaW5MZWZ0OiBvZmZzZXQgPyAnMWVtJyA6IG51bGwsXG4gICAgICBoZWlnaHQ6ICcxZW0nLFxuICAgICAgdmVydGljYWxBbGlnbjogJ3RvcCcsXG4gICAgICB3aWR0aDogJzFlbScsXG4gICAgfX1cbiAgLz5cbik7XG5cbmV4cG9ydCB0eXBlIExvYWRpbmdJY29uUHJvcHMgPSB7XG4gIC8qKiBQcm9wcyB0aGF0IHdpbGwgYmUgcGFzc2VkIG9uIHRvIHRoZSBjaGlsZHJlbi4gKi9cbiAgaW5uZXJQcm9wczogYW55LFxuICAvKiogVGhlIGZvY3VzZWQgc3RhdGUgb2YgdGhlIHNlbGVjdC4gKi9cbiAgaXNGb2N1c2VkOiBib29sZWFuLFxuICAvKiogV2hldGhlciB0aGUgdGV4dCBpcyByaWdodCB0byBsZWZ0ICovXG4gIGlzUnRsOiBib29sZWFuLFxufSAmIENvbW1vblByb3BzICYge1xuICAgIC8qKiBTZXQgc2l6ZSBvZiB0aGUgY29udGFpbmVyLiAqL1xuICAgIHNpemU6IG51bWJlcixcbiAgfTtcbmV4cG9ydCBjb25zdCBMb2FkaW5nSW5kaWNhdG9yID0gKHByb3BzOiBMb2FkaW5nSWNvblByb3BzKSA9PiB7XG4gIGNvbnN0IHsgY2xhc3NOYW1lLCBjeCwgZ2V0U3R5bGVzLCBpbm5lclByb3BzLCBpc1J0bCB9ID0gcHJvcHM7XG5cbiAgcmV0dXJuIChcbiAgICA8ZGl2XG4gICAgICB7Li4uaW5uZXJQcm9wc31cbiAgICAgIGNzcz17Z2V0U3R5bGVzKCdsb2FkaW5nSW5kaWNhdG9yJywgcHJvcHMpfVxuICAgICAgY2xhc3NOYW1lPXtjeChcbiAgICAgICAge1xuICAgICAgICAgIGluZGljYXRvcjogdHJ1ZSxcbiAgICAgICAgICAnbG9hZGluZy1pbmRpY2F0b3InOiB0cnVlLFxuICAgICAgICB9LFxuICAgICAgICBjbGFzc05hbWVcbiAgICAgICl9XG4gICAgPlxuICAgICAgPExvYWRpbmdEb3QgZGVsYXk9ezB9IG9mZnNldD17aXNSdGx9IC8+XG4gICAgICA8TG9hZGluZ0RvdCBkZWxheT17MTYwfSBvZmZzZXQgLz5cbiAgICAgIDxMb2FkaW5nRG90IGRlbGF5PXszMjB9IG9mZnNldD17IWlzUnRsfSAvPlxuICAgIDwvZGl2PlxuICApO1xufTtcbkxvYWRpbmdJbmRpY2F0b3IuZGVmYXVsdFByb3BzID0geyBzaXplOiA0IH07XG4iXX0= */"
+  };
+
+  // ==============================
+  // Dropdown & Clear Icons
+  // ==============================
+  var Svg = function Svg(_ref) {
+    var size = _ref.size,
+        props = _objectWithoutPropertiesLoose$1(_ref, ["size"]);
+
+    return jsx("svg", _extends$2({
+      height: size,
+      width: size,
+      viewBox: "0 0 20 20",
+      "aria-hidden": "true",
+      focusable: "false",
+      css: _ref2
+    }, props));
+  };
+
+  var CrossIcon = function CrossIcon(props) {
+    return jsx(Svg, _extends$2({
+      size: 20
+    }, props), jsx("path", {
+      d: "M14.348 14.849c-0.469 0.469-1.229 0.469-1.697 0l-2.651-3.030-2.651 3.029c-0.469 0.469-1.229 0.469-1.697 0-0.469-0.469-0.469-1.229 0-1.697l2.758-3.15-2.759-3.152c-0.469-0.469-0.469-1.228 0-1.697s1.228-0.469 1.697 0l2.652 3.031 2.651-3.031c0.469-0.469 1.228-0.469 1.697 0s0.469 1.229 0 1.697l-2.758 3.152 2.758 3.15c0.469 0.469 0.469 1.229 0 1.698z"
+    }));
+  };
+  var DownChevron = function DownChevron(props) {
+    return jsx(Svg, _extends$2({
+      size: 20
+    }, props), jsx("path", {
+      d: "M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+    }));
+  }; // ==============================
+  // Dropdown & Clear Buttons
+  // ==============================
+
+  var baseCSS = function baseCSS(_ref3) {
+    var isFocused = _ref3.isFocused,
+        _ref3$theme = _ref3.theme,
+        baseUnit = _ref3$theme.spacing.baseUnit,
+        colors = _ref3$theme.colors;
+    return {
+      label: 'indicatorContainer',
+      color: isFocused ? colors.neutral60 : colors.neutral20,
+      display: 'flex',
+      padding: baseUnit * 2,
+      transition: 'color 150ms',
+      ':hover': {
+        color: isFocused ? colors.neutral80 : colors.neutral40
+      }
+    };
+  };
+
+  var dropdownIndicatorCSS = baseCSS;
+  var DropdownIndicator = function DropdownIndicator(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps;
+    return jsx("div", _extends$2({}, innerProps, {
+      css: getStyles('dropdownIndicator', props),
+      className: cx({
+        indicator: true,
+        'dropdown-indicator': true
+      }, className)
+    }), children || jsx(DownChevron, null));
+  };
+  var clearIndicatorCSS = baseCSS;
+  var ClearIndicator = function ClearIndicator(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps;
+    return jsx("div", _extends$2({}, innerProps, {
+      css: getStyles('clearIndicator', props),
+      className: cx({
+        indicator: true,
+        'clear-indicator': true
+      }, className)
+    }), children || jsx(CrossIcon, null));
+  }; // ==============================
+  // Separator
+  // ==============================
+
+  var indicatorSeparatorCSS = function indicatorSeparatorCSS(_ref4) {
+    var isDisabled = _ref4.isDisabled,
+        _ref4$theme = _ref4.theme,
+        baseUnit = _ref4$theme.spacing.baseUnit,
+        colors = _ref4$theme.colors;
+    return {
+      label: 'indicatorSeparator',
+      alignSelf: 'stretch',
+      backgroundColor: isDisabled ? colors.neutral10 : colors.neutral20,
+      marginBottom: baseUnit * 2,
+      marginTop: baseUnit * 2,
+      width: 1
+    };
+  };
+  var IndicatorSeparator = function IndicatorSeparator(props) {
+    var className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps;
+    return jsx("span", _extends$2({}, innerProps, {
+      css: getStyles('indicatorSeparator', props),
+      className: cx({
+        'indicator-separator': true
+      }, className)
+    }));
+  }; // ==============================
+  // Loading
+  // ==============================
+
+  var loadingDotAnimations = keyframes(_templateObject());
+  var loadingIndicatorCSS = function loadingIndicatorCSS(_ref5) {
+    var isFocused = _ref5.isFocused,
+        size = _ref5.size,
+        _ref5$theme = _ref5.theme,
+        colors = _ref5$theme.colors,
+        baseUnit = _ref5$theme.spacing.baseUnit;
+    return {
+      label: 'loadingIndicator',
+      color: isFocused ? colors.neutral60 : colors.neutral20,
+      display: 'flex',
+      padding: baseUnit * 2,
+      transition: 'color 150ms',
+      alignSelf: 'center',
+      fontSize: size,
+      lineHeight: 1,
+      marginRight: size,
+      textAlign: 'center',
+      verticalAlign: 'middle'
+    };
+  };
+
+  var LoadingDot = function LoadingDot(_ref6) {
+    var delay = _ref6.delay,
+        offset = _ref6.offset;
+    return jsx("span", {
+      css:
+      /*#__PURE__*/
+      css({
+        animation: loadingDotAnimations + " 1s ease-in-out " + delay + "ms infinite;",
+        backgroundColor: 'currentColor',
+        borderRadius: '1em',
+        display: 'inline-block',
+        marginLeft: offset ? '1em' : null,
+        height: '1em',
+        verticalAlign: 'top',
+        width: '1em'
+      }, undefined === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluZGljYXRvcnMuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBc0xJIiwiZmlsZSI6ImluZGljYXRvcnMuanMiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBAZmxvd1xuLyoqIEBqc3gganN4ICovXG5pbXBvcnQgeyB0eXBlIE5vZGUgfSBmcm9tICdyZWFjdCc7XG5pbXBvcnQgeyBqc3gsIGtleWZyYW1lcyB9IGZyb20gJ0BlbW90aW9uL2NvcmUnO1xuXG5pbXBvcnQgdHlwZSB7IENvbW1vblByb3BzLCBUaGVtZSB9IGZyb20gJy4uL3R5cGVzJztcblxuLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG4vLyBEcm9wZG93biAmIENsZWFyIEljb25zXG4vLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cblxuY29uc3QgU3ZnID0gKHsgc2l6ZSwgLi4ucHJvcHMgfTogeyBzaXplOiBudW1iZXIgfSkgPT4gKFxuICA8c3ZnXG4gICAgaGVpZ2h0PXtzaXplfVxuICAgIHdpZHRoPXtzaXplfVxuICAgIHZpZXdCb3g9XCIwIDAgMjAgMjBcIlxuICAgIGFyaWEtaGlkZGVuPVwidHJ1ZVwiXG4gICAgZm9jdXNhYmxlPVwiZmFsc2VcIlxuICAgIGNzcz17e1xuICAgICAgZGlzcGxheTogJ2lubGluZS1ibG9jaycsXG4gICAgICBmaWxsOiAnY3VycmVudENvbG9yJyxcbiAgICAgIGxpbmVIZWlnaHQ6IDEsXG4gICAgICBzdHJva2U6ICdjdXJyZW50Q29sb3InLFxuICAgICAgc3Ryb2tlV2lkdGg6IDAsXG4gICAgfX1cbiAgICB7Li4ucHJvcHN9XG4gIC8+XG4pO1xuXG5leHBvcnQgY29uc3QgQ3Jvc3NJY29uID0gKHByb3BzOiBhbnkpID0+IChcbiAgPFN2ZyBzaXplPXsyMH0gey4uLnByb3BzfT5cbiAgICA8cGF0aCBkPVwiTTE0LjM0OCAxNC44NDljLTAuNDY5IDAuNDY5LTEuMjI5IDAuNDY5LTEuNjk3IDBsLTIuNjUxLTMuMDMwLTIuNjUxIDMuMDI5Yy0wLjQ2OSAwLjQ2OS0xLjIyOSAwLjQ2OS0xLjY5NyAwLTAuNDY5LTAuNDY5LTAuNDY5LTEuMjI5IDAtMS42OTdsMi43NTgtMy4xNS0yLjc1OS0zLjE1MmMtMC40NjktMC40NjktMC40NjktMS4yMjggMC0xLjY5N3MxLjIyOC0wLjQ2OSAxLjY5NyAwbDIuNjUyIDMuMDMxIDIuNjUxLTMuMDMxYzAuNDY5LTAuNDY5IDEuMjI4LTAuNDY5IDEuNjk3IDBzMC40NjkgMS4yMjkgMCAxLjY5N2wtMi43NTggMy4xNTIgMi43NTggMy4xNWMwLjQ2OSAwLjQ2OSAwLjQ2OSAxLjIyOSAwIDEuNjk4elwiIC8+XG4gIDwvU3ZnPlxuKTtcbmV4cG9ydCBjb25zdCBEb3duQ2hldnJvbiA9IChwcm9wczogYW55KSA9PiAoXG4gIDxTdmcgc2l6ZT17MjB9IHsuLi5wcm9wc30+XG4gICAgPHBhdGggZD1cIk00LjUxNiA3LjU0OGMwLjQzNi0wLjQ0NiAxLjA0My0wLjQ4MSAxLjU3NiAwbDMuOTA4IDMuNzQ3IDMuOTA4LTMuNzQ3YzAuNTMzLTAuNDgxIDEuMTQxLTAuNDQ2IDEuNTc0IDAgMC40MzYgMC40NDUgMC40MDggMS4xOTcgMCAxLjYxNS0wLjQwNiAwLjQxOC00LjY5NSA0LjUwMi00LjY5NSA0LjUwMi0wLjIxNyAwLjIyMy0wLjUwMiAwLjMzNS0wLjc4NyAwLjMzNXMtMC41Ny0wLjExMi0wLjc4OS0wLjMzNWMwIDAtNC4yODctNC4wODQtNC42OTUtNC41MDJzLTAuNDM2LTEuMTcgMC0xLjYxNXpcIiAvPlxuICA8L1N2Zz5cbik7XG5cbi8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuLy8gRHJvcGRvd24gJiBDbGVhciBCdXR0b25zXG4vLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cblxuZXhwb3J0IHR5cGUgSW5kaWNhdG9yUHJvcHMgPSBDb21tb25Qcm9wcyAmIHtcbiAgLyoqIFRoZSBjaGlsZHJlbiB0byBiZSByZW5kZXJlZCBpbnNpZGUgdGhlIGluZGljYXRvci4gKi9cbiAgY2hpbGRyZW46IE5vZGUsXG4gIC8qKiBQcm9wcyB0aGF0IHdpbGwgYmUgcGFzc2VkIG9uIHRvIHRoZSBjaGlsZHJlbi4gKi9cbiAgaW5uZXJQcm9wczogYW55LFxuICAvKiogVGhlIGZvY3VzZWQgc3RhdGUgb2YgdGhlIHNlbGVjdC4gKi9cbiAgaXNGb2N1c2VkOiBib29sZWFuLFxuICAvKiogV2hldGhlciB0aGUgdGV4dCBpcyByaWdodCB0byBsZWZ0ICovXG4gIGlzUnRsOiBib29sZWFuLFxufTtcblxuY29uc3QgYmFzZUNTUyA9ICh7XG4gIGlzRm9jdXNlZCxcbiAgdGhlbWU6IHtcbiAgICBzcGFjaW5nOiB7IGJhc2VVbml0IH0sXG4gICAgY29sb3JzLFxuICB9LFxufTogSW5kaWNhdG9yUHJvcHMpID0+ICh7XG4gIGxhYmVsOiAnaW5kaWNhdG9yQ29udGFpbmVyJyxcbiAgY29sb3I6IGlzRm9jdXNlZCA/IGNvbG9ycy5uZXV0cmFsNjAgOiBjb2xvcnMubmV1dHJhbDIwLFxuICBkaXNwbGF5OiAnZmxleCcsXG4gIHBhZGRpbmc6IGJhc2VVbml0ICogMixcbiAgdHJhbnNpdGlvbjogJ2NvbG9yIDE1MG1zJyxcblxuICAnOmhvdmVyJzoge1xuICAgIGNvbG9yOiBpc0ZvY3VzZWQgPyBjb2xvcnMubmV1dHJhbDgwIDogY29sb3JzLm5ldXRyYWw0MCxcbiAgfSxcbn0pO1xuXG5leHBvcnQgY29uc3QgZHJvcGRvd25JbmRpY2F0b3JDU1MgPSBiYXNlQ1NTO1xuZXhwb3J0IGNvbnN0IERyb3Bkb3duSW5kaWNhdG9yID0gKHByb3BzOiBJbmRpY2F0b3JQcm9wcykgPT4ge1xuICBjb25zdCB7IGNoaWxkcmVuLCBjbGFzc05hbWUsIGN4LCBnZXRTdHlsZXMsIGlubmVyUHJvcHMgfSA9IHByb3BzO1xuICByZXR1cm4gKFxuICAgIDxkaXZcbiAgICAgIHsuLi5pbm5lclByb3BzfVxuICAgICAgY3NzPXtnZXRTdHlsZXMoJ2Ryb3Bkb3duSW5kaWNhdG9yJywgcHJvcHMpfVxuICAgICAgY2xhc3NOYW1lPXtjeChcbiAgICAgICAge1xuICAgICAgICAgIGluZGljYXRvcjogdHJ1ZSxcbiAgICAgICAgICAnZHJvcGRvd24taW5kaWNhdG9yJzogdHJ1ZSxcbiAgICAgICAgfSxcbiAgICAgICAgY2xhc3NOYW1lXG4gICAgICApfVxuICAgID5cbiAgICAgIHtjaGlsZHJlbiB8fCA8RG93bkNoZXZyb24gLz59XG4gICAgPC9kaXY+XG4gICk7XG59O1xuXG5leHBvcnQgY29uc3QgY2xlYXJJbmRpY2F0b3JDU1MgPSBiYXNlQ1NTO1xuZXhwb3J0IGNvbnN0IENsZWFySW5kaWNhdG9yID0gKHByb3BzOiBJbmRpY2F0b3JQcm9wcykgPT4ge1xuICBjb25zdCB7IGNoaWxkcmVuLCBjbGFzc05hbWUsIGN4LCBnZXRTdHlsZXMsIGlubmVyUHJvcHMgfSA9IHByb3BzO1xuICByZXR1cm4gKFxuICAgIDxkaXZcbiAgICAgIHsuLi5pbm5lclByb3BzfVxuICAgICAgY3NzPXtnZXRTdHlsZXMoJ2NsZWFySW5kaWNhdG9yJywgcHJvcHMpfVxuICAgICAgY2xhc3NOYW1lPXtjeChcbiAgICAgICAge1xuICAgICAgICAgIGluZGljYXRvcjogdHJ1ZSxcbiAgICAgICAgICAnY2xlYXItaW5kaWNhdG9yJzogdHJ1ZSxcbiAgICAgICAgfSxcbiAgICAgICAgY2xhc3NOYW1lXG4gICAgICApfVxuICAgID5cbiAgICAgIHtjaGlsZHJlbiB8fCA8Q3Jvc3NJY29uIC8+fVxuICAgIDwvZGl2PlxuICApO1xufTtcblxuLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG4vLyBTZXBhcmF0b3Jcbi8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuXG50eXBlIFNlcGFyYXRvclN0YXRlID0geyBpc0Rpc2FibGVkOiBib29sZWFuIH07XG5cbmV4cG9ydCBjb25zdCBpbmRpY2F0b3JTZXBhcmF0b3JDU1MgPSAoe1xuICBpc0Rpc2FibGVkLFxuICB0aGVtZToge1xuICAgIHNwYWNpbmc6IHsgYmFzZVVuaXQgfSxcbiAgICBjb2xvcnMsXG4gIH0sXG59OiBDb21tb25Qcm9wcyAmIFNlcGFyYXRvclN0YXRlKSA9PiAoe1xuICBsYWJlbDogJ2luZGljYXRvclNlcGFyYXRvcicsXG4gIGFsaWduU2VsZjogJ3N0cmV0Y2gnLFxuICBiYWNrZ3JvdW5kQ29sb3I6IGlzRGlzYWJsZWQgPyBjb2xvcnMubmV1dHJhbDEwIDogY29sb3JzLm5ldXRyYWwyMCxcbiAgbWFyZ2luQm90dG9tOiBiYXNlVW5pdCAqIDIsXG4gIG1hcmdpblRvcDogYmFzZVVuaXQgKiAyLFxuICB3aWR0aDogMSxcbn0pO1xuXG5leHBvcnQgY29uc3QgSW5kaWNhdG9yU2VwYXJhdG9yID0gKHByb3BzOiBJbmRpY2F0b3JQcm9wcykgPT4ge1xuICBjb25zdCB7IGNsYXNzTmFtZSwgY3gsIGdldFN0eWxlcywgaW5uZXJQcm9wcyB9ID0gcHJvcHM7XG4gIHJldHVybiAoXG4gICAgPHNwYW5cbiAgICAgIHsuLi5pbm5lclByb3BzfVxuICAgICAgY3NzPXtnZXRTdHlsZXMoJ2luZGljYXRvclNlcGFyYXRvcicsIHByb3BzKX1cbiAgICAgIGNsYXNzTmFtZT17Y3goeyAnaW5kaWNhdG9yLXNlcGFyYXRvcic6IHRydWUgfSwgY2xhc3NOYW1lKX1cbiAgICAvPlxuICApO1xufTtcblxuLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG4vLyBMb2FkaW5nXG4vLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cblxuY29uc3QgbG9hZGluZ0RvdEFuaW1hdGlvbnMgPSBrZXlmcmFtZXNgXG4gIDAlLCA4MCUsIDEwMCUgeyBvcGFjaXR5OiAwOyB9XG4gIDQwJSB7IG9wYWNpdHk6IDE7IH1cbmA7XG5cbmV4cG9ydCBjb25zdCBsb2FkaW5nSW5kaWNhdG9yQ1NTID0gKHtcbiAgaXNGb2N1c2VkLFxuICBzaXplLFxuICB0aGVtZToge1xuICAgIGNvbG9ycyxcbiAgICBzcGFjaW5nOiB7IGJhc2VVbml0IH0sXG4gIH0sXG59OiB7XG4gIGlzRm9jdXNlZDogYm9vbGVhbixcbiAgc2l6ZTogbnVtYmVyLFxuICB0aGVtZTogVGhlbWUsXG59KSA9PiAoe1xuICBsYWJlbDogJ2xvYWRpbmdJbmRpY2F0b3InLFxuICBjb2xvcjogaXNGb2N1c2VkID8gY29sb3JzLm5ldXRyYWw2MCA6IGNvbG9ycy5uZXV0cmFsMjAsXG4gIGRpc3BsYXk6ICdmbGV4JyxcbiAgcGFkZGluZzogYmFzZVVuaXQgKiAyLFxuICB0cmFuc2l0aW9uOiAnY29sb3IgMTUwbXMnLFxuICBhbGlnblNlbGY6ICdjZW50ZXInLFxuICBmb250U2l6ZTogc2l6ZSxcbiAgbGluZUhlaWdodDogMSxcbiAgbWFyZ2luUmlnaHQ6IHNpemUsXG4gIHRleHRBbGlnbjogJ2NlbnRlcicsXG4gIHZlcnRpY2FsQWxpZ246ICdtaWRkbGUnLFxufSk7XG5cbnR5cGUgRG90UHJvcHMgPSB7IGRlbGF5OiBudW1iZXIsIG9mZnNldDogYm9vbGVhbiB9O1xuY29uc3QgTG9hZGluZ0RvdCA9ICh7IGRlbGF5LCBvZmZzZXQgfTogRG90UHJvcHMpID0+IChcbiAgPHNwYW5cbiAgICBjc3M9e3tcbiAgICAgIGFuaW1hdGlvbjogYCR7bG9hZGluZ0RvdEFuaW1hdGlvbnN9IDFzIGVhc2UtaW4tb3V0ICR7ZGVsYXl9bXMgaW5maW5pdGU7YCxcbiAgICAgIGJhY2tncm91bmRDb2xvcjogJ2N1cnJlbnRDb2xvcicsXG4gICAgICBib3JkZXJSYWRpdXM6ICcxZW0nLFxuICAgICAgZGlzcGxheTogJ2lubGluZS1ibG9jaycsXG4gICAgICBtYXJnaW5MZWZ0OiBvZmZzZXQgPyAnMWVtJyA6IG51bGwsXG4gICAgICBoZWlnaHQ6ICcxZW0nLFxuICAgICAgdmVydGljYWxBbGlnbjogJ3RvcCcsXG4gICAgICB3aWR0aDogJzFlbScsXG4gICAgfX1cbiAgLz5cbik7XG5cbmV4cG9ydCB0eXBlIExvYWRpbmdJY29uUHJvcHMgPSB7XG4gIC8qKiBQcm9wcyB0aGF0IHdpbGwgYmUgcGFzc2VkIG9uIHRvIHRoZSBjaGlsZHJlbi4gKi9cbiAgaW5uZXJQcm9wczogYW55LFxuICAvKiogVGhlIGZvY3VzZWQgc3RhdGUgb2YgdGhlIHNlbGVjdC4gKi9cbiAgaXNGb2N1c2VkOiBib29sZWFuLFxuICAvKiogV2hldGhlciB0aGUgdGV4dCBpcyByaWdodCB0byBsZWZ0ICovXG4gIGlzUnRsOiBib29sZWFuLFxufSAmIENvbW1vblByb3BzICYge1xuICAgIC8qKiBTZXQgc2l6ZSBvZiB0aGUgY29udGFpbmVyLiAqL1xuICAgIHNpemU6IG51bWJlcixcbiAgfTtcbmV4cG9ydCBjb25zdCBMb2FkaW5nSW5kaWNhdG9yID0gKHByb3BzOiBMb2FkaW5nSWNvblByb3BzKSA9PiB7XG4gIGNvbnN0IHsgY2xhc3NOYW1lLCBjeCwgZ2V0U3R5bGVzLCBpbm5lclByb3BzLCBpc1J0bCB9ID0gcHJvcHM7XG5cbiAgcmV0dXJuIChcbiAgICA8ZGl2XG4gICAgICB7Li4uaW5uZXJQcm9wc31cbiAgICAgIGNzcz17Z2V0U3R5bGVzKCdsb2FkaW5nSW5kaWNhdG9yJywgcHJvcHMpfVxuICAgICAgY2xhc3NOYW1lPXtjeChcbiAgICAgICAge1xuICAgICAgICAgIGluZGljYXRvcjogdHJ1ZSxcbiAgICAgICAgICAnbG9hZGluZy1pbmRpY2F0b3InOiB0cnVlLFxuICAgICAgICB9LFxuICAgICAgICBjbGFzc05hbWVcbiAgICAgICl9XG4gICAgPlxuICAgICAgPExvYWRpbmdEb3QgZGVsYXk9ezB9IG9mZnNldD17aXNSdGx9IC8+XG4gICAgICA8TG9hZGluZ0RvdCBkZWxheT17MTYwfSBvZmZzZXQgLz5cbiAgICAgIDxMb2FkaW5nRG90IGRlbGF5PXszMjB9IG9mZnNldD17IWlzUnRsfSAvPlxuICAgIDwvZGl2PlxuICApO1xufTtcbkxvYWRpbmdJbmRpY2F0b3IuZGVmYXVsdFByb3BzID0geyBzaXplOiA0IH07XG4iXX0= */")
+    });
+  };
+
+  var LoadingIndicator = function LoadingIndicator(props) {
+    var className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps,
+        isRtl = props.isRtl;
+    return jsx("div", _extends$2({}, innerProps, {
+      css: getStyles('loadingIndicator', props),
+      className: cx({
+        indicator: true,
+        'loading-indicator': true
+      }, className)
+    }), jsx(LoadingDot, {
+      delay: 0,
+      offset: isRtl
+    }), jsx(LoadingDot, {
+      delay: 160,
+      offset: true
+    }), jsx(LoadingDot, {
+      delay: 320,
+      offset: !isRtl
+    }));
+  };
+  LoadingIndicator.defaultProps = {
+    size: 4
+  };
+
+  function _extends$3() { _extends$3 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$3.apply(this, arguments); }
+  var css$1 = function css$$1(_ref) {
+    var isDisabled = _ref.isDisabled,
+        isFocused = _ref.isFocused,
+        _ref$theme = _ref.theme,
+        colors = _ref$theme.colors,
+        borderRadius = _ref$theme.borderRadius,
+        spacing = _ref$theme.spacing;
+    return {
+      label: 'control',
+      alignItems: 'center',
+      backgroundColor: isDisabled ? colors.neutral5 : colors.neutral0,
+      borderColor: isDisabled ? colors.neutral10 : isFocused ? colors.primary : colors.neutral20,
+      borderRadius: borderRadius,
+      borderStyle: 'solid',
+      borderWidth: 1,
+      boxShadow: isFocused ? "0 0 0 1px " + colors.primary : null,
+      cursor: 'default',
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      minHeight: spacing.controlHeight,
+      outline: '0 !important',
+      position: 'relative',
+      transition: 'all 100ms',
+      '&:hover': {
+        borderColor: isFocused ? colors.primary : colors.neutral30
+      }
+    };
+  };
+
+  var Control = function Control(props) {
+    var children = props.children,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        className = props.className,
+        isDisabled = props.isDisabled,
+        isFocused = props.isFocused,
+        innerRef = props.innerRef,
+        innerProps = props.innerProps,
+        menuIsOpen = props.menuIsOpen;
+    return jsx("div", _extends$3({
+      ref: innerRef,
+      css: getStyles('control', props),
+      className: cx({
+        control: true,
+        'control--is-disabled': isDisabled,
+        'control--is-focused': isFocused,
+        'control--menu-is-open': menuIsOpen
+      }, className)
+    }, innerProps), children);
+  };
+
+  function _objectWithoutPropertiesLoose$1$1(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+  function _extends$4() { _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$4.apply(this, arguments); }
+  var groupCSS = function groupCSS(_ref) {
+    var spacing = _ref.theme.spacing;
+    return {
+      paddingBottom: spacing.baseUnit * 2,
+      paddingTop: spacing.baseUnit * 2
+    };
+  };
+
+  var Group = function Group(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        Heading = props.Heading,
+        headingProps = props.headingProps,
+        label = props.label,
+        theme = props.theme,
+        selectProps = props.selectProps;
+    return jsx("div", {
+      css: getStyles('group', props),
+      className: cx({
+        group: true
+      }, className)
+    }, jsx(Heading, _extends$4({}, headingProps, {
+      selectProps: selectProps,
+      theme: theme,
+      getStyles: getStyles,
+      cx: cx
+    }), label), jsx("div", null, children));
+  };
+
+  var groupHeadingCSS = function groupHeadingCSS(_ref2) {
+    var spacing = _ref2.theme.spacing;
+    return {
+      label: 'group',
+      color: '#999',
+      cursor: 'default',
+      display: 'block',
+      fontSize: '75%',
+      fontWeight: '500',
+      marginBottom: '0.25em',
+      paddingLeft: spacing.baseUnit * 3,
+      paddingRight: spacing.baseUnit * 3,
+      textTransform: 'uppercase'
+    };
+  };
+  var GroupHeading = function GroupHeading(props) {
+    var className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        theme = props.theme,
+        selectProps = props.selectProps,
+        cleanProps = _objectWithoutPropertiesLoose$1$1(props, ["className", "cx", "getStyles", "theme", "selectProps"]);
+
+    return jsx("div", _extends$4({
+      css: getStyles('groupHeading', _extends$4({
+        theme: theme
+      }, cleanProps)),
+      className: cx({
+        'group-heading': true
+      }, className)
+    }, cleanProps));
+  };
+
+  function _extends$5() { _extends$5 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$5.apply(this, arguments); }
+
+  function _objectWithoutPropertiesLoose$2(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+  var inputCSS = function inputCSS(_ref) {
+    var isDisabled = _ref.isDisabled,
+        _ref$theme = _ref.theme,
+        spacing = _ref$theme.spacing,
+        colors = _ref$theme.colors;
+    return {
+      margin: spacing.baseUnit / 2,
+      paddingBottom: spacing.baseUnit / 2,
+      paddingTop: spacing.baseUnit / 2,
+      visibility: isDisabled ? 'hidden' : 'visible',
+      color: colors.neutral80
+    };
+  };
+
+  var inputStyle = function inputStyle(isHidden) {
+    return {
+      label: 'input',
+      background: 0,
+      border: 0,
+      fontSize: 'inherit',
+      opacity: isHidden ? 0 : 1,
+      outline: 0,
+      padding: 0,
+      color: 'inherit'
+    };
+  };
+
+  var Input = function Input(_ref2) {
+    var className = _ref2.className,
+        cx = _ref2.cx,
+        getStyles = _ref2.getStyles,
+        innerRef = _ref2.innerRef,
+        isHidden = _ref2.isHidden,
+        isDisabled = _ref2.isDisabled,
+        theme = _ref2.theme,
+        selectProps = _ref2.selectProps,
+        props = _objectWithoutPropertiesLoose$2(_ref2, ["className", "cx", "getStyles", "innerRef", "isHidden", "isDisabled", "theme", "selectProps"]);
+
+    return jsx("div", {
+      css: getStyles('input', _extends$5({
+        theme: theme
+      }, props))
+    }, jsx(AutosizeInput, _extends$5({
+      className: cx({
+        input: true
+      }, className),
+      inputRef: innerRef,
+      inputStyle: inputStyle(isHidden),
+      disabled: isDisabled
+    }, props)));
+  };
+
+  function _extends$6() { _extends$6 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$6.apply(this, arguments); }
+  var multiValueCSS = function multiValueCSS(_ref) {
+    var _ref$theme = _ref.theme,
+        spacing = _ref$theme.spacing,
+        borderRadius = _ref$theme.borderRadius,
+        colors = _ref$theme.colors;
+    return {
+      label: 'multiValue',
+      backgroundColor: colors.neutral10,
+      borderRadius: borderRadius / 2,
+      display: 'flex',
+      margin: spacing.baseUnit / 2,
+      minWidth: 0 // resolves flex/text-overflow bug
+
+    };
+  };
+  var multiValueLabelCSS = function multiValueLabelCSS(_ref2) {
+    var _ref2$theme = _ref2.theme,
+        borderRadius = _ref2$theme.borderRadius,
+        colors = _ref2$theme.colors,
+        cropWithEllipsis = _ref2.cropWithEllipsis;
+    return {
+      borderRadius: borderRadius / 2,
+      color: colors.neutral80,
+      fontSize: '85%',
+      overflow: 'hidden',
+      padding: 3,
+      paddingLeft: 6,
+      textOverflow: cropWithEllipsis ? 'ellipsis' : null,
+      whiteSpace: 'nowrap'
+    };
+  };
+  var multiValueRemoveCSS = function multiValueRemoveCSS(_ref3) {
+    var _ref3$theme = _ref3.theme,
+        spacing = _ref3$theme.spacing,
+        borderRadius = _ref3$theme.borderRadius,
+        colors = _ref3$theme.colors,
+        isFocused = _ref3.isFocused;
+    return {
+      alignItems: 'center',
+      borderRadius: borderRadius / 2,
+      backgroundColor: isFocused && colors.dangerLight,
+      display: 'flex',
+      paddingLeft: spacing.baseUnit,
+      paddingRight: spacing.baseUnit,
+      ':hover': {
+        backgroundColor: colors.dangerLight,
+        color: colors.danger
+      }
+    };
+  };
+  var MultiValueGeneric = function MultiValueGeneric(_ref4) {
+    var children = _ref4.children,
+        innerProps = _ref4.innerProps;
+    return jsx("div", innerProps, children);
+  };
+  var MultiValueContainer = MultiValueGeneric;
+  var MultiValueLabel = MultiValueGeneric;
+  function MultiValueRemove(_ref5) {
+    var children = _ref5.children,
+        innerProps = _ref5.innerProps;
+    return jsx("div", innerProps, children || jsx(CrossIcon, {
+      size: 14
+    }));
+  }
+
+  var MultiValue = function MultiValue(props) {
+    var children = props.children,
+        className = props.className,
+        components = props.components,
+        cx = props.cx,
+        data = props.data,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps,
+        isDisabled = props.isDisabled,
+        removeProps = props.removeProps,
+        selectProps = props.selectProps;
+    var Container = components.Container,
+        Label = components.Label,
+        Remove = components.Remove;
+    return jsx(ClassNames, null, function (_ref6) {
+      var css$$1 = _ref6.css,
+          emotionCx = _ref6.cx;
+      return jsx(Container, {
+        data: data,
+        innerProps: _extends$6({}, innerProps, {
+          className: emotionCx(css$$1(getStyles('multiValue', props)), cx({
+            'multi-value': true,
+            'multi-value--is-disabled': isDisabled
+          }, className))
+        }),
+        selectProps: selectProps
+      }, jsx(Label, {
+        data: data,
+        innerProps: {
+          className: emotionCx(css$$1(getStyles('multiValueLabel', props)), cx({
+            'multi-value__label': true
+          }, className))
+        },
+        selectProps: selectProps
+      }, children), jsx(Remove, {
+        data: data,
+        innerProps: _extends$6({
+          className: emotionCx(css$$1(getStyles('multiValueRemove', props)), cx({
+            'multi-value__remove': true
+          }, className))
+        }, removeProps),
+        selectProps: selectProps
+      }));
+    });
+  };
+
+  MultiValue.defaultProps = {
+    cropWithEllipsis: true
+  };
+
+  function _extends$7() { _extends$7 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$7.apply(this, arguments); }
+  var optionCSS = function optionCSS(_ref) {
+    var isDisabled = _ref.isDisabled,
+        isFocused = _ref.isFocused,
+        isSelected = _ref.isSelected,
+        _ref$theme = _ref.theme,
+        spacing = _ref$theme.spacing,
+        colors = _ref$theme.colors;
+    return {
+      label: 'option',
+      backgroundColor: isSelected ? colors.primary : isFocused ? colors.primary25 : 'transparent',
+      color: isDisabled ? colors.neutral20 : isSelected ? colors.neutral0 : 'inherit',
+      cursor: 'default',
+      display: 'block',
+      fontSize: 'inherit',
+      padding: spacing.baseUnit * 2 + "px " + spacing.baseUnit * 3 + "px",
+      width: '100%',
+      userSelect: 'none',
+      WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+      // provide some affordance on touch devices
+      ':active': {
+        backgroundColor: !isDisabled && (isSelected ? colors.primary : colors.primary50)
+      }
+    };
+  };
+
+  var Option = function Option(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        isDisabled = props.isDisabled,
+        isFocused = props.isFocused,
+        isSelected = props.isSelected,
+        innerRef = props.innerRef,
+        innerProps = props.innerProps;
+    return jsx("div", _extends$7({
+      css: getStyles('option', props),
+      className: cx({
+        option: true,
+        'option--is-disabled': isDisabled,
+        'option--is-focused': isFocused,
+        'option--is-selected': isSelected
+      }, className),
+      ref: innerRef
+    }, innerProps), children);
+  };
+
+  function _extends$8() { _extends$8 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$8.apply(this, arguments); }
+  var placeholderCSS = function placeholderCSS(_ref) {
+    var _ref$theme = _ref.theme,
+        spacing = _ref$theme.spacing,
+        colors = _ref$theme.colors;
+    return {
+      label: 'placeholder',
+      color: colors.neutral50,
+      marginLeft: spacing.baseUnit / 2,
+      marginRight: spacing.baseUnit / 2,
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)'
+    };
+  };
+
+  var Placeholder = function Placeholder(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        innerProps = props.innerProps;
+    return jsx("div", _extends$8({
+      css: getStyles('placeholder', props),
+      className: cx({
+        placeholder: true
+      }, className)
+    }, innerProps), children);
+  };
+
+  function _extends$9() { _extends$9 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$9.apply(this, arguments); }
+  var css$1$1 = function css$$1(_ref) {
+    var isDisabled = _ref.isDisabled,
+        _ref$theme = _ref.theme,
+        spacing = _ref$theme.spacing,
+        colors = _ref$theme.colors;
+    return {
+      label: 'singleValue',
+      color: isDisabled ? colors.neutral40 : colors.neutral80,
+      marginLeft: spacing.baseUnit / 2,
+      marginRight: spacing.baseUnit / 2,
+      maxWidth: "calc(100% - " + spacing.baseUnit * 2 + "px)",
+      overflow: 'hidden',
+      position: 'absolute',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      top: '50%',
+      transform: 'translateY(-50%)'
+    };
+  };
+
+  var SingleValue = function SingleValue(props) {
+    var children = props.children,
+        className = props.className,
+        cx = props.cx,
+        getStyles = props.getStyles,
+        isDisabled = props.isDisabled,
+        innerProps = props.innerProps;
+    return jsx("div", _extends$9({
+      css: getStyles('singleValue', props),
+      className: cx({
+        'single-value': true,
+        'single-value--is-disabled': isDisabled
+      }, className)
+    }, innerProps), children);
+  };
+
+  function _extends$a() { _extends$a = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$a.apply(this, arguments); }
+  var components = {
+    ClearIndicator: ClearIndicator,
+    Control: Control,
+    DropdownIndicator: DropdownIndicator,
+    DownChevron: DownChevron,
+    CrossIcon: CrossIcon,
+    Group: Group,
+    GroupHeading: GroupHeading,
+    IndicatorsContainer: IndicatorsContainer,
+    IndicatorSeparator: IndicatorSeparator,
+    Input: Input,
+    LoadingIndicator: LoadingIndicator,
+    Menu: Menu,
+    MenuList: MenuList,
+    MenuPortal: MenuPortal,
+    LoadingMessage: LoadingMessage,
+    NoOptionsMessage: NoOptionsMessage,
+    MultiValue: MultiValue,
+    MultiValueContainer: MultiValueContainer,
+    MultiValueLabel: MultiValueLabel,
+    MultiValueRemove: MultiValueRemove,
+    Option: Option,
+    Placeholder: Placeholder,
+    SelectContainer: SelectContainer,
+    SingleValue: SingleValue,
+    ValueContainer: ValueContainer
+  };
+  var defaultComponents = function defaultComponents(props) {
+    return _extends$a({}, components, props.components);
+  };
+
+  var diacritics = [{
+    base: 'A',
+    letters: /[\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F]/g
+  }, {
+    base: 'AA',
+    letters: /[\uA732]/g
+  }, {
+    base: 'AE',
+    letters: /[\u00C6\u01FC\u01E2]/g
+  }, {
+    base: 'AO',
+    letters: /[\uA734]/g
+  }, {
+    base: 'AU',
+    letters: /[\uA736]/g
+  }, {
+    base: 'AV',
+    letters: /[\uA738\uA73A]/g
+  }, {
+    base: 'AY',
+    letters: /[\uA73C]/g
+  }, {
+    base: 'B',
+    letters: /[\u0042\u24B7\uFF22\u1E02\u1E04\u1E06\u0243\u0182\u0181]/g
+  }, {
+    base: 'C',
+    letters: /[\u0043\u24B8\uFF23\u0106\u0108\u010A\u010C\u00C7\u1E08\u0187\u023B\uA73E]/g
+  }, {
+    base: 'D',
+    letters: /[\u0044\u24B9\uFF24\u1E0A\u010E\u1E0C\u1E10\u1E12\u1E0E\u0110\u018B\u018A\u0189\uA779]/g
+  }, {
+    base: 'DZ',
+    letters: /[\u01F1\u01C4]/g
+  }, {
+    base: 'Dz',
+    letters: /[\u01F2\u01C5]/g
+  }, {
+    base: 'E',
+    letters: /[\u0045\u24BA\uFF25\u00C8\u00C9\u00CA\u1EC0\u1EBE\u1EC4\u1EC2\u1EBC\u0112\u1E14\u1E16\u0114\u0116\u00CB\u1EBA\u011A\u0204\u0206\u1EB8\u1EC6\u0228\u1E1C\u0118\u1E18\u1E1A\u0190\u018E]/g
+  }, {
+    base: 'F',
+    letters: /[\u0046\u24BB\uFF26\u1E1E\u0191\uA77B]/g
+  }, {
+    base: 'G',
+    letters: /[\u0047\u24BC\uFF27\u01F4\u011C\u1E20\u011E\u0120\u01E6\u0122\u01E4\u0193\uA7A0\uA77D\uA77E]/g
+  }, {
+    base: 'H',
+    letters: /[\u0048\u24BD\uFF28\u0124\u1E22\u1E26\u021E\u1E24\u1E28\u1E2A\u0126\u2C67\u2C75\uA78D]/g
+  }, {
+    base: 'I',
+    letters: /[\u0049\u24BE\uFF29\u00CC\u00CD\u00CE\u0128\u012A\u012C\u0130\u00CF\u1E2E\u1EC8\u01CF\u0208\u020A\u1ECA\u012E\u1E2C\u0197]/g
+  }, {
+    base: 'J',
+    letters: /[\u004A\u24BF\uFF2A\u0134\u0248]/g
+  }, {
+    base: 'K',
+    letters: /[\u004B\u24C0\uFF2B\u1E30\u01E8\u1E32\u0136\u1E34\u0198\u2C69\uA740\uA742\uA744\uA7A2]/g
+  }, {
+    base: 'L',
+    letters: /[\u004C\u24C1\uFF2C\u013F\u0139\u013D\u1E36\u1E38\u013B\u1E3C\u1E3A\u0141\u023D\u2C62\u2C60\uA748\uA746\uA780]/g
+  }, {
+    base: 'LJ',
+    letters: /[\u01C7]/g
+  }, {
+    base: 'Lj',
+    letters: /[\u01C8]/g
+  }, {
+    base: 'M',
+    letters: /[\u004D\u24C2\uFF2D\u1E3E\u1E40\u1E42\u2C6E\u019C]/g
+  }, {
+    base: 'N',
+    letters: /[\u004E\u24C3\uFF2E\u01F8\u0143\u00D1\u1E44\u0147\u1E46\u0145\u1E4A\u1E48\u0220\u019D\uA790\uA7A4]/g
+  }, {
+    base: 'NJ',
+    letters: /[\u01CA]/g
+  }, {
+    base: 'Nj',
+    letters: /[\u01CB]/g
+  }, {
+    base: 'O',
+    letters: /[\u004F\u24C4\uFF2F\u00D2\u00D3\u00D4\u1ED2\u1ED0\u1ED6\u1ED4\u00D5\u1E4C\u022C\u1E4E\u014C\u1E50\u1E52\u014E\u022E\u0230\u00D6\u022A\u1ECE\u0150\u01D1\u020C\u020E\u01A0\u1EDC\u1EDA\u1EE0\u1EDE\u1EE2\u1ECC\u1ED8\u01EA\u01EC\u00D8\u01FE\u0186\u019F\uA74A\uA74C]/g
+  }, {
+    base: 'OI',
+    letters: /[\u01A2]/g
+  }, {
+    base: 'OO',
+    letters: /[\uA74E]/g
+  }, {
+    base: 'OU',
+    letters: /[\u0222]/g
+  }, {
+    base: 'P',
+    letters: /[\u0050\u24C5\uFF30\u1E54\u1E56\u01A4\u2C63\uA750\uA752\uA754]/g
+  }, {
+    base: 'Q',
+    letters: /[\u0051\u24C6\uFF31\uA756\uA758\u024A]/g
+  }, {
+    base: 'R',
+    letters: /[\u0052\u24C7\uFF32\u0154\u1E58\u0158\u0210\u0212\u1E5A\u1E5C\u0156\u1E5E\u024C\u2C64\uA75A\uA7A6\uA782]/g
+  }, {
+    base: 'S',
+    letters: /[\u0053\u24C8\uFF33\u1E9E\u015A\u1E64\u015C\u1E60\u0160\u1E66\u1E62\u1E68\u0218\u015E\u2C7E\uA7A8\uA784]/g
+  }, {
+    base: 'T',
+    letters: /[\u0054\u24C9\uFF34\u1E6A\u0164\u1E6C\u021A\u0162\u1E70\u1E6E\u0166\u01AC\u01AE\u023E\uA786]/g
+  }, {
+    base: 'TZ',
+    letters: /[\uA728]/g
+  }, {
+    base: 'U',
+    letters: /[\u0055\u24CA\uFF35\u00D9\u00DA\u00DB\u0168\u1E78\u016A\u1E7A\u016C\u00DC\u01DB\u01D7\u01D5\u01D9\u1EE6\u016E\u0170\u01D3\u0214\u0216\u01AF\u1EEA\u1EE8\u1EEE\u1EEC\u1EF0\u1EE4\u1E72\u0172\u1E76\u1E74\u0244]/g
+  }, {
+    base: 'V',
+    letters: /[\u0056\u24CB\uFF36\u1E7C\u1E7E\u01B2\uA75E\u0245]/g
+  }, {
+    base: 'VY',
+    letters: /[\uA760]/g
+  }, {
+    base: 'W',
+    letters: /[\u0057\u24CC\uFF37\u1E80\u1E82\u0174\u1E86\u1E84\u1E88\u2C72]/g
+  }, {
+    base: 'X',
+    letters: /[\u0058\u24CD\uFF38\u1E8A\u1E8C]/g
+  }, {
+    base: 'Y',
+    letters: /[\u0059\u24CE\uFF39\u1EF2\u00DD\u0176\u1EF8\u0232\u1E8E\u0178\u1EF6\u1EF4\u01B3\u024E\u1EFE]/g
+  }, {
+    base: 'Z',
+    letters: /[\u005A\u24CF\uFF3A\u0179\u1E90\u017B\u017D\u1E92\u1E94\u01B5\u0224\u2C7F\u2C6B\uA762]/g
+  }, {
+    base: 'a',
+    letters: /[\u0061\u24D0\uFF41\u1E9A\u00E0\u00E1\u00E2\u1EA7\u1EA5\u1EAB\u1EA9\u00E3\u0101\u0103\u1EB1\u1EAF\u1EB5\u1EB3\u0227\u01E1\u00E4\u01DF\u1EA3\u00E5\u01FB\u01CE\u0201\u0203\u1EA1\u1EAD\u1EB7\u1E01\u0105\u2C65\u0250]/g
+  }, {
+    base: 'aa',
+    letters: /[\uA733]/g
+  }, {
+    base: 'ae',
+    letters: /[\u00E6\u01FD\u01E3]/g
+  }, {
+    base: 'ao',
+    letters: /[\uA735]/g
+  }, {
+    base: 'au',
+    letters: /[\uA737]/g
+  }, {
+    base: 'av',
+    letters: /[\uA739\uA73B]/g
+  }, {
+    base: 'ay',
+    letters: /[\uA73D]/g
+  }, {
+    base: 'b',
+    letters: /[\u0062\u24D1\uFF42\u1E03\u1E05\u1E07\u0180\u0183\u0253]/g
+  }, {
+    base: 'c',
+    letters: /[\u0063\u24D2\uFF43\u0107\u0109\u010B\u010D\u00E7\u1E09\u0188\u023C\uA73F\u2184]/g
+  }, {
+    base: 'd',
+    letters: /[\u0064\u24D3\uFF44\u1E0B\u010F\u1E0D\u1E11\u1E13\u1E0F\u0111\u018C\u0256\u0257\uA77A]/g
+  }, {
+    base: 'dz',
+    letters: /[\u01F3\u01C6]/g
+  }, {
+    base: 'e',
+    letters: /[\u0065\u24D4\uFF45\u00E8\u00E9\u00EA\u1EC1\u1EBF\u1EC5\u1EC3\u1EBD\u0113\u1E15\u1E17\u0115\u0117\u00EB\u1EBB\u011B\u0205\u0207\u1EB9\u1EC7\u0229\u1E1D\u0119\u1E19\u1E1B\u0247\u025B\u01DD]/g
+  }, {
+    base: 'f',
+    letters: /[\u0066\u24D5\uFF46\u1E1F\u0192\uA77C]/g
+  }, {
+    base: 'g',
+    letters: /[\u0067\u24D6\uFF47\u01F5\u011D\u1E21\u011F\u0121\u01E7\u0123\u01E5\u0260\uA7A1\u1D79\uA77F]/g
+  }, {
+    base: 'h',
+    letters: /[\u0068\u24D7\uFF48\u0125\u1E23\u1E27\u021F\u1E25\u1E29\u1E2B\u1E96\u0127\u2C68\u2C76\u0265]/g
+  }, {
+    base: 'hv',
+    letters: /[\u0195]/g
+  }, {
+    base: 'i',
+    letters: /[\u0069\u24D8\uFF49\u00EC\u00ED\u00EE\u0129\u012B\u012D\u00EF\u1E2F\u1EC9\u01D0\u0209\u020B\u1ECB\u012F\u1E2D\u0268\u0131]/g
+  }, {
+    base: 'j',
+    letters: /[\u006A\u24D9\uFF4A\u0135\u01F0\u0249]/g
+  }, {
+    base: 'k',
+    letters: /[\u006B\u24DA\uFF4B\u1E31\u01E9\u1E33\u0137\u1E35\u0199\u2C6A\uA741\uA743\uA745\uA7A3]/g
+  }, {
+    base: 'l',
+    letters: /[\u006C\u24DB\uFF4C\u0140\u013A\u013E\u1E37\u1E39\u013C\u1E3D\u1E3B\u017F\u0142\u019A\u026B\u2C61\uA749\uA781\uA747]/g
+  }, {
+    base: 'lj',
+    letters: /[\u01C9]/g
+  }, {
+    base: 'm',
+    letters: /[\u006D\u24DC\uFF4D\u1E3F\u1E41\u1E43\u0271\u026F]/g
+  }, {
+    base: 'n',
+    letters: /[\u006E\u24DD\uFF4E\u01F9\u0144\u00F1\u1E45\u0148\u1E47\u0146\u1E4B\u1E49\u019E\u0272\u0149\uA791\uA7A5]/g
+  }, {
+    base: 'nj',
+    letters: /[\u01CC]/g
+  }, {
+    base: 'o',
+    letters: /[\u006F\u24DE\uFF4F\u00F2\u00F3\u00F4\u1ED3\u1ED1\u1ED7\u1ED5\u00F5\u1E4D\u022D\u1E4F\u014D\u1E51\u1E53\u014F\u022F\u0231\u00F6\u022B\u1ECF\u0151\u01D2\u020D\u020F\u01A1\u1EDD\u1EDB\u1EE1\u1EDF\u1EE3\u1ECD\u1ED9\u01EB\u01ED\u00F8\u01FF\u0254\uA74B\uA74D\u0275]/g
+  }, {
+    base: 'oi',
+    letters: /[\u01A3]/g
+  }, {
+    base: 'ou',
+    letters: /[\u0223]/g
+  }, {
+    base: 'oo',
+    letters: /[\uA74F]/g
+  }, {
+    base: 'p',
+    letters: /[\u0070\u24DF\uFF50\u1E55\u1E57\u01A5\u1D7D\uA751\uA753\uA755]/g
+  }, {
+    base: 'q',
+    letters: /[\u0071\u24E0\uFF51\u024B\uA757\uA759]/g
+  }, {
+    base: 'r',
+    letters: /[\u0072\u24E1\uFF52\u0155\u1E59\u0159\u0211\u0213\u1E5B\u1E5D\u0157\u1E5F\u024D\u027D\uA75B\uA7A7\uA783]/g
+  }, {
+    base: 's',
+    letters: /[\u0073\u24E2\uFF53\u00DF\u015B\u1E65\u015D\u1E61\u0161\u1E67\u1E63\u1E69\u0219\u015F\u023F\uA7A9\uA785\u1E9B]/g
+  }, {
+    base: 't',
+    letters: /[\u0074\u24E3\uFF54\u1E6B\u1E97\u0165\u1E6D\u021B\u0163\u1E71\u1E6F\u0167\u01AD\u0288\u2C66\uA787]/g
+  }, {
+    base: 'tz',
+    letters: /[\uA729]/g
+  }, {
+    base: 'u',
+    letters: /[\u0075\u24E4\uFF55\u00F9\u00FA\u00FB\u0169\u1E79\u016B\u1E7B\u016D\u00FC\u01DC\u01D8\u01D6\u01DA\u1EE7\u016F\u0171\u01D4\u0215\u0217\u01B0\u1EEB\u1EE9\u1EEF\u1EED\u1EF1\u1EE5\u1E73\u0173\u1E77\u1E75\u0289]/g
+  }, {
+    base: 'v',
+    letters: /[\u0076\u24E5\uFF56\u1E7D\u1E7F\u028B\uA75F\u028C]/g
+  }, {
+    base: 'vy',
+    letters: /[\uA761]/g
+  }, {
+    base: 'w',
+    letters: /[\u0077\u24E6\uFF57\u1E81\u1E83\u0175\u1E87\u1E85\u1E98\u1E89\u2C73]/g
+  }, {
+    base: 'x',
+    letters: /[\u0078\u24E7\uFF58\u1E8B\u1E8D]/g
+  }, {
+    base: 'y',
+    letters: /[\u0079\u24E8\uFF59\u1EF3\u00FD\u0177\u1EF9\u0233\u1E8F\u00FF\u1EF7\u1E99\u1EF5\u01B4\u024F\u1EFF]/g
+  }, {
+    base: 'z',
+    letters: /[\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763]/g
+  }];
   var stripDiacritics = function stripDiacritics(str) {
-  	for (var i = 0; i < map.length; i++) {
-  		str = str.replace(map[i].letters, map[i].base);
-  	}
-  	return str;
+    for (var i$$1 = 0; i$$1 < diacritics.length; i$$1++) {
+      str = str.replace(diacritics[i$$1].letters, diacritics[i$$1].base);
+    }
+
+    return str;
   };
 
-  var trim = function trim(str) {
+  function _extends$b() { _extends$b = Object.assign || function (target) { for (var i$$1 = 1; i$$1 < arguments.length; i$$1++) { var source = arguments[i$$1]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$b.apply(this, arguments); }
+
+  var trimString = function trimString(str) {
     return str.replace(/^\s+|\s+$/g, '');
   };
 
-  var isValid = function isValid(value) {
-  	return typeof value !== 'undefined' && value !== null && value !== '';
+  var defaultStringify = function defaultStringify(option) {
+    return option.label + " " + option.value;
   };
 
-  var filterOptions = function filterOptions(options, filterValue, excludeOptions, props) {
-  	if (props.ignoreAccents) {
-  		filterValue = stripDiacritics(filterValue);
-  	}
+  var createFilter = function createFilter(config) {
+    return function (option, rawInput) {
+      var _ignoreCase$ignoreAcc = _extends$b({
+        ignoreCase: true,
+        ignoreAccents: true,
+        stringify: defaultStringify,
+        trim: true,
+        matchFrom: 'any'
+      }, config),
+          ignoreCase = _ignoreCase$ignoreAcc.ignoreCase,
+          ignoreAccents = _ignoreCase$ignoreAcc.ignoreAccents,
+          stringify = _ignoreCase$ignoreAcc.stringify,
+          trim = _ignoreCase$ignoreAcc.trim,
+          matchFrom = _ignoreCase$ignoreAcc.matchFrom;
 
-  	if (props.ignoreCase) {
-  		filterValue = filterValue.toLowerCase();
-  	}
+      var input = trim ? trimString(rawInput) : rawInput;
+      var candidate = trim ? trimString(stringify(option)) : stringify(option);
 
-  	if (props.trimFilter) {
-  		filterValue = trim(filterValue);
-  	}
-
-  	if (excludeOptions) excludeOptions = excludeOptions.map(function (i) {
-  		return i[props.valueKey];
-  	});
-
-  	return options.filter(function (option) {
-  		if (excludeOptions && excludeOptions.indexOf(option[props.valueKey]) > -1) return false;
-  		if (props.filterOption) return props.filterOption.call(undefined, option, filterValue);
-  		if (!filterValue) return true;
-
-  		var value = option[props.valueKey];
-  		var label = option[props.labelKey];
-  		var hasValue = isValid(value);
-  		var hasLabel = isValid(label);
-
-  		if (!hasValue && !hasLabel) {
-  			return false;
-  		}
-
-  		var valueTest = hasValue ? String(value) : null;
-  		var labelTest = hasLabel ? String(label) : null;
-
-  		if (props.ignoreAccents) {
-  			if (valueTest && props.matchProp !== 'label') valueTest = stripDiacritics(valueTest);
-  			if (labelTest && props.matchProp !== 'value') labelTest = stripDiacritics(labelTest);
-  		}
-
-  		if (props.ignoreCase) {
-  			if (valueTest && props.matchProp !== 'label') valueTest = valueTest.toLowerCase();
-  			if (labelTest && props.matchProp !== 'value') labelTest = labelTest.toLowerCase();
-  		}
-
-  		return props.matchPos === 'start' ? valueTest && props.matchProp !== 'label' && valueTest.substr(0, filterValue.length) === filterValue || labelTest && props.matchProp !== 'value' && labelTest.substr(0, filterValue.length) === filterValue : valueTest && props.matchProp !== 'label' && valueTest.indexOf(filterValue) >= 0 || labelTest && props.matchProp !== 'value' && labelTest.indexOf(filterValue) >= 0;
-  	});
-  };
-
-  var menuRenderer = function menuRenderer(_ref) {
-  	var focusedOption = _ref.focusedOption,
-  	    focusOption = _ref.focusOption,
-  	    inputValue = _ref.inputValue,
-  	    instancePrefix = _ref.instancePrefix,
-  	    onFocus = _ref.onFocus,
-  	    onOptionRef = _ref.onOptionRef,
-  	    onSelect = _ref.onSelect,
-  	    optionClassName = _ref.optionClassName,
-  	    optionComponent = _ref.optionComponent,
-  	    optionRenderer = _ref.optionRenderer,
-  	    options = _ref.options,
-  	    removeValue = _ref.removeValue,
-  	    selectValue = _ref.selectValue,
-  	    valueArray = _ref.valueArray,
-  	    valueKey = _ref.valueKey;
-
-  	var Option = optionComponent;
-
-  	return options.map(function (option, i) {
-  		var isSelected = valueArray && valueArray.some(function (x) {
-  			return x[valueKey] === option[valueKey];
-  		});
-  		var isFocused = option === focusedOption;
-  		var optionClass = classnames(optionClassName, {
-  			'Select-option': true,
-  			'is-selected': isSelected,
-  			'is-focused': isFocused,
-  			'is-disabled': option.disabled
-  		});
-
-  		return React__default.createElement(
-  			Option,
-  			{
-  				className: optionClass,
-  				focusOption: focusOption,
-  				inputValue: inputValue,
-  				instancePrefix: instancePrefix,
-  				isDisabled: option.disabled,
-  				isFocused: isFocused,
-  				isSelected: isSelected,
-  				key: 'option-' + i + '-' + option[valueKey],
-  				onFocus: onFocus,
-  				onSelect: onSelect,
-  				option: option,
-  				optionIndex: i,
-  				ref: function ref(_ref2) {
-  					onOptionRef(_ref2, isFocused);
-  				},
-  				removeValue: removeValue,
-  				selectValue: selectValue
-  			},
-  			optionRenderer(option, i, inputValue)
-  		);
-  	});
-  };
-
-  menuRenderer.propTypes = {
-  	focusOption: PropTypes.func,
-  	focusedOption: PropTypes.object,
-  	inputValue: PropTypes.string,
-  	instancePrefix: PropTypes.string,
-  	onFocus: PropTypes.func,
-  	onOptionRef: PropTypes.func,
-  	onSelect: PropTypes.func,
-  	optionClassName: PropTypes.string,
-  	optionComponent: PropTypes.func,
-  	optionRenderer: PropTypes.func,
-  	options: PropTypes.array,
-  	removeValue: PropTypes.func,
-  	selectValue: PropTypes.func,
-  	valueArray: PropTypes.array,
-  	valueKey: PropTypes.string
-  };
-
-  var blockEvent = (function (event) {
-  	event.preventDefault();
-  	event.stopPropagation();
-  	if (event.target.tagName !== 'A' || !('href' in event.target)) {
-  		return;
-  	}
-  	if (event.target.target) {
-  		window.open(event.target.href, event.target.target);
-  	} else {
-  		window.location.href = event.target.href;
-  	}
-  });
-
-  var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-  };
-
-
-
-
-
-  var classCallCheck = function (instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-
-  var createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
+      if (ignoreCase) {
+        input = input.toLowerCase();
+        candidate = candidate.toLowerCase();
       }
-    }
 
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
+      if (ignoreAccents) {
+        input = stripDiacritics(input);
+        candidate = stripDiacritics(candidate);
+      }
+
+      return matchFrom === 'start' ? candidate.substr(0, input.length) === input : candidate.indexOf(input) > -1;
     };
-  }();
+  };
 
+  function _extends$1$2() { _extends$1$2 = Object.assign || function (target) { for (var i$$1 = 1; i$$1 < arguments.length; i$$1++) { var source = arguments[i$$1]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$1$2.apply(this, arguments); }
 
+  var _ref = undefined === "production" ? {
+    name: "1laao21-a11yText",
+    styles: "label:a11yText;z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;"
+  } : {
+    name: "1laao21-a11yText",
+    styles: "label:a11yText;z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;",
+    map: "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIkExMXlUZXh0LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQVFNIiwiZmlsZSI6IkExMXlUZXh0LmpzIiwic291cmNlc0NvbnRlbnQiOlsiLy8gQGZsb3dcbi8qKiBAanN4IGpzeCAqL1xuaW1wb3J0IHsgdHlwZSBFbGVtZW50Q29uZmlnIH0gZnJvbSAncmVhY3QnO1xuaW1wb3J0IHsganN4IH0gZnJvbSAnQGVtb3Rpb24vY29yZSc7XG5cbi8vIEFzc2lzdGl2ZSB0ZXh0IHRvIGRlc2NyaWJlIHZpc3VhbCBlbGVtZW50cy4gSGlkZGVuIGZvciBzaWdodGVkIHVzZXJzLlxuY29uc3QgQTExeVRleHQgPSAocHJvcHM6IEVsZW1lbnRDb25maWc8J3NwYW4nPikgPT4gKFxuICAgIDxzcGFuXG4gICAgICBjc3M9e3tcbiAgICAgICAgbGFiZWw6ICdhMTF5VGV4dCcsXG4gICAgICAgIHpJbmRleDogOTk5OSxcbiAgICAgICAgYm9yZGVyOiAwLFxuICAgICAgICBjbGlwOiAncmVjdCgxcHgsIDFweCwgMXB4LCAxcHgpJyxcbiAgICAgICAgaGVpZ2h0OiAxLFxuICAgICAgICB3aWR0aDogMSxcbiAgICAgICAgcG9zaXRpb246ICdhYnNvbHV0ZScsXG4gICAgICAgIG92ZXJmbG93OiAnaGlkZGVuJyxcbiAgICAgICAgcGFkZGluZzogMCxcbiAgICAgICAgd2hpdGVTcGFjZTogJ25vd3JhcCcsXG4gICAgICB9fVxuICAgICAgey4uLnByb3BzfVxuICAgIC8+XG4pO1xuXG5leHBvcnQgZGVmYXVsdCBBMTF5VGV4dDtcbiJdfQ== */"
+  };
 
+  var A11yText = function A11yText(props) {
+    return jsx("span", _extends$1$2({
+      css: _ref
+    }, props));
+  };
 
+  function _extends$2$1() { _extends$2$1 = Object.assign || function (target) { for (var i$$1 = 1; i$$1 < arguments.length; i$$1++) { var source = arguments[i$$1]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$2$1.apply(this, arguments); }
 
-  var defineProperty = function (obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
+  function _objectWithoutPropertiesLoose$3(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i$$1; for (i$$1 = 0; i$$1 < sourceKeys.length; i$$1++) { key = sourceKeys[i$$1]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+  function DummyInput(_ref) {
+    var inProp = _ref.in,
+        out = _ref.out,
+        onExited = _ref.onExited,
+        appear = _ref.appear,
+        enter = _ref.enter,
+        exit = _ref.exit,
+        innerRef = _ref.innerRef,
+        emotion = _ref.emotion,
+        props = _objectWithoutPropertiesLoose$3(_ref, ["in", "out", "onExited", "appear", "enter", "exit", "innerRef", "emotion"]);
+
+    return jsx("input", _extends$2$1({
+      ref: innerRef
+    }, props, {
+      css:
+      /*#__PURE__*/
+      css({
+        label: 'dummyInput',
+        // get rid of any default styles
+        background: 0,
+        border: 0,
+        fontSize: 'inherit',
+        outline: 0,
+        padding: 0,
+        // important! without `width` browsers won't allow focus
+        width: 1,
+        // remove cursor on desktop
+        color: 'transparent',
+        // remove cursor on mobile whilst maintaining "scroll into view" behaviour
+        left: -100,
+        opacity: 0,
+        position: 'relative',
+        transform: 'scale(0)'
+      }, undefined === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIkR1bW15SW5wdXQuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBbUJNIiwiZmlsZSI6IkR1bW15SW5wdXQuanMiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBAZmxvd1xuLyoqIEBqc3gganN4ICovXG5pbXBvcnQgeyBqc3ggfSBmcm9tICdAZW1vdGlvbi9jb3JlJztcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gRHVtbXlJbnB1dCh7XG4gIGluOiBpblByb3AsXG4gIG91dCxcbiAgb25FeGl0ZWQsXG4gIGFwcGVhcixcbiAgZW50ZXIsXG4gIGV4aXQsXG4gIGlubmVyUmVmLFxuICBlbW90aW9uLFxuICAuLi5wcm9wc1xufTogYW55KSB7XG4gIHJldHVybiAoXG4gICAgPGlucHV0XG4gICAgICByZWY9e2lubmVyUmVmfVxuICAgICAgey4uLnByb3BzfVxuICAgICAgY3NzPXt7XG4gICAgICAgIGxhYmVsOiAnZHVtbXlJbnB1dCcsXG4gICAgICAgIC8vIGdldCByaWQgb2YgYW55IGRlZmF1bHQgc3R5bGVzXG4gICAgICAgIGJhY2tncm91bmQ6IDAsXG4gICAgICAgIGJvcmRlcjogMCxcbiAgICAgICAgZm9udFNpemU6ICdpbmhlcml0JyxcbiAgICAgICAgb3V0bGluZTogMCxcbiAgICAgICAgcGFkZGluZzogMCxcbiAgICAgICAgLy8gaW1wb3J0YW50ISB3aXRob3V0IGB3aWR0aGAgYnJvd3NlcnMgd29uJ3QgYWxsb3cgZm9jdXNcbiAgICAgICAgd2lkdGg6IDEsXG5cbiAgICAgICAgLy8gcmVtb3ZlIGN1cnNvciBvbiBkZXNrdG9wXG4gICAgICAgIGNvbG9yOiAndHJhbnNwYXJlbnQnLFxuXG4gICAgICAgIC8vIHJlbW92ZSBjdXJzb3Igb24gbW9iaWxlIHdoaWxzdCBtYWludGFpbmluZyBcInNjcm9sbCBpbnRvIHZpZXdcIiBiZWhhdmlvdXJcbiAgICAgICAgbGVmdDogLTEwMCxcbiAgICAgICAgb3BhY2l0eTogMCxcbiAgICAgICAgcG9zaXRpb246ICdyZWxhdGl2ZScsXG4gICAgICAgIHRyYW5zZm9ybTogJ3NjYWxlKDApJyxcbiAgICAgIH19XG4gICAgLz5cbiAgKTtcbn1cbiJdfQ== */")
+    }));
+  }
+
+  function _inheritsLoose$3(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+
+  var NodeResolver =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose$3(NodeResolver, _Component);
+
+    function NodeResolver() {
+      return _Component.apply(this, arguments) || this;
     }
 
-    return obj;
-  };
+    var _proto = NodeResolver.prototype;
 
-  var _extends$1 = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
+    _proto.componentDidMount = function componentDidMount() {
+      this.props.innerRef(reactDom.findDOMNode(this));
+    };
 
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
+    _proto.componentWillUnmount = function componentWillUnmount() {
+      this.props.innerRef(null);
+    };
 
-    return target;
-  };
+    _proto.render = function render() {
+      return this.props.children;
+    };
 
-
-
-  var inherits = function (subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  };
-
-
-
-
-
-
-
-
-
-  var objectWithoutProperties = function (obj, keys) {
-    var target = {};
-
-    for (var i in obj) {
-      if (keys.indexOf(i) >= 0) continue;
-      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
-      target[i] = obj[i];
-    }
-
-    return target;
-  };
-
-  var possibleConstructorReturn = function (self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  };
-
-  var Option = function (_React$Component) {
-  	inherits(Option, _React$Component);
-
-  	function Option(props) {
-  		classCallCheck(this, Option);
-
-  		var _this = possibleConstructorReturn(this, (Option.__proto__ || Object.getPrototypeOf(Option)).call(this, props));
-
-  		_this.handleMouseDown = _this.handleMouseDown.bind(_this);
-  		_this.handleMouseEnter = _this.handleMouseEnter.bind(_this);
-  		_this.handleMouseMove = _this.handleMouseMove.bind(_this);
-  		_this.handleTouchStart = _this.handleTouchStart.bind(_this);
-  		_this.handleTouchEnd = _this.handleTouchEnd.bind(_this);
-  		_this.handleTouchMove = _this.handleTouchMove.bind(_this);
-  		_this.onFocus = _this.onFocus.bind(_this);
-  		return _this;
-  	}
-
-  	createClass(Option, [{
-  		key: 'handleMouseDown',
-  		value: function handleMouseDown(event) {
-  			event.preventDefault();
-  			event.stopPropagation();
-  			this.props.onSelect(this.props.option, event);
-  		}
-  	}, {
-  		key: 'handleMouseEnter',
-  		value: function handleMouseEnter(event) {
-  			this.onFocus(event);
-  		}
-  	}, {
-  		key: 'handleMouseMove',
-  		value: function handleMouseMove(event) {
-  			this.onFocus(event);
-  		}
-  	}, {
-  		key: 'handleTouchEnd',
-  		value: function handleTouchEnd(event) {
-  			// Check if the view is being dragged, In this case
-  			// we don't want to fire the click event (because the user only wants to scroll)
-  			if (this.dragging) return;
-
-  			this.handleMouseDown(event);
-  		}
-  	}, {
-  		key: 'handleTouchMove',
-  		value: function handleTouchMove() {
-  			// Set a flag that the view is being dragged
-  			this.dragging = true;
-  		}
-  	}, {
-  		key: 'handleTouchStart',
-  		value: function handleTouchStart() {
-  			// Set a flag that the view is not being dragged
-  			this.dragging = false;
-  		}
-  	}, {
-  		key: 'onFocus',
-  		value: function onFocus(event) {
-  			if (!this.props.isFocused) {
-  				this.props.onFocus(this.props.option, event);
-  			}
-  		}
-  	}, {
-  		key: 'render',
-  		value: function render() {
-  			var _props = this.props,
-  			    option = _props.option,
-  			    instancePrefix = _props.instancePrefix,
-  			    optionIndex = _props.optionIndex;
-
-  			var className = classnames(this.props.className, option.className);
-
-  			return option.disabled ? React__default.createElement(
-  				'div',
-  				{ className: className,
-  					onMouseDown: blockEvent,
-  					onClick: blockEvent },
-  				this.props.children
-  			) : React__default.createElement(
-  				'div',
-  				{ className: className,
-  					style: option.style,
-  					role: 'option',
-  					'aria-label': option.label,
-  					onMouseDown: this.handleMouseDown,
-  					onMouseEnter: this.handleMouseEnter,
-  					onMouseMove: this.handleMouseMove,
-  					onTouchStart: this.handleTouchStart,
-  					onTouchMove: this.handleTouchMove,
-  					onTouchEnd: this.handleTouchEnd,
-  					id: instancePrefix + '-option-' + optionIndex,
-  					title: option.title },
-  				this.props.children
-  			);
-  		}
-  	}]);
-  	return Option;
-  }(React__default.Component);
-
-  Option.propTypes = {
-  	children: PropTypes.node,
-  	className: PropTypes.string, // className (based on mouse position)
-  	instancePrefix: PropTypes.string.isRequired, // unique prefix for the ids (used for aria)
-  	isDisabled: PropTypes.bool, // the option is disabled
-  	isFocused: PropTypes.bool, // the option is focused
-  	isSelected: PropTypes.bool, // the option is selected
-  	onFocus: PropTypes.func, // method to handle mouseEnter on option element
-  	onSelect: PropTypes.func, // method to handle click on option element
-  	onUnfocus: PropTypes.func, // method to handle mouseLeave on option element
-  	option: PropTypes.object.isRequired, // object that is base for that option
-  	optionIndex: PropTypes.number // index of the option, used to generate unique ids for aria
-  };
-
-  var Value = function (_React$Component) {
-  	inherits(Value, _React$Component);
-
-  	function Value(props) {
-  		classCallCheck(this, Value);
-
-  		var _this = possibleConstructorReturn(this, (Value.__proto__ || Object.getPrototypeOf(Value)).call(this, props));
-
-  		_this.handleMouseDown = _this.handleMouseDown.bind(_this);
-  		_this.onRemove = _this.onRemove.bind(_this);
-  		_this.handleTouchEndRemove = _this.handleTouchEndRemove.bind(_this);
-  		_this.handleTouchMove = _this.handleTouchMove.bind(_this);
-  		_this.handleTouchStart = _this.handleTouchStart.bind(_this);
-  		return _this;
-  	}
-
-  	createClass(Value, [{
-  		key: 'handleMouseDown',
-  		value: function handleMouseDown(event) {
-  			if (event.type === 'mousedown' && event.button !== 0) {
-  				return;
-  			}
-  			if (this.props.onClick) {
-  				event.stopPropagation();
-  				this.props.onClick(this.props.value, event);
-  				return;
-  			}
-  			if (this.props.value.href) {
-  				event.stopPropagation();
-  			}
-  		}
-  	}, {
-  		key: 'onRemove',
-  		value: function onRemove(event) {
-  			event.preventDefault();
-  			event.stopPropagation();
-  			this.props.onRemove(this.props.value);
-  		}
-  	}, {
-  		key: 'handleTouchEndRemove',
-  		value: function handleTouchEndRemove(event) {
-  			// Check if the view is being dragged, In this case
-  			// we don't want to fire the click event (because the user only wants to scroll)
-  			if (this.dragging) return;
-
-  			// Fire the mouse events
-  			this.onRemove(event);
-  		}
-  	}, {
-  		key: 'handleTouchMove',
-  		value: function handleTouchMove() {
-  			// Set a flag that the view is being dragged
-  			this.dragging = true;
-  		}
-  	}, {
-  		key: 'handleTouchStart',
-  		value: function handleTouchStart() {
-  			// Set a flag that the view is not being dragged
-  			this.dragging = false;
-  		}
-  	}, {
-  		key: 'renderRemoveIcon',
-  		value: function renderRemoveIcon() {
-  			if (this.props.disabled || !this.props.onRemove) return;
-  			return React__default.createElement(
-  				'span',
-  				{ className: 'Select-value-icon',
-  					'aria-hidden': 'true',
-  					onMouseDown: this.onRemove,
-  					onTouchEnd: this.handleTouchEndRemove,
-  					onTouchStart: this.handleTouchStart,
-  					onTouchMove: this.handleTouchMove },
-  				'\xD7'
-  			);
-  		}
-  	}, {
-  		key: 'renderLabel',
-  		value: function renderLabel() {
-  			var className = 'Select-value-label';
-  			return this.props.onClick || this.props.value.href ? React__default.createElement(
-  				'a',
-  				{ className: className, href: this.props.value.href, target: this.props.value.target, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
-  				this.props.children
-  			) : React__default.createElement(
-  				'span',
-  				{ className: className, role: 'option', 'aria-selected': 'true', id: this.props.id },
-  				this.props.children
-  			);
-  		}
-  	}, {
-  		key: 'render',
-  		value: function render() {
-  			return React__default.createElement(
-  				'div',
-  				{ className: classnames('Select-value', this.props.value.className),
-  					style: this.props.value.style,
-  					title: this.props.value.title
-  				},
-  				this.renderRemoveIcon(),
-  				this.renderLabel()
-  			);
-  		}
-  	}]);
-  	return Value;
-  }(React__default.Component);
-
-  Value.propTypes = {
-  	children: PropTypes.node,
-  	disabled: PropTypes.bool, // disabled prop passed to ReactSelect
-  	id: PropTypes.string, // Unique id for the value - used for aria
-  	onClick: PropTypes.func, // method to handle click on value label
-  	onRemove: PropTypes.func, // method to handle removal of the value
-  	value: PropTypes.object.isRequired // the option object for this value
-  };
-
-  /*!
-    Copyright (c) 2018 Jed Watson.
-    Licensed under the MIT License (MIT), see
-    http://jedwatson.github.io/react-select
-  */
-  var stringifyValue = function stringifyValue(value) {
-  	return typeof value === 'string' ? value : value !== null && JSON.stringify(value) || '';
-  };
-
-  var stringOrNode = PropTypes.oneOfType([PropTypes.string, PropTypes.node]);
-  var stringOrNumber = PropTypes.oneOfType([PropTypes.string, PropTypes.number]);
-
-  var instanceId = 1;
-
-  var shouldShowValue = function shouldShowValue(state, props) {
-  	var inputValue = state.inputValue,
-  	    isPseudoFocused = state.isPseudoFocused,
-  	    isFocused = state.isFocused;
-  	var onSelectResetsInput = props.onSelectResetsInput;
-
-
-  	if (!inputValue) return true;
-
-  	if (!onSelectResetsInput) {
-  		return !(!isFocused && isPseudoFocused || isFocused && !isPseudoFocused);
-  	}
-
-  	return false;
-  };
-
-  var shouldShowPlaceholder = function shouldShowPlaceholder(state, props, isOpen) {
-  	var inputValue = state.inputValue,
-  	    isPseudoFocused = state.isPseudoFocused,
-  	    isFocused = state.isFocused;
-  	var onSelectResetsInput = props.onSelectResetsInput;
-
-
-  	return !inputValue || !onSelectResetsInput && !isOpen && !isPseudoFocused && !isFocused;
-  };
-
-  /**
-   * Retrieve a value from the given options and valueKey
-   * @param {String|Number|Array} value	- the selected value(s)
-   * @param {Object}		 props	- the Select component's props (or nextProps)
-   */
-  var expandValue = function expandValue(value, props) {
-  	var valueType = typeof value === 'undefined' ? 'undefined' : _typeof$1(value);
-  	if (valueType !== 'string' && valueType !== 'number' && valueType !== 'boolean') return value;
-  	var options = props.options,
-  	    valueKey = props.valueKey;
-
-  	if (!options) return;
-  	for (var i = 0; i < options.length; i++) {
-  		if (String(options[i][valueKey]) === String(value)) return options[i];
-  	}
-  };
-
-  var handleRequired = function handleRequired(value, multi) {
-  	if (!value) return true;
-  	return multi ? value.length === 0 : Object.keys(value).length === 0;
-  };
-
-  var Select$1 = function (_React$Component) {
-  	inherits(Select, _React$Component);
-
-  	function Select(props) {
-  		classCallCheck(this, Select);
-
-  		var _this = possibleConstructorReturn(this, (Select.__proto__ || Object.getPrototypeOf(Select)).call(this, props));
-
-  		['clearValue', 'focusOption', 'getOptionLabel', 'handleInputBlur', 'handleInputChange', 'handleInputFocus', 'handleInputValueChange', 'handleKeyDown', 'handleMenuScroll', 'handleMouseDown', 'handleMouseDownOnArrow', 'handleMouseDownOnMenu', 'handleTouchEnd', 'handleTouchEndClearValue', 'handleTouchMove', 'handleTouchOutside', 'handleTouchStart', 'handleValueClick', 'onOptionRef', 'removeValue', 'selectValue'].forEach(function (fn) {
-  			return _this[fn] = _this[fn].bind(_this);
-  		});
-
-  		_this.state = {
-  			inputValue: '',
-  			isFocused: false,
-  			isOpen: false,
-  			isPseudoFocused: false,
-  			required: false
-  		};
-  		return _this;
-  	}
-
-  	createClass(Select, [{
-  		key: 'componentWillMount',
-  		value: function componentWillMount() {
-  			this._instancePrefix = 'react-select-' + (this.props.instanceId || ++instanceId) + '-';
-  			var valueArray = this.getValueArray(this.props.value);
-
-  			if (this.props.required) {
-  				this.setState({
-  					required: handleRequired(valueArray[0], this.props.multi)
-  				});
-  			}
-  		}
-  	}, {
-  		key: 'componentDidMount',
-  		value: function componentDidMount() {
-  			if (typeof this.props.autofocus !== 'undefined' && typeof console !== 'undefined') {
-  				console.warn('Warning: The autofocus prop has changed to autoFocus, support will be removed after react-select@1.0');
-  			}
-  			if (this.props.autoFocus || this.props.autofocus) {
-  				this.focus();
-  			}
-  		}
-  	}, {
-  		key: 'componentWillReceiveProps',
-  		value: function componentWillReceiveProps(nextProps) {
-  			var valueArray = this.getValueArray(nextProps.value, nextProps);
-
-  			if (nextProps.required) {
-  				this.setState({
-  					required: handleRequired(valueArray[0], nextProps.multi)
-  				});
-  			} else if (this.props.required) {
-  				// Used to be required but it's not any more
-  				this.setState({ required: false });
-  			}
-
-  			if (this.state.inputValue && this.props.value !== nextProps.value && nextProps.onSelectResetsInput) {
-  				this.setState({ inputValue: this.handleInputValueChange('') });
-  			}
-  		}
-  	}, {
-  		key: 'componentDidUpdate',
-  		value: function componentDidUpdate(prevProps, prevState) {
-  			// focus to the selected option
-  			if (this.menu && this.focused && this.state.isOpen && !this.hasScrolledToOption) {
-  				var focusedOptionNode = reactDom.findDOMNode(this.focused);
-  				var menuNode = reactDom.findDOMNode(this.menu);
-
-  				var scrollTop = menuNode.scrollTop;
-  				var scrollBottom = scrollTop + menuNode.offsetHeight;
-  				var optionTop = focusedOptionNode.offsetTop;
-  				var optionBottom = optionTop + focusedOptionNode.offsetHeight;
-
-  				if (scrollTop > optionTop || scrollBottom < optionBottom) {
-  					menuNode.scrollTop = focusedOptionNode.offsetTop;
-  				}
-
-  				// We still set hasScrolledToOption to true even if we didn't
-  				// actually need to scroll, as we've still confirmed that the
-  				// option is in view.
-  				this.hasScrolledToOption = true;
-  			} else if (!this.state.isOpen) {
-  				this.hasScrolledToOption = false;
-  			}
-
-  			if (this._scrollToFocusedOptionOnUpdate && this.focused && this.menu) {
-  				this._scrollToFocusedOptionOnUpdate = false;
-  				var focusedDOM = reactDom.findDOMNode(this.focused);
-  				var menuDOM = reactDom.findDOMNode(this.menu);
-  				var focusedRect = focusedDOM.getBoundingClientRect();
-  				var menuRect = menuDOM.getBoundingClientRect();
-  				if (focusedRect.bottom > menuRect.bottom) {
-  					menuDOM.scrollTop = focusedDOM.offsetTop + focusedDOM.clientHeight - menuDOM.offsetHeight;
-  				} else if (focusedRect.top < menuRect.top) {
-  					menuDOM.scrollTop = focusedDOM.offsetTop;
-  				}
-  			}
-  			if (this.props.scrollMenuIntoView && this.menuContainer) {
-  				var menuContainerRect = this.menuContainer.getBoundingClientRect();
-  				if (window.innerHeight < menuContainerRect.bottom + this.props.menuBuffer) {
-  					window.scrollBy(0, menuContainerRect.bottom + this.props.menuBuffer - window.innerHeight);
-  				}
-  			}
-  			if (prevProps.disabled !== this.props.disabled) {
-  				this.setState({ isFocused: false }); // eslint-disable-line react/no-did-update-set-state
-  				this.closeMenu();
-  			}
-  			if (prevState.isOpen !== this.state.isOpen) {
-  				this.toggleTouchOutsideEvent(this.state.isOpen);
-  				var handler = this.state.isOpen ? this.props.onOpen : this.props.onClose;
-  				handler && handler();
-  			}
-  		}
-  	}, {
-  		key: 'componentWillUnmount',
-  		value: function componentWillUnmount() {
-  			this.toggleTouchOutsideEvent(false);
-  		}
-  	}, {
-  		key: 'toggleTouchOutsideEvent',
-  		value: function toggleTouchOutsideEvent(enabled) {
-  			if (enabled) {
-  				if (!document.addEventListener && document.attachEvent) {
-  					document.attachEvent('ontouchstart', this.handleTouchOutside);
-  				} else {
-  					document.addEventListener('touchstart', this.handleTouchOutside);
-  				}
-  			} else {
-  				if (!document.removeEventListener && document.detachEvent) {
-  					document.detachEvent('ontouchstart', this.handleTouchOutside);
-  				} else {
-  					document.removeEventListener('touchstart', this.handleTouchOutside);
-  				}
-  			}
-  		}
-  	}, {
-  		key: 'handleTouchOutside',
-  		value: function handleTouchOutside(event) {
-  			// handle touch outside on ios to dismiss menu
-  			if (this.wrapper && !this.wrapper.contains(event.target)) {
-  				this.closeMenu();
-  			}
-  		}
-  	}, {
-  		key: 'focus',
-  		value: function focus() {
-  			if (!this.input) return;
-  			this.input.focus();
-  		}
-  	}, {
-  		key: 'blurInput',
-  		value: function blurInput() {
-  			if (!this.input) return;
-  			this.input.blur();
-  		}
-  	}, {
-  		key: 'handleTouchMove',
-  		value: function handleTouchMove() {
-  			// Set a flag that the view is being dragged
-  			this.dragging = true;
-  		}
-  	}, {
-  		key: 'handleTouchStart',
-  		value: function handleTouchStart() {
-  			// Set a flag that the view is not being dragged
-  			this.dragging = false;
-  		}
-  	}, {
-  		key: 'handleTouchEnd',
-  		value: function handleTouchEnd(event) {
-  			// Check if the view is being dragged, In this case
-  			// we don't want to fire the click event (because the user only wants to scroll)
-  			if (this.dragging) return;
-
-  			// Fire the mouse events
-  			this.handleMouseDown(event);
-  		}
-  	}, {
-  		key: 'handleTouchEndClearValue',
-  		value: function handleTouchEndClearValue(event) {
-  			// Check if the view is being dragged, In this case
-  			// we don't want to fire the click event (because the user only wants to scroll)
-  			if (this.dragging) return;
-
-  			// Clear the value
-  			this.clearValue(event);
-  		}
-  	}, {
-  		key: 'handleMouseDown',
-  		value: function handleMouseDown(event) {
-  			// if the event was triggered by a mousedown and not the primary
-  			// button, or if the component is disabled, ignore it.
-  			if (this.props.disabled || event.type === 'mousedown' && event.button !== 0) {
-  				return;
-  			}
-
-  			if (event.target.tagName === 'INPUT') {
-  				if (!this.state.isFocused) {
-  					this._openAfterFocus = this.props.openOnClick;
-  					this.focus();
-  				} else if (!this.state.isOpen) {
-  					this.setState({
-  						isOpen: true,
-  						isPseudoFocused: false
-  					});
-  				}
-
-  				return;
-  			}
-
-  			// prevent default event handlers
-  			event.preventDefault();
-
-  			// for the non-searchable select, toggle the menu
-  			if (!this.props.searchable) {
-  				// This code means that if a select is searchable, onClick the options menu will not appear, only on subsequent click will it open.
-  				this.focus();
-  				return this.setState({
-  					isOpen: !this.state.isOpen
-  				});
-  			}
-
-  			if (this.state.isFocused) {
-  				// On iOS, we can get into a state where we think the input is focused but it isn't really,
-  				// since iOS ignores programmatic calls to input.focus() that weren't triggered by a click event.
-  				// Call focus() again here to be safe.
-  				this.focus();
-
-  				var input = this.input;
-  				var toOpen = true;
-
-  				if (typeof input.getInput === 'function') {
-  					// Get the actual DOM input if the ref is an <AutosizeInput /> component
-  					input = input.getInput();
-  				}
-
-  				// clears the value so that the cursor will be at the end of input when the component re-renders
-  				input.value = '';
-
-  				if (this._focusAfterClear) {
-  					toOpen = false;
-  					this._focusAfterClear = false;
-  				}
-
-  				// if the input is focused, ensure the menu is open
-  				this.setState({
-  					isOpen: toOpen,
-  					isPseudoFocused: false,
-  					focusedOption: null
-  				});
-  			} else {
-  				// otherwise, focus the input and open the menu
-  				this._openAfterFocus = this.props.openOnClick;
-  				this.focus();
-  				this.setState({ focusedOption: null });
-  			}
-  		}
-  	}, {
-  		key: 'handleMouseDownOnArrow',
-  		value: function handleMouseDownOnArrow(event) {
-  			// if the event was triggered by a mousedown and not the primary
-  			// button, or if the component is disabled, ignore it.
-  			if (this.props.disabled || event.type === 'mousedown' && event.button !== 0) {
-  				return;
-  			}
-
-  			if (this.state.isOpen) {
-  				// prevent default event handlers
-  				event.stopPropagation();
-  				event.preventDefault();
-  				// close the menu
-  				this.closeMenu();
-  			} else {
-  				// If the menu isn't open, let the event bubble to the main handleMouseDown
-  				this.setState({
-  					isOpen: true
-  				});
-  			}
-  		}
-  	}, {
-  		key: 'handleMouseDownOnMenu',
-  		value: function handleMouseDownOnMenu(event) {
-  			// if the event was triggered by a mousedown and not the primary
-  			// button, or if the component is disabled, ignore it.
-  			if (this.props.disabled || event.type === 'mousedown' && event.button !== 0) {
-  				return;
-  			}
-
-  			event.stopPropagation();
-  			event.preventDefault();
-
-  			this._openAfterFocus = true;
-  			this.focus();
-  		}
-  	}, {
-  		key: 'closeMenu',
-  		value: function closeMenu() {
-  			if (this.props.onCloseResetsInput) {
-  				this.setState({
-  					inputValue: this.handleInputValueChange(''),
-  					isOpen: false,
-  					isPseudoFocused: this.state.isFocused && !this.props.multi
-  				});
-  			} else {
-  				this.setState({
-  					isOpen: false,
-  					isPseudoFocused: this.state.isFocused && !this.props.multi
-  				});
-  			}
-  			this.hasScrolledToOption = false;
-  		}
-  	}, {
-  		key: 'handleInputFocus',
-  		value: function handleInputFocus(event) {
-  			if (this.props.disabled) return;
-
-  			var toOpen = this.state.isOpen || this._openAfterFocus || this.props.openOnFocus;
-  			toOpen = this._focusAfterClear ? false : toOpen; //if focus happens after clear values, don't open dropdown yet.
-
-  			if (this.props.onFocus) {
-  				this.props.onFocus(event);
-  			}
-
-  			this.setState({
-  				isFocused: true,
-  				isOpen: !!toOpen
-  			});
-
-  			this._focusAfterClear = false;
-  			this._openAfterFocus = false;
-  		}
-  	}, {
-  		key: 'handleInputBlur',
-  		value: function handleInputBlur(event) {
-  			// The check for menu.contains(activeElement) is necessary to prevent IE11's scrollbar from closing the menu in certain contexts.
-  			if (this.menu && (this.menu === document.activeElement || this.menu.contains(document.activeElement))) {
-  				this.focus();
-  				return;
-  			}
-
-  			if (this.props.onBlur) {
-  				this.props.onBlur(event);
-  			}
-  			var onBlurredState = {
-  				isFocused: false,
-  				isOpen: false,
-  				isPseudoFocused: false
-  			};
-  			if (this.props.onBlurResetsInput) {
-  				onBlurredState.inputValue = this.handleInputValueChange('');
-  			}
-  			this.setState(onBlurredState);
-  		}
-  	}, {
-  		key: 'handleInputChange',
-  		value: function handleInputChange(event) {
-  			var newInputValue = event.target.value;
-
-  			if (this.state.inputValue !== event.target.value) {
-  				newInputValue = this.handleInputValueChange(newInputValue);
-  			}
-
-  			this.setState({
-  				inputValue: newInputValue,
-  				isOpen: true,
-  				isPseudoFocused: false
-  			});
-  		}
-  	}, {
-  		key: 'setInputValue',
-  		value: function setInputValue(newValue) {
-  			if (this.props.onInputChange) {
-  				var nextState = this.props.onInputChange(newValue);
-  				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof$1(nextState)) !== 'object') {
-  					newValue = '' + nextState;
-  				}
-  			}
-  			this.setState({
-  				inputValue: newValue
-  			});
-  		}
-  	}, {
-  		key: 'handleInputValueChange',
-  		value: function handleInputValueChange(newValue) {
-  			if (this.props.onInputChange) {
-  				var nextState = this.props.onInputChange(newValue);
-  				// Note: != used deliberately here to catch undefined and null
-  				if (nextState != null && (typeof nextState === 'undefined' ? 'undefined' : _typeof$1(nextState)) !== 'object') {
-  					newValue = '' + nextState;
-  				}
-  			}
-  			return newValue;
-  		}
-  	}, {
-  		key: 'handleKeyDown',
-  		value: function handleKeyDown(event) {
-  			if (this.props.disabled) return;
-
-  			if (typeof this.props.onInputKeyDown === 'function') {
-  				this.props.onInputKeyDown(event);
-  				if (event.defaultPrevented) {
-  					return;
-  				}
-  			}
-
-  			switch (event.keyCode) {
-  				case 8:
-  					// backspace
-  					if (!this.state.inputValue && this.props.backspaceRemoves) {
-  						event.preventDefault();
-  						this.popValue();
-  					}
-  					break;
-  				case 9:
-  					// tab
-  					if (event.shiftKey || !this.state.isOpen || !this.props.tabSelectsValue) {
-  						break;
-  					}
-  					event.preventDefault();
-  					this.selectFocusedOption();
-  					break;
-  				case 13:
-  					// enter
-  					event.preventDefault();
-  					event.stopPropagation();
-  					if (this.state.isOpen) {
-  						this.selectFocusedOption();
-  					} else {
-  						this.focusNextOption();
-  					}
-  					break;
-  				case 27:
-  					// escape
-  					event.preventDefault();
-  					if (this.state.isOpen) {
-  						this.closeMenu();
-  						event.stopPropagation();
-  					} else if (this.props.clearable && this.props.escapeClearsValue) {
-  						this.clearValue(event);
-  						event.stopPropagation();
-  					}
-  					break;
-  				case 32:
-  					// space
-  					if (this.props.searchable) {
-  						break;
-  					}
-  					event.preventDefault();
-  					if (!this.state.isOpen) {
-  						this.focusNextOption();
-  						break;
-  					}
-  					event.stopPropagation();
-  					this.selectFocusedOption();
-  					break;
-  				case 38:
-  					// up
-  					event.preventDefault();
-  					this.focusPreviousOption();
-  					break;
-  				case 40:
-  					// down
-  					event.preventDefault();
-  					this.focusNextOption();
-  					break;
-  				case 33:
-  					// page up
-  					event.preventDefault();
-  					this.focusPageUpOption();
-  					break;
-  				case 34:
-  					// page down
-  					event.preventDefault();
-  					this.focusPageDownOption();
-  					break;
-  				case 35:
-  					// end key
-  					if (event.shiftKey) {
-  						break;
-  					}
-  					event.preventDefault();
-  					this.focusEndOption();
-  					break;
-  				case 36:
-  					// home key
-  					if (event.shiftKey) {
-  						break;
-  					}
-  					event.preventDefault();
-  					this.focusStartOption();
-  					break;
-  				case 46:
-  					// delete
-  					if (!this.state.inputValue && this.props.deleteRemoves) {
-  						event.preventDefault();
-  						this.popValue();
-  					}
-  					break;
-  			}
-  		}
-  	}, {
-  		key: 'handleValueClick',
-  		value: function handleValueClick(option, event) {
-  			if (!this.props.onValueClick) return;
-  			this.props.onValueClick(option, event);
-  		}
-  	}, {
-  		key: 'handleMenuScroll',
-  		value: function handleMenuScroll(event) {
-  			if (!this.props.onMenuScrollToBottom) return;
-  			var target = event.target;
-
-  			if (target.scrollHeight > target.offsetHeight && target.scrollHeight - target.offsetHeight - target.scrollTop <= 0) {
-  				this.props.onMenuScrollToBottom();
-  			}
-  		}
-  	}, {
-  		key: 'getOptionLabel',
-  		value: function getOptionLabel(op) {
-  			return op[this.props.labelKey];
-  		}
-
-  		/**
-     * Turns a value into an array from the given options
-     * @param {String|Number|Array} value		- the value of the select input
-     * @param {Object}		nextProps	- optionally specify the nextProps so the returned array uses the latest configuration
-     * @returns	{Array}	the value of the select represented in an array
-     */
-
-  	}, {
-  		key: 'getValueArray',
-  		value: function getValueArray(value) {
-  			var nextProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
-
-  			/** support optionally passing in the `nextProps` so `componentWillReceiveProps` updates will function as expected */
-  			var props = (typeof nextProps === 'undefined' ? 'undefined' : _typeof$1(nextProps)) === 'object' ? nextProps : this.props;
-  			if (props.multi) {
-  				if (typeof value === 'string') {
-  					value = value.split(props.delimiter);
-  				}
-  				if (!Array.isArray(value)) {
-  					if (value === null || value === undefined) return [];
-  					value = [value];
-  				}
-  				return value.map(function (value) {
-  					return expandValue(value, props);
-  				}).filter(function (i) {
-  					return i;
-  				});
-  			}
-  			var expandedValue = expandValue(value, props);
-  			return expandedValue ? [expandedValue] : [];
-  		}
-  	}, {
-  		key: 'setValue',
-  		value: function setValue(value) {
-  			var _this2 = this;
-
-  			if (this.props.autoBlur) {
-  				this.blurInput();
-  			}
-  			if (this.props.required) {
-  				var required = handleRequired(value, this.props.multi);
-  				this.setState({ required: required });
-  			}
-  			if (this.props.simpleValue && value) {
-  				value = this.props.multi ? value.map(function (i) {
-  					return i[_this2.props.valueKey];
-  				}).join(this.props.delimiter) : value[this.props.valueKey];
-  			}
-  			if (this.props.onChange) {
-  				this.props.onChange(value);
-  			}
-  		}
-  	}, {
-  		key: 'selectValue',
-  		value: function selectValue(value) {
-  			var _this3 = this;
-
-  			// NOTE: we actually add/set the value in a callback to make sure the
-  			// input value is empty to avoid styling issues in Chrome
-  			if (this.props.closeOnSelect) {
-  				this.hasScrolledToOption = false;
-  			}
-  			var updatedValue = this.props.onSelectResetsInput ? '' : this.state.inputValue;
-  			if (this.props.multi) {
-  				this.setState({
-  					focusedIndex: null,
-  					inputValue: this.handleInputValueChange(updatedValue),
-  					isOpen: !this.props.closeOnSelect
-  				}, function () {
-  					var valueArray = _this3.getValueArray(_this3.props.value);
-  					if (valueArray.some(function (i) {
-  						return i[_this3.props.valueKey] === value[_this3.props.valueKey];
-  					})) {
-  						_this3.removeValue(value);
-  					} else {
-  						_this3.addValue(value);
-  					}
-  				});
-  			} else {
-  				this.setState({
-  					inputValue: this.handleInputValueChange(updatedValue),
-  					isOpen: !this.props.closeOnSelect,
-  					isPseudoFocused: this.state.isFocused
-  				}, function () {
-  					_this3.setValue(value);
-  				});
-  			}
-  		}
-  	}, {
-  		key: 'addValue',
-  		value: function addValue(value) {
-  			var valueArray = this.getValueArray(this.props.value);
-  			var visibleOptions = this._visibleOptions.filter(function (val) {
-  				return !val.disabled;
-  			});
-  			var lastValueIndex = visibleOptions.indexOf(value);
-  			this.setValue(valueArray.concat(value));
-  			if (visibleOptions.length - 1 === lastValueIndex) {
-  				// the last option was selected; focus the second-last one
-  				this.focusOption(visibleOptions[lastValueIndex - 1]);
-  			} else if (visibleOptions.length > lastValueIndex) {
-  				// focus the option below the selected one
-  				this.focusOption(visibleOptions[lastValueIndex + 1]);
-  			}
-  		}
-  	}, {
-  		key: 'popValue',
-  		value: function popValue() {
-  			var valueArray = this.getValueArray(this.props.value);
-  			if (!valueArray.length) return;
-  			if (valueArray[valueArray.length - 1].clearableValue === false) return;
-  			this.setValue(this.props.multi ? valueArray.slice(0, valueArray.length - 1) : null);
-  		}
-  	}, {
-  		key: 'removeValue',
-  		value: function removeValue(value) {
-  			var _this4 = this;
-
-  			var valueArray = this.getValueArray(this.props.value);
-  			this.setValue(valueArray.filter(function (i) {
-  				return i[_this4.props.valueKey] !== value[_this4.props.valueKey];
-  			}));
-  			this.focus();
-  		}
-  	}, {
-  		key: 'clearValue',
-  		value: function clearValue(event) {
-  			// if the event was triggered by a mousedown and not the primary
-  			// button, ignore it.
-  			if (event && event.type === 'mousedown' && event.button !== 0) {
-  				return;
-  			}
-
-  			event.preventDefault();
-
-  			this.setValue(this.getResetValue());
-  			this.setState({
-  				inputValue: this.handleInputValueChange(''),
-  				isOpen: false
-  			}, this.focus);
-
-  			this._focusAfterClear = true;
-  		}
-  	}, {
-  		key: 'getResetValue',
-  		value: function getResetValue() {
-  			if (this.props.resetValue !== undefined) {
-  				return this.props.resetValue;
-  			} else if (this.props.multi) {
-  				return [];
-  			} else {
-  				return null;
-  			}
-  		}
-  	}, {
-  		key: 'focusOption',
-  		value: function focusOption(option) {
-  			this.setState({
-  				focusedOption: option
-  			});
-  		}
-  	}, {
-  		key: 'focusNextOption',
-  		value: function focusNextOption() {
-  			this.focusAdjacentOption('next');
-  		}
-  	}, {
-  		key: 'focusPreviousOption',
-  		value: function focusPreviousOption() {
-  			this.focusAdjacentOption('previous');
-  		}
-  	}, {
-  		key: 'focusPageUpOption',
-  		value: function focusPageUpOption() {
-  			this.focusAdjacentOption('page_up');
-  		}
-  	}, {
-  		key: 'focusPageDownOption',
-  		value: function focusPageDownOption() {
-  			this.focusAdjacentOption('page_down');
-  		}
-  	}, {
-  		key: 'focusStartOption',
-  		value: function focusStartOption() {
-  			this.focusAdjacentOption('start');
-  		}
-  	}, {
-  		key: 'focusEndOption',
-  		value: function focusEndOption() {
-  			this.focusAdjacentOption('end');
-  		}
-  	}, {
-  		key: 'focusAdjacentOption',
-  		value: function focusAdjacentOption(dir) {
-  			var options = this._visibleOptions.map(function (option, index) {
-  				return { option: option, index: index };
-  			}).filter(function (option) {
-  				return !option.option.disabled;
-  			});
-  			this._scrollToFocusedOptionOnUpdate = true;
-  			if (!this.state.isOpen) {
-  				var newState = {
-  					focusedOption: this._focusedOption || (options.length ? options[dir === 'next' ? 0 : options.length - 1].option : null),
-  					isOpen: true
-  				};
-  				if (this.props.onSelectResetsInput) {
-  					newState.inputValue = '';
-  				}
-  				this.setState(newState);
-  				return;
-  			}
-  			if (!options.length) return;
-  			var focusedIndex = -1;
-  			for (var i = 0; i < options.length; i++) {
-  				if (this._focusedOption === options[i].option) {
-  					focusedIndex = i;
-  					break;
-  				}
-  			}
-  			if (dir === 'next' && focusedIndex !== -1) {
-  				focusedIndex = (focusedIndex + 1) % options.length;
-  			} else if (dir === 'previous') {
-  				if (focusedIndex > 0) {
-  					focusedIndex = focusedIndex - 1;
-  				} else {
-  					focusedIndex = options.length - 1;
-  				}
-  			} else if (dir === 'start') {
-  				focusedIndex = 0;
-  			} else if (dir === 'end') {
-  				focusedIndex = options.length - 1;
-  			} else if (dir === 'page_up') {
-  				var potentialIndex = focusedIndex - this.props.pageSize;
-  				if (potentialIndex < 0) {
-  					focusedIndex = 0;
-  				} else {
-  					focusedIndex = potentialIndex;
-  				}
-  			} else if (dir === 'page_down') {
-  				var _potentialIndex = focusedIndex + this.props.pageSize;
-  				if (_potentialIndex > options.length - 1) {
-  					focusedIndex = options.length - 1;
-  				} else {
-  					focusedIndex = _potentialIndex;
-  				}
-  			}
-
-  			if (focusedIndex === -1) {
-  				focusedIndex = 0;
-  			}
-
-  			this.setState({
-  				focusedIndex: options[focusedIndex].index,
-  				focusedOption: options[focusedIndex].option
-  			});
-  		}
-  	}, {
-  		key: 'getFocusedOption',
-  		value: function getFocusedOption() {
-  			return this._focusedOption;
-  		}
-  	}, {
-  		key: 'selectFocusedOption',
-  		value: function selectFocusedOption() {
-  			if (this._focusedOption) {
-  				return this.selectValue(this._focusedOption);
-  			}
-  		}
-  	}, {
-  		key: 'renderLoading',
-  		value: function renderLoading() {
-  			if (!this.props.isLoading) return;
-  			return React__default.createElement(
-  				'span',
-  				{ className: 'Select-loading-zone', 'aria-hidden': 'true' },
-  				React__default.createElement('span', { className: 'Select-loading' })
-  			);
-  		}
-  	}, {
-  		key: 'renderValue',
-  		value: function renderValue(valueArray, isOpen) {
-  			var _this5 = this;
-
-  			var renderLabel = this.props.valueRenderer || this.getOptionLabel;
-  			var ValueComponent = this.props.valueComponent;
-  			if (!valueArray.length) {
-  				var showPlaceholder = shouldShowPlaceholder(this.state, this.props, isOpen);
-  				return showPlaceholder ? React__default.createElement(
-  					'div',
-  					{ className: 'Select-placeholder' },
-  					this.props.placeholder
-  				) : null;
-  			}
-  			var onClick = this.props.onValueClick ? this.handleValueClick : null;
-  			if (this.props.multi) {
-  				return valueArray.map(function (value, i) {
-  					return React__default.createElement(
-  						ValueComponent,
-  						{
-  							disabled: _this5.props.disabled || value.clearableValue === false,
-  							id: _this5._instancePrefix + '-value-' + i,
-  							instancePrefix: _this5._instancePrefix,
-  							key: 'value-' + i + '-' + value[_this5.props.valueKey],
-  							onClick: onClick,
-  							onRemove: _this5.removeValue,
-  							placeholder: _this5.props.placeholder,
-  							value: value
-  						},
-  						renderLabel(value, i),
-  						React__default.createElement(
-  							'span',
-  							{ className: 'Select-aria-only' },
-  							'\xA0'
-  						)
-  					);
-  				});
-  			} else if (shouldShowValue(this.state, this.props)) {
-  				if (isOpen) onClick = null;
-  				return React__default.createElement(
-  					ValueComponent,
-  					{
-  						disabled: this.props.disabled,
-  						id: this._instancePrefix + '-value-item',
-  						instancePrefix: this._instancePrefix,
-  						onClick: onClick,
-  						placeholder: this.props.placeholder,
-  						value: valueArray[0]
-  					},
-  					renderLabel(valueArray[0])
-  				);
-  			}
-  		}
-  	}, {
-  		key: 'renderInput',
-  		value: function renderInput(valueArray, focusedOptionIndex) {
-  			var _classNames,
-  			    _this6 = this;
-
-  			var className = classnames('Select-input', this.props.inputProps.className);
-  			var isOpen = this.state.isOpen;
-
-  			var ariaOwns = classnames((_classNames = {}, defineProperty(_classNames, this._instancePrefix + '-list', isOpen), defineProperty(_classNames, this._instancePrefix + '-backspace-remove-message', this.props.multi && !this.props.disabled && this.state.isFocused && !this.state.inputValue), _classNames));
-
-  			var value = this.state.inputValue;
-  			if (value && !this.props.onSelectResetsInput && !this.state.isFocused) {
-  				// it hides input value when it is not focused and was not reset on select
-  				value = '';
-  			}
-
-  			var inputProps = _extends$1({}, this.props.inputProps, {
-  				'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
-  				'aria-describedby': this.props['aria-describedby'],
-  				'aria-expanded': '' + isOpen,
-  				'aria-haspopup': '' + isOpen,
-  				'aria-label': this.props['aria-label'],
-  				'aria-labelledby': this.props['aria-labelledby'],
-  				'aria-owns': ariaOwns,
-  				className: className,
-  				onBlur: this.handleInputBlur,
-  				onChange: this.handleInputChange,
-  				onFocus: this.handleInputFocus,
-  				ref: function ref(_ref) {
-  					return _this6.input = _ref;
-  				},
-  				role: 'combobox',
-  				required: this.state.required,
-  				tabIndex: this.props.tabIndex,
-  				value: value
-  			});
-
-  			if (this.props.inputRenderer) {
-  				return this.props.inputRenderer(inputProps);
-  			}
-
-  			if (this.props.disabled || !this.props.searchable) {
-  				var divProps = objectWithoutProperties(this.props.inputProps, []);
-
-
-  				var _ariaOwns = classnames(defineProperty({}, this._instancePrefix + '-list', isOpen));
-  				return React__default.createElement('div', _extends$1({}, divProps, {
-  					'aria-expanded': isOpen,
-  					'aria-owns': _ariaOwns,
-  					'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
-  					'aria-disabled': '' + this.props.disabled,
-  					'aria-label': this.props['aria-label'],
-  					'aria-labelledby': this.props['aria-labelledby'],
-  					className: className,
-  					onBlur: this.handleInputBlur,
-  					onFocus: this.handleInputFocus,
-  					ref: function ref(_ref2) {
-  						return _this6.input = _ref2;
-  					},
-  					role: 'combobox',
-  					style: { border: 0, width: 1, display: 'inline-block' },
-  					tabIndex: this.props.tabIndex || 0
-  				}));
-  			}
-
-  			if (this.props.autosize) {
-  				return React__default.createElement(AutosizeInput, _extends$1({ id: this.props.id }, inputProps, { minWidth: '5' }));
-  			}
-  			return React__default.createElement(
-  				'div',
-  				{ className: className, key: 'input-wrap', style: { display: 'inline-block' } },
-  				React__default.createElement('input', _extends$1({ id: this.props.id }, inputProps))
-  			);
-  		}
-  	}, {
-  		key: 'renderClear',
-  		value: function renderClear() {
-  			var valueArray = this.getValueArray(this.props.value);
-  			if (!this.props.clearable || !valueArray.length || this.props.disabled || this.props.isLoading) return;
-  			var ariaLabel = this.props.multi ? this.props.clearAllText : this.props.clearValueText;
-  			var clear = this.props.clearRenderer();
-
-  			return React__default.createElement(
-  				'span',
-  				{
-  					'aria-label': ariaLabel,
-  					className: 'Select-clear-zone',
-  					onMouseDown: this.clearValue,
-  					onTouchEnd: this.handleTouchEndClearValue,
-  					onTouchMove: this.handleTouchMove,
-  					onTouchStart: this.handleTouchStart,
-  					title: ariaLabel
-  				},
-  				clear
-  			);
-  		}
-  	}, {
-  		key: 'renderArrow',
-  		value: function renderArrow() {
-  			if (!this.props.arrowRenderer) return;
-
-  			var onMouseDown = this.handleMouseDownOnArrow;
-  			var isOpen = this.state.isOpen;
-  			var arrow = this.props.arrowRenderer({ onMouseDown: onMouseDown, isOpen: isOpen });
-
-  			if (!arrow) {
-  				return null;
-  			}
-
-  			return React__default.createElement(
-  				'span',
-  				{
-  					className: 'Select-arrow-zone',
-  					onMouseDown: onMouseDown
-  				},
-  				arrow
-  			);
-  		}
-  	}, {
-  		key: 'filterOptions',
-  		value: function filterOptions$$1(excludeOptions) {
-  			var filterValue = this.state.inputValue;
-  			var options = this.props.options || [];
-  			if (this.props.filterOptions) {
-  				// Maintain backwards compatibility with boolean attribute
-  				var filterOptions$$1 = typeof this.props.filterOptions === 'function' ? this.props.filterOptions : filterOptions;
-
-  				return filterOptions$$1(options, filterValue, excludeOptions, {
-  					filterOption: this.props.filterOption,
-  					ignoreAccents: this.props.ignoreAccents,
-  					ignoreCase: this.props.ignoreCase,
-  					labelKey: this.props.labelKey,
-  					matchPos: this.props.matchPos,
-  					matchProp: this.props.matchProp,
-  					trimFilter: this.props.trimFilter,
-  					valueKey: this.props.valueKey
-  				});
-  			} else {
-  				return options;
-  			}
-  		}
-  	}, {
-  		key: 'onOptionRef',
-  		value: function onOptionRef(ref, isFocused) {
-  			if (isFocused) {
-  				this.focused = ref;
-  			}
-  		}
-  	}, {
-  		key: 'renderMenu',
-  		value: function renderMenu(options, valueArray, focusedOption) {
-  			if (options && options.length) {
-  				return this.props.menuRenderer({
-  					focusedOption: focusedOption,
-  					focusOption: this.focusOption,
-  					inputValue: this.state.inputValue,
-  					instancePrefix: this._instancePrefix,
-  					labelKey: this.props.labelKey,
-  					onFocus: this.focusOption,
-  					onOptionRef: this.onOptionRef,
-  					onSelect: this.selectValue,
-  					optionClassName: this.props.optionClassName,
-  					optionComponent: this.props.optionComponent,
-  					optionRenderer: this.props.optionRenderer || this.getOptionLabel,
-  					options: options,
-  					removeValue: this.removeValue,
-  					selectValue: this.selectValue,
-  					valueArray: valueArray,
-  					valueKey: this.props.valueKey
-  				});
-  			} else if (this.props.noResultsText) {
-  				return React__default.createElement(
-  					'div',
-  					{ className: 'Select-noresults' },
-  					this.props.noResultsText
-  				);
-  			} else {
-  				return null;
-  			}
-  		}
-  	}, {
-  		key: 'renderHiddenField',
-  		value: function renderHiddenField(valueArray) {
-  			var _this7 = this;
-
-  			if (!this.props.name) return;
-  			if (this.props.joinValues) {
-  				var value = valueArray.map(function (i) {
-  					return stringifyValue(i[_this7.props.valueKey]);
-  				}).join(this.props.delimiter);
-  				return React__default.createElement('input', {
-  					disabled: this.props.disabled,
-  					name: this.props.name,
-  					ref: function ref(_ref3) {
-  						return _this7.value = _ref3;
-  					},
-  					type: 'hidden',
-  					value: value
-  				});
-  			}
-  			return valueArray.map(function (item, index) {
-  				return React__default.createElement('input', {
-  					disabled: _this7.props.disabled,
-  					key: 'hidden.' + index,
-  					name: _this7.props.name,
-  					ref: 'value' + index,
-  					type: 'hidden',
-  					value: stringifyValue(item[_this7.props.valueKey])
-  				});
-  			});
-  		}
-  	}, {
-  		key: 'getFocusableOptionIndex',
-  		value: function getFocusableOptionIndex(selectedOption) {
-  			var options = this._visibleOptions;
-  			if (!options.length) return null;
-
-  			var valueKey = this.props.valueKey;
-  			var focusedOption = this.state.focusedOption || selectedOption;
-  			if (focusedOption && !focusedOption.disabled) {
-  				var focusedOptionIndex = -1;
-  				options.some(function (option, index) {
-  					var isOptionEqual = option[valueKey] === focusedOption[valueKey];
-  					if (isOptionEqual) {
-  						focusedOptionIndex = index;
-  					}
-  					return isOptionEqual;
-  				});
-  				if (focusedOptionIndex !== -1) {
-  					return focusedOptionIndex;
-  				}
-  			}
-
-  			for (var i = 0; i < options.length; i++) {
-  				if (!options[i].disabled) return i;
-  			}
-  			return null;
-  		}
-  	}, {
-  		key: 'renderOuter',
-  		value: function renderOuter(options, valueArray, focusedOption) {
-  			var _this8 = this;
-
-  			var menu = this.renderMenu(options, valueArray, focusedOption);
-  			if (!menu) {
-  				return null;
-  			}
-
-  			return React__default.createElement(
-  				'div',
-  				{ ref: function ref(_ref5) {
-  						return _this8.menuContainer = _ref5;
-  					}, className: 'Select-menu-outer', style: this.props.menuContainerStyle },
-  				React__default.createElement(
-  					'div',
-  					{
-  						className: 'Select-menu',
-  						id: this._instancePrefix + '-list',
-  						onMouseDown: this.handleMouseDownOnMenu,
-  						onScroll: this.handleMenuScroll,
-  						ref: function ref(_ref4) {
-  							return _this8.menu = _ref4;
-  						},
-  						role: 'listbox',
-  						style: this.props.menuStyle,
-  						tabIndex: -1
-  					},
-  					menu
-  				)
-  			);
-  		}
-  	}, {
-  		key: 'render',
-  		value: function render() {
-  			var _this9 = this;
-
-  			var valueArray = this.getValueArray(this.props.value);
-  			var options = this._visibleOptions = this.filterOptions(this.props.multi && this.props.removeSelected ? valueArray : null);
-  			var isOpen = this.state.isOpen;
-  			if (this.props.multi && !options.length && valueArray.length && !this.state.inputValue) isOpen = false;
-  			var focusedOptionIndex = this.getFocusableOptionIndex(valueArray[0]);
-
-  			var focusedOption = null;
-  			if (focusedOptionIndex !== null) {
-  				focusedOption = this._focusedOption = options[focusedOptionIndex];
-  			} else {
-  				focusedOption = this._focusedOption = null;
-  			}
-  			var className = classnames('Select', this.props.className, {
-  				'has-value': valueArray.length,
-  				'is-clearable': this.props.clearable,
-  				'is-disabled': this.props.disabled,
-  				'is-focused': this.state.isFocused,
-  				'is-loading': this.props.isLoading,
-  				'is-open': isOpen,
-  				'is-pseudo-focused': this.state.isPseudoFocused,
-  				'is-searchable': this.props.searchable,
-  				'Select--multi': this.props.multi,
-  				'Select--rtl': this.props.rtl,
-  				'Select--single': !this.props.multi
-  			});
-
-  			var removeMessage = null;
-  			if (this.props.multi && !this.props.disabled && valueArray.length && !this.state.inputValue && this.state.isFocused && this.props.backspaceRemoves) {
-  				removeMessage = React__default.createElement(
-  					'span',
-  					{ id: this._instancePrefix + '-backspace-remove-message', className: 'Select-aria-only', 'aria-live': 'assertive' },
-  					this.props.backspaceToRemoveMessage.replace('{label}', valueArray[valueArray.length - 1][this.props.labelKey])
-  				);
-  			}
-
-  			return React__default.createElement(
-  				'div',
-  				{ ref: function ref(_ref7) {
-  						return _this9.wrapper = _ref7;
-  					},
-  					className: className,
-  					style: this.props.wrapperStyle },
-  				this.renderHiddenField(valueArray),
-  				React__default.createElement(
-  					'div',
-  					{ ref: function ref(_ref6) {
-  							return _this9.control = _ref6;
-  						},
-  						className: 'Select-control',
-  						onKeyDown: this.handleKeyDown,
-  						onMouseDown: this.handleMouseDown,
-  						onTouchEnd: this.handleTouchEnd,
-  						onTouchMove: this.handleTouchMove,
-  						onTouchStart: this.handleTouchStart,
-  						style: this.props.style
-  					},
-  					React__default.createElement(
-  						'span',
-  						{ className: 'Select-multi-value-wrapper', id: this._instancePrefix + '-value' },
-  						this.renderValue(valueArray, isOpen),
-  						this.renderInput(valueArray, focusedOptionIndex)
-  					),
-  					removeMessage,
-  					this.renderLoading(),
-  					this.renderClear(),
-  					this.renderArrow()
-  				),
-  				isOpen ? this.renderOuter(options, valueArray, focusedOption) : null
-  			);
-  		}
-  	}]);
-  	return Select;
-  }(React__default.Component);
-
-  Select$1.propTypes = {
-  	'aria-describedby': PropTypes.string, // html id(s) of element(s) that should be used to describe this input (for assistive tech)
-  	'aria-label': PropTypes.string, // aria label (for assistive tech)
-  	'aria-labelledby': PropTypes.string, // html id of an element that should be used as the label (for assistive tech)
-  	arrowRenderer: PropTypes.func, // create the drop-down caret element
-  	autoBlur: PropTypes.bool, // automatically blur the component when an option is selected
-  	autoFocus: PropTypes.bool, // autofocus the component on mount
-  	autofocus: PropTypes.bool, // deprecated; use autoFocus instead
-  	autosize: PropTypes.bool, // whether to enable autosizing or not
-  	backspaceRemoves: PropTypes.bool, // whether backspace removes an item if there is no text input
-  	backspaceToRemoveMessage: PropTypes.string, // message to use for screenreaders to press backspace to remove the current item - {label} is replaced with the item label
-  	className: PropTypes.string, // className for the outer element
-  	clearAllText: stringOrNode, // title for the "clear" control when multi: true
-  	clearRenderer: PropTypes.func, // create clearable x element
-  	clearValueText: stringOrNode, // title for the "clear" control
-  	clearable: PropTypes.bool, // should it be possible to reset value
-  	closeOnSelect: PropTypes.bool, // whether to close the menu when a value is selected
-  	deleteRemoves: PropTypes.bool, // whether delete removes an item if there is no text input
-  	delimiter: PropTypes.string, // delimiter to use to join multiple values for the hidden field value
-  	disabled: PropTypes.bool, // whether the Select is disabled or not
-  	escapeClearsValue: PropTypes.bool, // whether escape clears the value when the menu is closed
-  	filterOption: PropTypes.func, // method to filter a single option (option, filterString)
-  	filterOptions: PropTypes.any, // boolean to enable default filtering or function to filter the options array ([options], filterString, [values])
-  	id: PropTypes.string, // html id to set on the input element for accessibility or tests
-  	ignoreAccents: PropTypes.bool, // whether to strip diacritics when filtering
-  	ignoreCase: PropTypes.bool, // whether to perform case-insensitive filtering
-  	inputProps: PropTypes.object, // custom attributes for the Input
-  	inputRenderer: PropTypes.func, // returns a custom input component
-  	instanceId: PropTypes.string, // set the components instanceId
-  	isLoading: PropTypes.bool, // whether the Select is loading externally or not (such as options being loaded)
-  	joinValues: PropTypes.bool, // joins multiple values into a single form field with the delimiter (legacy mode)
-  	labelKey: PropTypes.string, // path of the label value in option objects
-  	matchPos: PropTypes.string, // (any|start) match the start or entire string when filtering
-  	matchProp: PropTypes.string, // (any|label|value) which option property to filter on
-  	menuBuffer: PropTypes.number, // optional buffer (in px) between the bottom of the viewport and the bottom of the menu
-  	menuContainerStyle: PropTypes.object, // optional style to apply to the menu container
-  	menuRenderer: PropTypes.func, // renders a custom menu with options
-  	menuStyle: PropTypes.object, // optional style to apply to the menu
-  	multi: PropTypes.bool, // multi-value input
-  	name: PropTypes.string, // generates a hidden <input /> tag with this field name for html forms
-  	noResultsText: stringOrNode, // placeholder displayed when there are no matching search results
-  	onBlur: PropTypes.func, // onBlur handler: function (event) {}
-  	onBlurResetsInput: PropTypes.bool, // whether input is cleared on blur
-  	onChange: PropTypes.func, // onChange handler: function (newValue) {}
-  	onClose: PropTypes.func, // fires when the menu is closed
-  	onCloseResetsInput: PropTypes.bool, // whether input is cleared when menu is closed through the arrow
-  	onFocus: PropTypes.func, // onFocus handler: function (event) {}
-  	onInputChange: PropTypes.func, // onInputChange handler: function (inputValue) {}
-  	onInputKeyDown: PropTypes.func, // input keyDown handler: function (event) {}
-  	onMenuScrollToBottom: PropTypes.func, // fires when the menu is scrolled to the bottom; can be used to paginate options
-  	onOpen: PropTypes.func, // fires when the menu is opened
-  	onSelectResetsInput: PropTypes.bool, // whether input is cleared on select (works only for multiselect)
-  	onValueClick: PropTypes.func, // onClick handler for value labels: function (value, event) {}
-  	openOnClick: PropTypes.bool, // boolean to control opening the menu when the control is clicked
-  	openOnFocus: PropTypes.bool, // always open options menu on focus
-  	optionClassName: PropTypes.string, // additional class(es) to apply to the <Option /> elements
-  	optionComponent: PropTypes.func, // option component to render in dropdown
-  	optionRenderer: PropTypes.func, // optionRenderer: function (option) {}
-  	options: PropTypes.array, // array of options
-  	pageSize: PropTypes.number, // number of entries to page when using page up/down keys
-  	placeholder: stringOrNode, // field placeholder, displayed when there's no value
-  	removeSelected: PropTypes.bool, // whether the selected option is removed from the dropdown on multi selects
-  	required: PropTypes.bool, // applies HTML5 required attribute when needed
-  	resetValue: PropTypes.any, // value to use when you clear the control
-  	rtl: PropTypes.bool, // set to true in order to use react-select in right-to-left direction
-  	scrollMenuIntoView: PropTypes.bool, // boolean to enable the viewport to shift so that the full menu fully visible when engaged
-  	searchable: PropTypes.bool, // whether to enable searching feature or not
-  	simpleValue: PropTypes.bool, // pass the value to onChange as a simple value (legacy pre 1.0 mode), defaults to false
-  	style: PropTypes.object, // optional style to apply to the control
-  	tabIndex: stringOrNumber, // optional tab index of the control
-  	tabSelectsValue: PropTypes.bool, // whether to treat tabbing out while focused to be value selection
-  	trimFilter: PropTypes.bool, // whether to trim whitespace around filter value
-  	value: PropTypes.any, // initial field value
-  	valueComponent: PropTypes.func, // value component to render
-  	valueKey: PropTypes.string, // path of the label value in option objects
-  	valueRenderer: PropTypes.func, // valueRenderer: function (option) {}
-  	wrapperStyle: PropTypes.object // optional style to apply to the component wrapper
-  };
-
-  Select$1.defaultProps = {
-  	arrowRenderer: arrowRenderer,
-  	autosize: true,
-  	backspaceRemoves: true,
-  	backspaceToRemoveMessage: 'Press backspace to remove {label}',
-  	clearable: true,
-  	clearAllText: 'Clear all',
-  	clearRenderer: clearRenderer,
-  	clearValueText: 'Clear value',
-  	closeOnSelect: true,
-  	deleteRemoves: true,
-  	delimiter: ',',
-  	disabled: false,
-  	escapeClearsValue: true,
-  	filterOptions: filterOptions,
-  	ignoreAccents: true,
-  	ignoreCase: true,
-  	inputProps: {},
-  	isLoading: false,
-  	joinValues: false,
-  	labelKey: 'label',
-  	matchPos: 'any',
-  	matchProp: 'any',
-  	menuBuffer: 0,
-  	menuRenderer: menuRenderer,
-  	multi: false,
-  	noResultsText: 'No results found',
-  	onBlurResetsInput: true,
-  	onCloseResetsInput: true,
-  	onSelectResetsInput: true,
-  	openOnClick: true,
-  	optionComponent: Option,
-  	pageSize: 5,
-  	placeholder: 'Select...',
-  	removeSelected: true,
-  	required: false,
-  	rtl: false,
-  	scrollMenuIntoView: true,
-  	searchable: true,
-  	simpleValue: false,
-  	tabSelectsValue: true,
-  	trimFilter: true,
-  	valueComponent: Value,
-  	valueKey: 'value'
-  };
-
-  var propTypes = {
-  	autoload: PropTypes.bool.isRequired, // automatically call the `loadOptions` prop on-mount; defaults to true
-  	cache: PropTypes.any, // object to use to cache results; set to null/false to disable caching
-  	children: PropTypes.func.isRequired, // Child function responsible for creating the inner Select component; (props: Object): PropTypes.element
-  	ignoreAccents: PropTypes.bool, // strip diacritics when filtering; defaults to true
-  	ignoreCase: PropTypes.bool, // perform case-insensitive filtering; defaults to true
-  	loadOptions: PropTypes.func.isRequired, // callback to load options asynchronously; (inputValue: string, callback: Function): ?Promise
-  	loadingPlaceholder: PropTypes.oneOfType([// replaces the placeholder while options are loading
-  	PropTypes.string, PropTypes.node]),
-  	multi: PropTypes.bool, // multi-value input
-  	noResultsText: PropTypes.oneOfType([// field noResultsText, displayed when no options come back from the server
-  	PropTypes.string, PropTypes.node]),
-  	onChange: PropTypes.func, // onChange handler: function (newValue) {}
-  	onInputChange: PropTypes.func, // optional for keeping track of what is being typed
-  	options: PropTypes.array.isRequired, // array of options
-  	placeholder: PropTypes.oneOfType([// field placeholder, displayed when there's no value (shared with Select)
-  	PropTypes.string, PropTypes.node]),
-  	searchPromptText: PropTypes.oneOfType([// label to prompt for search input
-  	PropTypes.string, PropTypes.node]),
-  	value: PropTypes.any // initial field value
-  };
-
-  var defaultCache = {};
-
-  var defaultChildren = function defaultChildren(props) {
-  	return React__default.createElement(Select$1, props);
-  };
-
-  var defaultProps = {
-  	autoload: true,
-  	cache: defaultCache,
-  	children: defaultChildren,
-  	ignoreAccents: true,
-  	ignoreCase: true,
-  	loadingPlaceholder: 'Loading...',
-  	options: [],
-  	searchPromptText: 'Type to search'
-  };
-
-  var Async = function (_Component) {
-  	inherits(Async, _Component);
-
-  	function Async(props, context) {
-  		classCallCheck(this, Async);
-
-  		var _this = possibleConstructorReturn(this, (Async.__proto__ || Object.getPrototypeOf(Async)).call(this, props, context));
-
-  		_this._cache = props.cache === defaultCache ? {} : props.cache;
-
-  		_this.state = {
-  			inputValue: '',
-  			isLoading: false,
-  			options: props.options
-  		};
-
-  		_this.onInputChange = _this.onInputChange.bind(_this);
-  		return _this;
-  	}
-
-  	createClass(Async, [{
-  		key: 'componentDidMount',
-  		value: function componentDidMount() {
-  			var autoload = this.props.autoload;
-
-
-  			if (autoload) {
-  				this.loadOptions('');
-  			}
-  		}
-  	}, {
-  		key: 'componentWillReceiveProps',
-  		value: function componentWillReceiveProps(nextProps) {
-  			if (nextProps.options !== this.props.options) {
-  				this.setState({
-  					options: nextProps.options
-  				});
-  			}
-  		}
-  	}, {
-  		key: 'componentWillUnmount',
-  		value: function componentWillUnmount() {
-  			this._callback = null;
-  		}
-  	}, {
-  		key: 'loadOptions',
-  		value: function loadOptions(inputValue) {
-  			var _this2 = this;
-
-  			var loadOptions = this.props.loadOptions;
-
-  			var cache = this._cache;
-
-  			if (cache && Object.prototype.hasOwnProperty.call(cache, inputValue)) {
-  				this._callback = null;
-
-  				this.setState({
-  					isLoading: false,
-  					options: cache[inputValue]
-  				});
-
-  				return;
-  			}
-
-  			var callback = function callback(error, data) {
-  				var options = data && data.options || [];
-
-  				if (cache) {
-  					cache[inputValue] = options;
-  				}
-
-  				if (callback === _this2._callback) {
-  					_this2._callback = null;
-
-  					_this2.setState({
-  						isLoading: false,
-  						options: options
-  					});
-  				}
-  			};
-
-  			// Ignore all but the most recent request
-  			this._callback = callback;
-
-  			var promise = loadOptions(inputValue, callback);
-  			if (promise) {
-  				promise.then(function (data) {
-  					return callback(null, data);
-  				}, function (error) {
-  					return callback(error);
-  				});
-  			}
-
-  			if (this._callback && !this.state.isLoading) {
-  				this.setState({
-  					isLoading: true
-  				});
-  			}
-  		}
-  	}, {
-  		key: 'onInputChange',
-  		value: function onInputChange(inputValue) {
-  			var _props = this.props,
-  			    ignoreAccents = _props.ignoreAccents,
-  			    ignoreCase = _props.ignoreCase,
-  			    onInputChange = _props.onInputChange;
-
-  			var newInputValue = inputValue;
-
-  			if (onInputChange) {
-  				var value = onInputChange(newInputValue);
-  				// Note: != used deliberately here to catch undefined and null
-  				if (value != null && (typeof value === 'undefined' ? 'undefined' : _typeof$1(value)) !== 'object') {
-  					newInputValue = '' + value;
-  				}
-  			}
-
-  			var transformedInputValue = newInputValue;
-
-  			if (ignoreAccents) {
-  				transformedInputValue = stripDiacritics(transformedInputValue);
-  			}
-
-  			if (ignoreCase) {
-  				transformedInputValue = transformedInputValue.toLowerCase();
-  			}
-
-  			this.setState({ inputValue: newInputValue });
-  			this.loadOptions(transformedInputValue);
-
-  			// Return new input value, but without applying toLowerCase() to avoid modifying the user's view case of the input while typing.
-  			return newInputValue;
-  		}
-  	}, {
-  		key: 'noResultsText',
-  		value: function noResultsText() {
-  			var _props2 = this.props,
-  			    loadingPlaceholder = _props2.loadingPlaceholder,
-  			    noResultsText = _props2.noResultsText,
-  			    searchPromptText = _props2.searchPromptText;
-  			var _state = this.state,
-  			    inputValue = _state.inputValue,
-  			    isLoading = _state.isLoading;
-
-
-  			if (isLoading) {
-  				return loadingPlaceholder;
-  			}
-  			if (inputValue && noResultsText) {
-  				return noResultsText;
-  			}
-  			return searchPromptText;
-  		}
-  	}, {
-  		key: 'focus',
-  		value: function focus() {
-  			this.select.focus();
-  		}
-  	}, {
-  		key: 'render',
-  		value: function render() {
-  			var _this3 = this;
-
-  			var _props3 = this.props,
-  			    children = _props3.children,
-  			    loadingPlaceholder = _props3.loadingPlaceholder,
-  			    placeholder = _props3.placeholder;
-  			var _state2 = this.state,
-  			    isLoading = _state2.isLoading,
-  			    options = _state2.options;
-
-
-  			var props = {
-  				noResultsText: this.noResultsText(),
-  				placeholder: isLoading ? loadingPlaceholder : placeholder,
-  				options: isLoading && loadingPlaceholder ? [] : options,
-  				ref: function ref(_ref) {
-  					return _this3.select = _ref;
-  				}
-  			};
-
-  			return children(_extends$1({}, this.props, props, {
-  				isLoading: isLoading,
-  				onInputChange: this.onInputChange
-  			}));
-  		}
-  	}]);
-  	return Async;
+    return NodeResolver;
   }(React.Component);
 
-  Async.propTypes = propTypes;
-  Async.defaultProps = defaultProps;
-
-  var CreatableSelect = function (_React$Component) {
-  	inherits(CreatableSelect, _React$Component);
-
-  	function CreatableSelect(props, context) {
-  		classCallCheck(this, CreatableSelect);
-
-  		var _this = possibleConstructorReturn(this, (CreatableSelect.__proto__ || Object.getPrototypeOf(CreatableSelect)).call(this, props, context));
-
-  		_this.filterOptions = _this.filterOptions.bind(_this);
-  		_this.menuRenderer = _this.menuRenderer.bind(_this);
-  		_this.onInputKeyDown = _this.onInputKeyDown.bind(_this);
-  		_this.onInputChange = _this.onInputChange.bind(_this);
-  		_this.onOptionSelect = _this.onOptionSelect.bind(_this);
-  		return _this;
-  	}
-
-  	createClass(CreatableSelect, [{
-  		key: 'createNewOption',
-  		value: function createNewOption() {
-  			var _props = this.props,
-  			    isValidNewOption = _props.isValidNewOption,
-  			    newOptionCreator = _props.newOptionCreator,
-  			    onNewOptionClick = _props.onNewOptionClick,
-  			    _props$options = _props.options,
-  			    options = _props$options === undefined ? [] : _props$options;
-
-
-  			if (isValidNewOption({ label: this.inputValue })) {
-  				var option = newOptionCreator({ label: this.inputValue, labelKey: this.labelKey, valueKey: this.valueKey });
-  				var _isOptionUnique = this.isOptionUnique({ option: option, options: options });
-
-  				// Don't add the same option twice.
-  				if (_isOptionUnique) {
-  					if (onNewOptionClick) {
-  						onNewOptionClick(option);
-  					} else {
-  						options.unshift(option);
-
-  						this.select.selectValue(option);
-  					}
-  				}
-  			}
-  		}
-  	}, {
-  		key: 'filterOptions',
-  		value: function filterOptions$$1() {
-  			var _props2 = this.props,
-  			    filterOptions$$1 = _props2.filterOptions,
-  			    isValidNewOption = _props2.isValidNewOption,
-  			    promptTextCreator = _props2.promptTextCreator;
-
-  			// TRICKY Check currently selected options as well.
-  			// Don't display a create-prompt for a value that's selected.
-  			// This covers async edge-cases where a newly-created Option isn't yet in the async-loaded array.
-
-  			var excludeOptions = (arguments.length <= 2 ? undefined : arguments[2]) || [];
-
-  			var filteredOptions = filterOptions$$1.apply(undefined, arguments) || [];
-
-  			if (isValidNewOption({ label: this.inputValue })) {
-  				var _newOptionCreator = this.props.newOptionCreator;
-
-
-  				var option = _newOptionCreator({
-  					label: this.inputValue,
-  					labelKey: this.labelKey,
-  					valueKey: this.valueKey
-  				});
-
-  				// TRICKY Compare to all options (not just filtered options) in case option has already been selected).
-  				// For multi-selects, this would remove it from the filtered list.
-  				var _isOptionUnique2 = this.isOptionUnique({
-  					option: option,
-  					options: excludeOptions.concat(filteredOptions)
-  				});
-
-  				if (_isOptionUnique2) {
-  					var prompt = promptTextCreator(this.inputValue);
-
-  					this._createPlaceholderOption = _newOptionCreator({
-  						label: prompt,
-  						labelKey: this.labelKey,
-  						valueKey: this.valueKey
-  					});
-
-  					filteredOptions.unshift(this._createPlaceholderOption);
-  				}
-  			}
-
-  			return filteredOptions;
-  		}
-  	}, {
-  		key: 'isOptionUnique',
-  		value: function isOptionUnique(_ref) {
-  			var option = _ref.option,
-  			    options = _ref.options;
-  			var isOptionUnique = this.props.isOptionUnique;
-
-
-  			options = options || this.props.options;
-
-  			return isOptionUnique({
-  				labelKey: this.labelKey,
-  				option: option,
-  				options: options,
-  				valueKey: this.valueKey
-  			});
-  		}
-  	}, {
-  		key: 'menuRenderer',
-  		value: function menuRenderer$$1(params) {
-  			var menuRenderer$$1 = this.props.menuRenderer;
-
-
-  			return menuRenderer$$1(_extends$1({}, params, {
-  				onSelect: this.onOptionSelect,
-  				selectValue: this.onOptionSelect
-  			}));
-  		}
-  	}, {
-  		key: 'onInputChange',
-  		value: function onInputChange(input) {
-  			var onInputChange = this.props.onInputChange;
-
-  			// This value may be needed in between Select mounts (when this.select is null)
-
-  			this.inputValue = input;
-
-  			if (onInputChange) {
-  				this.inputValue = onInputChange(input);
-  			}
-
-  			return this.inputValue;
-  		}
-  	}, {
-  		key: 'onInputKeyDown',
-  		value: function onInputKeyDown(event) {
-  			var _props3 = this.props,
-  			    shouldKeyDownEventCreateNewOption = _props3.shouldKeyDownEventCreateNewOption,
-  			    onInputKeyDown = _props3.onInputKeyDown;
-
-  			var focusedOption = this.select.getFocusedOption();
-
-  			if (focusedOption && focusedOption === this._createPlaceholderOption && shouldKeyDownEventCreateNewOption({ keyCode: event.keyCode })) {
-  				this.createNewOption();
-
-  				// Prevent decorated Select from doing anything additional with this keyDown event
-  				event.preventDefault();
-  			} else if (onInputKeyDown) {
-  				onInputKeyDown(event);
-  			}
-  		}
-  	}, {
-  		key: 'onOptionSelect',
-  		value: function onOptionSelect(option) {
-  			if (option === this._createPlaceholderOption) {
-  				this.createNewOption();
-  			} else {
-  				this.select.selectValue(option);
-  			}
-  		}
-  	}, {
-  		key: 'focus',
-  		value: function focus() {
-  			this.select.focus();
-  		}
-  	}, {
-  		key: 'render',
-  		value: function render() {
-  			var _this2 = this;
-
-  			var _props4 = this.props,
-  			    refProp = _props4.ref,
-  			    restProps = objectWithoutProperties(_props4, ['ref']);
-  			var children = this.props.children;
-
-  			// We can't use destructuring default values to set the children,
-  			// because it won't apply work if `children` is null. A falsy check is
-  			// more reliable in real world use-cases.
-
-  			if (!children) {
-  				children = defaultChildren$2;
-  			}
-
-  			var props = _extends$1({}, restProps, {
-  				allowCreate: true,
-  				filterOptions: this.filterOptions,
-  				menuRenderer: this.menuRenderer,
-  				onInputChange: this.onInputChange,
-  				onInputKeyDown: this.onInputKeyDown,
-  				ref: function ref(_ref2) {
-  					_this2.select = _ref2;
-
-  					// These values may be needed in between Select mounts (when this.select is null)
-  					if (_ref2) {
-  						_this2.labelKey = _ref2.props.labelKey;
-  						_this2.valueKey = _ref2.props.valueKey;
-  					}
-  					if (refProp) {
-  						refProp(_ref2);
-  					}
-  				}
-  			});
-
-  			return children(props);
-  		}
-  	}]);
-  	return CreatableSelect;
-  }(React__default.Component);
-
-  var defaultChildren$2 = function defaultChildren(props) {
-  	return React__default.createElement(Select$1, props);
+  var STYLE_KEYS = ['boxSizing', 'height', 'overflow', 'paddingRight', 'position'];
+  var LOCK_STYLES = {
+    boxSizing: 'border-box',
+    // account for possible declaration `width: 100%;` on body
+    overflow: 'hidden',
+    position: 'relative',
+    height: '100%'
   };
 
-  var isOptionUnique = function isOptionUnique(_ref3) {
-  	var option = _ref3.option,
-  	    options = _ref3.options,
-  	    labelKey = _ref3.labelKey,
-  	    valueKey = _ref3.valueKey;
+  function preventTouchMove(e$$1) {
+    e$$1.preventDefault();
+  }
+  function allowTouchMove(e$$1) {
+    e$$1.stopPropagation();
+  }
+  function preventInertiaScroll() {
+    var top = this.scrollTop;
+    var totalScroll = this.scrollHeight;
+    var currentScroll = top + this.offsetHeight;
 
-  	if (!options || !options.length) {
-  		return true;
-  	}
+    if (top === 0) {
+      this.scrollTop = 1;
+    } else if (currentScroll === totalScroll) {
+      this.scrollTop = top - 1;
+    }
+  } // `ontouchstart` check works on most browsers
+  // `maxTouchPoints` works on IE10/11 and Surface
 
-  	return options.filter(function (existingOption) {
-  		return existingOption[labelKey] === option[labelKey] || existingOption[valueKey] === option[valueKey];
-  	}).length === 0;
+  function isTouchDevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints;
+  }
+
+  function _inheritsLoose$1$1(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+  var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+  var activeScrollLocks = 0;
+
+  var ScrollLock =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose$1$1(ScrollLock, _Component);
+
+    function ScrollLock() {
+      var _this;
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+      _this.originalStyles = {};
+      _this.listenerOptions = {
+        capture: false,
+        passive: false
+      };
+      return _this;
+    }
+
+    var _proto = ScrollLock.prototype;
+
+    _proto.componentDidMount = function componentDidMount() {
+      var _this2 = this;
+
+      if (!canUseDOM) return;
+      var _this$props = this.props,
+          accountForScrollbars = _this$props.accountForScrollbars,
+          touchScrollTarget = _this$props.touchScrollTarget;
+      var target = document.body;
+      var targetStyle = target && target.style;
+
+      if (accountForScrollbars) {
+        // store any styles already applied to the body
+        STYLE_KEYS.forEach(function (key) {
+          var val = targetStyle && targetStyle[key];
+          _this2.originalStyles[key] = val;
+        });
+      } // apply the lock styles and padding if this is the first scroll lock
+
+
+      if (accountForScrollbars && activeScrollLocks < 1) {
+        var currentPadding = parseInt(this.originalStyles.paddingRight, 10) || 0;
+        var clientWidth = document.body ? document.body.clientWidth : 0;
+        var adjustedPadding = window.innerWidth - clientWidth + currentPadding || 0;
+        Object.keys(LOCK_STYLES).forEach(function (key) {
+          var val = LOCK_STYLES[key];
+
+          if (targetStyle) {
+            targetStyle[key] = val;
+          }
+        });
+
+        if (targetStyle) {
+          targetStyle.paddingRight = adjustedPadding + "px";
+        }
+      } // account for touch devices
+
+
+      if (target && isTouchDevice()) {
+        // Mobile Safari ignores { overflow: hidden } declaration on the body.
+        target.addEventListener('touchmove', preventTouchMove, this.listenerOptions); // Allow scroll on provided target
+
+        if (touchScrollTarget) {
+          touchScrollTarget.addEventListener('touchstart', preventInertiaScroll, this.listenerOptions);
+          touchScrollTarget.addEventListener('touchmove', allowTouchMove, this.listenerOptions);
+        }
+      } // increment active scroll locks
+
+
+      activeScrollLocks += 1;
+    };
+
+    _proto.componentWillUnmount = function componentWillUnmount() {
+      var _this3 = this;
+
+      if (!canUseDOM) return;
+      var _this$props2 = this.props,
+          accountForScrollbars = _this$props2.accountForScrollbars,
+          touchScrollTarget = _this$props2.touchScrollTarget;
+      var target = document.body;
+      var targetStyle = target && target.style; // safely decrement active scroll locks
+
+      activeScrollLocks = Math.max(activeScrollLocks - 1, 0); // reapply original body styles, if any
+
+      if (accountForScrollbars && activeScrollLocks < 1) {
+        STYLE_KEYS.forEach(function (key) {
+          var val = _this3.originalStyles[key];
+
+          if (targetStyle) {
+            targetStyle[key] = val;
+          }
+        });
+      } // remove touch listeners
+
+
+      if (target && isTouchDevice()) {
+        target.removeEventListener('touchmove', preventTouchMove, this.listenerOptions);
+
+        if (touchScrollTarget) {
+          touchScrollTarget.removeEventListener('touchstart', preventInertiaScroll, this.listenerOptions);
+          touchScrollTarget.removeEventListener('touchmove', allowTouchMove, this.listenerOptions);
+        }
+      }
+    };
+
+    _proto.render = function render() {
+      return null;
+    };
+
+    return ScrollLock;
+  }(React.Component);
+
+  ScrollLock.defaultProps = {
+    accountForScrollbars: true
   };
 
-  var isValidNewOption = function isValidNewOption(_ref4) {
-  	var label = _ref4.label;
-  	return !!label;
+  function _inheritsLoose$2$1(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+
+  var _ref$1 = undefined === "production" ? {
+    name: "1dsbpcp",
+    styles: "position:fixed;left:0;bottom:0;right:0;top:0;"
+  } : {
+    name: "1dsbpcp",
+    styles: "position:fixed;left:0;bottom:0;right:0;top:0;",
+    map: "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIlNjcm9sbEJsb2NrLmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQTZEVSIsImZpbGUiOiJTY3JvbGxCbG9jay5qcyIsInNvdXJjZXNDb250ZW50IjpbIi8vIEBmbG93XG4vKiogQGpzeCBqc3ggKi9cbmltcG9ydCB7IFB1cmVDb21wb25lbnQsIHR5cGUgRWxlbWVudCB9IGZyb20gJ3JlYWN0JztcbmltcG9ydCB7IGpzeCB9IGZyb20gJ0BlbW90aW9uL2NvcmUnO1xuaW1wb3J0IE5vZGVSZXNvbHZlciBmcm9tICcuL05vZGVSZXNvbHZlcic7XG5pbXBvcnQgU2Nyb2xsTG9jayBmcm9tICcuL1Njcm9sbExvY2svaW5kZXgnO1xuXG50eXBlIFByb3BzID0ge1xuICBjaGlsZHJlbjogRWxlbWVudDwqPixcbiAgaXNFbmFibGVkOiBib29sZWFuLFxufTtcbnR5cGUgU3RhdGUgPSB7XG4gIHRvdWNoU2Nyb2xsVGFyZ2V0OiBIVE1MRWxlbWVudCB8IG51bGwsXG59O1xuXG4vLyBOT1RFOlxuLy8gV2Ugc2hvdWxkbid0IG5lZWQgdGhpcyBhZnRlciB1cGRhdGluZyB0byBSZWFjdCB2MTYuMy4wLCB3aGljaCBpbnRyb2R1Y2VzOlxuLy8gLSBjcmVhdGVSZWYoKSBodHRwczovL3JlYWN0anMub3JnL2RvY3MvcmVhY3QtYXBpLmh0bWwjcmVhY3RjcmVhdGVyZWZcbi8vIC0gZm9yd2FyZFJlZigpIGh0dHBzOi8vcmVhY3Rqcy5vcmcvZG9jcy9yZWFjdC1hcGkuaHRtbCNyZWFjdGZvcndhcmRyZWZcblxuZXhwb3J0IGRlZmF1bHQgY2xhc3MgU2Nyb2xsQmxvY2sgZXh0ZW5kcyBQdXJlQ29tcG9uZW50PFByb3BzLCBTdGF0ZT4ge1xuICBzdGF0ZSA9IHsgdG91Y2hTY3JvbGxUYXJnZXQ6IG51bGwgfTtcblxuICAvLyBtdXN0IGJlIGluIHN0YXRlIHRvIHRyaWdnZXIgYSByZS1yZW5kZXIsIG9ubHkgcnVucyBvbmNlIHBlciBpbnN0YW5jZVxuICBnZXRTY3JvbGxUYXJnZXQgPSAocmVmOiBIVE1MRWxlbWVudCkgPT4ge1xuICAgIGlmIChyZWYgPT09IHRoaXMuc3RhdGUudG91Y2hTY3JvbGxUYXJnZXQpIHJldHVybjtcbiAgICB0aGlzLnNldFN0YXRlKHsgdG91Y2hTY3JvbGxUYXJnZXQ6IHJlZiB9KTtcbiAgfTtcblxuICAvLyB0aGlzIHdpbGwgY2xvc2UgdGhlIG1lbnUgd2hlbiBhIHVzZXIgY2xpY2tzIG91dHNpZGVcbiAgYmx1clNlbGVjdElucHV0ID0gKCkgPT4ge1xuICAgIGlmIChkb2N1bWVudC5hY3RpdmVFbGVtZW50KSB7XG4gICAgICBkb2N1bWVudC5hY3RpdmVFbGVtZW50LmJsdXIoKTtcbiAgICB9XG4gIH07XG5cbiAgcmVuZGVyKCkge1xuICAgIGNvbnN0IHsgY2hpbGRyZW4sIGlzRW5hYmxlZCB9ID0gdGhpcy5wcm9wcztcbiAgICBjb25zdCB7IHRvdWNoU2Nyb2xsVGFyZ2V0IH0gPSB0aGlzLnN0YXRlO1xuXG4gICAgLy8gYmFpbCBlYXJseSBpZiBub3QgZW5hYmxlZFxuICAgIGlmICghaXNFbmFibGVkKSByZXR1cm4gY2hpbGRyZW47XG5cbiAgICAvKlxuICAgICAqIERpdlxuICAgICAqIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuICAgICAqIGJsb2NrcyBzY3JvbGxpbmcgb24gbm9uLWJvZHkgZWxlbWVudHMgYmVoaW5kIHRoZSBtZW51XG5cbiAgICAgKiBOb2RlUmVzb2x2ZXJcbiAgICAgKiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbiAgICAgKiB3ZSBuZWVkIGEgcmVmZXJlbmNlIHRvIHRoZSBzY3JvbGxhYmxlIGVsZW1lbnQgdG8gXCJ1bmxvY2tcIiBzY3JvbGwgb25cbiAgICAgKiBtb2JpbGUgZGV2aWNlc1xuXG4gICAgICogU2Nyb2xsTG9ja1xuICAgICAqIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuICAgICAqIGFjdHVhbGx5IGRvZXMgdGhlIHNjcm9sbCBsb2NraW5nXG4gICAgICovXG4gICAgcmV0dXJuIChcbiAgICAgIDxkaXY+XG4gICAgICAgIDxkaXZcbiAgICAgICAgICBvbkNsaWNrPXt0aGlzLmJsdXJTZWxlY3RJbnB1dH1cbiAgICAgICAgICBjc3M9e3sgcG9zaXRpb246ICdmaXhlZCcsIGxlZnQ6IDAsIGJvdHRvbTogMCwgcmlnaHQ6IDAsIHRvcDogMCB9fVxuICAgICAgICAvPlxuICAgICAgICA8Tm9kZVJlc29sdmVyIGlubmVyUmVmPXt0aGlzLmdldFNjcm9sbFRhcmdldH0+e2NoaWxkcmVufTwvTm9kZVJlc29sdmVyPlxuICAgICAgICB7dG91Y2hTY3JvbGxUYXJnZXQgPyAoXG4gICAgICAgICAgPFNjcm9sbExvY2sgdG91Y2hTY3JvbGxUYXJnZXQ9e3RvdWNoU2Nyb2xsVGFyZ2V0fSAvPlxuICAgICAgICApIDogbnVsbH1cbiAgICAgIDwvZGl2PlxuICAgICk7XG4gIH1cbn1cbiJdfQ== */"
   };
 
-  var newOptionCreator = function newOptionCreator(_ref5) {
-  	var label = _ref5.label,
-  	    labelKey = _ref5.labelKey,
-  	    valueKey = _ref5.valueKey;
+  // NOTE:
+  // We shouldn't need this after updating to React v16.3.0, which introduces:
+  // - createRef() https://reactjs.org/docs/react-api.html#reactcreateref
+  // - forwardRef() https://reactjs.org/docs/react-api.html#reactforwardref
+  var ScrollBlock =
+  /*#__PURE__*/
+  function (_PureComponent) {
+    _inheritsLoose$2$1(ScrollBlock, _PureComponent);
 
-  	var option = {};
-  	option[valueKey] = label;
-  	option[labelKey] = label;
-  	option.className = 'Select-create-option-placeholder';
+    function ScrollBlock() {
+      var _this;
 
-  	return option;
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      _this = _PureComponent.call.apply(_PureComponent, [this].concat(args)) || this;
+      _this.state = {
+        touchScrollTarget: null
+      };
+
+      _this.getScrollTarget = function (ref) {
+        if (ref === _this.state.touchScrollTarget) return;
+
+        _this.setState({
+          touchScrollTarget: ref
+        });
+      };
+
+      _this.blurSelectInput = function () {
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+      };
+
+      return _this;
+    }
+
+    var _proto = ScrollBlock.prototype;
+
+    _proto.render = function render() {
+      var _this$props = this.props,
+          children = _this$props.children,
+          isEnabled = _this$props.isEnabled;
+      var touchScrollTarget = this.state.touchScrollTarget; // bail early if not enabled
+
+      if (!isEnabled) return children;
+      /*
+       * Div
+       * ------------------------------
+       * blocks scrolling on non-body elements behind the menu
+        * NodeResolver
+       * ------------------------------
+       * we need a reference to the scrollable element to "unlock" scroll on
+       * mobile devices
+        * ScrollLock
+       * ------------------------------
+       * actually does the scroll locking
+       */
+
+      return jsx("div", null, jsx("div", {
+        onClick: this.blurSelectInput,
+        css: _ref$1
+      }), jsx(NodeResolver, {
+        innerRef: this.getScrollTarget
+      }, children), touchScrollTarget ? jsx(ScrollLock, {
+        touchScrollTarget: touchScrollTarget
+      }) : null);
+    };
+
+    return ScrollBlock;
+  }(React.PureComponent);
+
+  function _objectWithoutPropertiesLoose$1$2(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i$$1; for (i$$1 = 0; i$$1 < sourceKeys.length; i$$1++) { key = sourceKeys[i$$1]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+  function _inheritsLoose$3$1(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+
+  var ScrollCaptor =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose$3$1(ScrollCaptor, _Component);
+
+    function ScrollCaptor() {
+      var _this;
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+      _this.isBottom = false;
+      _this.isTop = false;
+      _this.scrollTarget = void 0;
+      _this.touchStart = void 0;
+
+      _this.cancelScroll = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      };
+
+      _this.handleEventDelta = function (event, delta) {
+        var _this$props = _this.props,
+            onBottomArrive = _this$props.onBottomArrive,
+            onBottomLeave = _this$props.onBottomLeave,
+            onTopArrive = _this$props.onTopArrive,
+            onTopLeave = _this$props.onTopLeave;
+        var _this$scrollTarget = _this.scrollTarget,
+            scrollTop = _this$scrollTarget.scrollTop,
+            scrollHeight = _this$scrollTarget.scrollHeight,
+            clientHeight = _this$scrollTarget.clientHeight;
+        var target = _this.scrollTarget;
+        var isDeltaPositive = delta > 0;
+        var availableScroll = scrollHeight - clientHeight - scrollTop;
+        var shouldCancelScroll = false; // reset bottom/top flags
+
+        if (availableScroll > delta && _this.isBottom) {
+          if (onBottomLeave) onBottomLeave(event);
+          _this.isBottom = false;
+        }
+
+        if (isDeltaPositive && _this.isTop) {
+          if (onTopLeave) onTopLeave(event);
+          _this.isTop = false;
+        } // bottom limit
+
+
+        if (isDeltaPositive && delta > availableScroll) {
+          if (onBottomArrive && !_this.isBottom) {
+            onBottomArrive(event);
+          }
+
+          target.scrollTop = scrollHeight;
+          shouldCancelScroll = true;
+          _this.isBottom = true; // top limit
+        } else if (!isDeltaPositive && -delta > scrollTop) {
+          if (onTopArrive && !_this.isTop) {
+            onTopArrive(event);
+          }
+
+          target.scrollTop = 0;
+          shouldCancelScroll = true;
+          _this.isTop = true;
+        } // cancel scroll
+
+
+        if (shouldCancelScroll) {
+          _this.cancelScroll(event);
+        }
+      };
+
+      _this.onWheel = function (event) {
+        _this.handleEventDelta(event, event.deltaY);
+      };
+
+      _this.onTouchStart = function (event) {
+        // set touch start so we can calculate touchmove delta
+        _this.touchStart = event.changedTouches[0].clientY;
+      };
+
+      _this.onTouchMove = function (event) {
+        var deltaY = _this.touchStart - event.changedTouches[0].clientY;
+
+        _this.handleEventDelta(event, deltaY);
+      };
+
+      _this.getScrollTarget = function (ref) {
+        _this.scrollTarget = ref;
+      };
+
+      return _this;
+    }
+
+    var _proto = ScrollCaptor.prototype;
+
+    _proto.componentDidMount = function componentDidMount() {
+      this.startListening(this.scrollTarget);
+    };
+
+    _proto.componentWillUnmount = function componentWillUnmount() {
+      this.stopListening(this.scrollTarget);
+    };
+
+    _proto.startListening = function startListening(el) {
+      // bail early if no element is available to attach to
+      if (!el) return; // all the if statements are to appease Flow 😢
+
+      if (typeof el.addEventListener === 'function') {
+        el.addEventListener('wheel', this.onWheel, false);
+      }
+
+      if (typeof el.addEventListener === 'function') {
+        el.addEventListener('touchstart', this.onTouchStart, false);
+      }
+
+      if (typeof el.addEventListener === 'function') {
+        el.addEventListener('touchmove', this.onTouchMove, false);
+      }
+    };
+
+    _proto.stopListening = function stopListening(el) {
+      // all the if statements are to appease Flow 😢
+      if (typeof el.removeEventListener === 'function') {
+        el.removeEventListener('wheel', this.onWheel, false);
+      }
+
+      if (typeof el.removeEventListener === 'function') {
+        el.removeEventListener('touchstart', this.onTouchStart, false);
+      }
+
+      if (typeof el.removeEventListener === 'function') {
+        el.removeEventListener('touchmove', this.onTouchMove, false);
+      }
+    };
+
+    _proto.render = function render() {
+      return React__default.createElement(NodeResolver, {
+        innerRef: this.getScrollTarget
+      }, this.props.children);
+    };
+
+    return ScrollCaptor;
+  }(React.Component);
+
+  function ScrollCaptorSwitch(_ref) {
+    var _ref$isEnabled = _ref.isEnabled,
+        isEnabled = _ref$isEnabled === void 0 ? true : _ref$isEnabled,
+        props = _objectWithoutPropertiesLoose$1$2(_ref, ["isEnabled"]);
+
+    return isEnabled ? React__default.createElement(ScrollCaptor, props) : props.children;
+  }
+
+  var instructionsAriaMessage = function instructionsAriaMessage(event, context) {
+    if (context === void 0) {
+      context = {};
+    }
+
+    var _context = context,
+        isSearchable = _context.isSearchable,
+        isMulti = _context.isMulti,
+        label = _context.label,
+        isDisabled = _context.isDisabled;
+
+    switch (event) {
+      case 'menu':
+        return "Use Up and Down to choose options" + (isDisabled ? '' : ', press Enter to select the currently focused option') + ", press Escape to exit the menu, press Tab to select the option and exit the menu.";
+
+      case 'input':
+        return (label ? label : 'Select') + " is focused " + (isSearchable ? ',type to refine list' : '') + ", press Down to open the menu, " + (isMulti ? ' press left to focus selected values' : '');
+
+      case 'value':
+        return 'Use left and right to toggle between focused values, press Backspace to remove the currently focused value';
+    }
+  };
+  var valueEventAriaMessage = function valueEventAriaMessage(event, context) {
+    var value = context.value,
+        isDisabled = context.isDisabled;
+    if (!value) return;
+
+    switch (event) {
+      case 'deselect-option':
+      case 'pop-value':
+      case 'remove-value':
+        return "option " + value + ", deselected.";
+
+      case 'select-option':
+        return isDisabled ? "option " + value + " is disabled. Select another option." : "option " + value + ", selected.";
+    }
+  };
+  var valueFocusAriaMessage = function valueFocusAriaMessage(_ref) {
+    var focusedValue = _ref.focusedValue,
+        getOptionLabel = _ref.getOptionLabel,
+        selectValue = _ref.selectValue;
+    return "value " + getOptionLabel(focusedValue) + " focused, " + (selectValue.indexOf(focusedValue) + 1) + " of " + selectValue.length + ".";
+  };
+  var optionFocusAriaMessage = function optionFocusAriaMessage(_ref2) {
+    var focusedOption = _ref2.focusedOption,
+        getOptionLabel = _ref2.getOptionLabel,
+        options = _ref2.options;
+    return "option " + getOptionLabel(focusedOption) + " focused" + (focusedOption.isDisabled ? ' disabled' : '') + ", " + (options.indexOf(focusedOption) + 1) + " of " + options.length + ".";
+  };
+  var resultsAriaMessage = function resultsAriaMessage(_ref3) {
+    var inputValue = _ref3.inputValue,
+        screenReaderMessage = _ref3.screenReaderMessage;
+    return "" + screenReaderMessage + (inputValue ? ' for search term ' + inputValue : '') + ".";
   };
 
-  var promptTextCreator = function promptTextCreator(label) {
-  	return 'Create option "' + label + '"';
+  var formatGroupLabel = function formatGroupLabel(group) {
+    return group.label;
+  };
+  var getOptionLabel = function getOptionLabel(option) {
+    return option.label;
+  };
+  var getOptionValue = function getOptionValue(option) {
+    return option.value;
+  };
+  var isOptionDisabled = function isOptionDisabled(option) {
+    return !!option.isDisabled;
+  };
+  var defaultStyles = {
+    clearIndicator: clearIndicatorCSS,
+    container: containerCSS,
+    control: css$1,
+    dropdownIndicator: dropdownIndicatorCSS,
+    group: groupCSS,
+    groupHeading: groupHeadingCSS,
+    indicatorsContainer: indicatorsContainerCSS,
+    indicatorSeparator: indicatorSeparatorCSS,
+    input: inputCSS,
+    loadingIndicator: loadingIndicatorCSS,
+    loadingMessage: loadingMessageCSS,
+    menu: menuCSS,
+    menuList: menuListCSS,
+    menuPortal: menuPortalCSS,
+    multiValue: multiValueCSS,
+    multiValueLabel: multiValueLabelCSS,
+    multiValueRemove: multiValueRemoveCSS,
+    noOptionsMessage: noOptionsMessageCSS,
+    option: optionCSS,
+    placeholder: placeholderCSS,
+    singleValue: css$1$1,
+    valueContainer: valueContainerCSS
+  }; // Merge Utility
+
+  var colors = {
+    primary: '#2684FF',
+    primary75: '#4C9AFF',
+    primary50: '#B2D4FF',
+    primary25: '#DEEBFF',
+    danger: '#DE350B',
+    dangerLight: '#FFBDAD',
+    neutral0: 'hsl(0, 0%, 100%)',
+    neutral5: 'hsl(0, 0%, 95%)',
+    neutral10: 'hsl(0, 0%, 90%)',
+    neutral20: 'hsl(0, 0%, 80%)',
+    neutral30: 'hsl(0, 0%, 70%)',
+    neutral40: 'hsl(0, 0%, 60%)',
+    neutral50: 'hsl(0, 0%, 50%)',
+    neutral60: 'hsl(0, 0%, 40%)',
+    neutral70: 'hsl(0, 0%, 30%)',
+    neutral80: 'hsl(0, 0%, 20%)',
+    neutral90: 'hsl(0, 0%, 10%)'
+  };
+  var borderRadius = 4; // Used to calculate consistent margin/padding on elements
+
+  var baseUnit = 4; // The minimum height of the control
+
+  var controlHeight = 38; // The amount of space between the control and menu */
+
+  var menuGutter = baseUnit * 2;
+  var spacing = {
+    baseUnit: baseUnit,
+    controlHeight: controlHeight,
+    menuGutter: menuGutter
+  };
+  var defaultTheme = {
+    borderRadius: borderRadius,
+    colors: colors,
+    spacing: spacing
   };
 
-  var shouldKeyDownEventCreateNewOption = function shouldKeyDownEventCreateNewOption(_ref6) {
-  	var keyCode = _ref6.keyCode;
+  function _objectWithoutPropertiesLoose$2$1(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i$$1; for (i$$1 = 0; i$$1 < sourceKeys.length; i$$1++) { key = sourceKeys[i$$1]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
-  	switch (keyCode) {
-  		case 9: // TAB
-  		case 13: // ENTER
-  		case 188:
-  			// COMMA
-  			return true;
-  		default:
-  			return false;
-  	}
+  function _extends$4$1() { _extends$4$1 = Object.assign || function (target) { for (var i$$1 = 1; i$$1 < arguments.length; i$$1++) { var source = arguments[i$$1]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$4$1.apply(this, arguments); }
+
+  function _inheritsLoose$4(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+
+  function _assertThisInitialized$1(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+  var defaultProps = {
+    backspaceRemovesValue: true,
+    blurInputOnSelect: isTouchCapable(),
+    captureMenuScroll: !isTouchCapable(),
+    closeMenuOnSelect: true,
+    closeMenuOnScroll: false,
+    components: {},
+    controlShouldRenderValue: true,
+    escapeClearsValue: false,
+    filterOption: createFilter(),
+    formatGroupLabel: formatGroupLabel,
+    getOptionLabel: getOptionLabel,
+    getOptionValue: getOptionValue,
+    isDisabled: false,
+    isLoading: false,
+    isMulti: false,
+    isRtl: false,
+    isSearchable: true,
+    isOptionDisabled: isOptionDisabled,
+    loadingMessage: function loadingMessage() {
+      return 'Loading...';
+    },
+    maxMenuHeight: 300,
+    minMenuHeight: 140,
+    menuIsOpen: false,
+    menuPlacement: 'bottom',
+    menuPosition: 'absolute',
+    menuShouldBlockScroll: false,
+    menuShouldScrollIntoView: !isMobileDevice(),
+    noOptionsMessage: function noOptionsMessage() {
+      return 'No options';
+    },
+    openMenuOnFocus: false,
+    openMenuOnClick: true,
+    options: [],
+    pageSize: 5,
+    placeholder: 'Select...',
+    screenReaderStatus: function screenReaderStatus(_ref) {
+      var count = _ref.count;
+      return count + " result" + (count !== 1 ? 's' : '') + " available";
+    },
+    styles: {},
+    tabIndex: '0',
+    tabSelectsValue: true
+  };
+  var instanceId = 1;
+
+  var Select =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose$4(Select, _Component);
+
+    // Misc. Instance Properties
+    // ------------------------------
+    // TODO
+    // Refs
+    // ------------------------------
+    // Lifecycle
+    // ------------------------------
+    function Select(_props) {
+      var _this;
+
+      _this = _Component.call(this, _props) || this;
+      _this.state = {
+        ariaLiveSelection: '',
+        ariaLiveContext: '',
+        focusedOption: null,
+        focusedValue: null,
+        inputIsHidden: false,
+        isFocused: false,
+        menuOptions: {
+          render: [],
+          focusable: []
+        },
+        selectValue: []
+      };
+      _this.blockOptionHover = false;
+      _this.isComposing = false;
+      _this.clearFocusValueOnUpdate = false;
+      _this.commonProps = void 0;
+      _this.components = void 0;
+      _this.hasGroups = false;
+      _this.initialTouchX = 0;
+      _this.initialTouchY = 0;
+      _this.inputIsHiddenAfterUpdate = void 0;
+      _this.instancePrefix = '';
+      _this.openAfterFocus = false;
+      _this.scrollToFocusedOptionOnUpdate = false;
+      _this.userIsDragging = void 0;
+      _this.controlRef = null;
+
+      _this.getControlRef = function (ref) {
+        _this.controlRef = ref;
+      };
+
+      _this.focusedOptionRef = null;
+
+      _this.getFocusedOptionRef = function (ref) {
+        _this.focusedOptionRef = ref;
+      };
+
+      _this.menuListRef = null;
+
+      _this.getMenuListRef = function (ref) {
+        _this.menuListRef = ref;
+      };
+
+      _this.inputRef = null;
+
+      _this.getInputRef = function (ref) {
+        _this.inputRef = ref;
+      };
+
+      _this.cacheComponents = function (components$$1) {
+        _this.components = defaultComponents({
+          components: components$$1
+        });
+      };
+
+      _this.focus = _this.focusInput;
+      _this.blur = _this.blurInput;
+
+      _this.onChange = function (newValue, actionMeta) {
+        var _this$props = _this.props,
+            onChange = _this$props.onChange,
+            name = _this$props.name;
+        onChange(newValue, _extends$4$1({}, actionMeta, {
+          name: name
+        }));
+      };
+
+      _this.setValue = function (newValue, action, option) {
+        if (action === void 0) {
+          action = 'set-value';
+        }
+
+        var _this$props2 = _this.props,
+            closeMenuOnSelect = _this$props2.closeMenuOnSelect,
+            isMulti = _this$props2.isMulti;
+
+        _this.onInputChange('', {
+          action: 'set-value'
+        });
+
+        if (closeMenuOnSelect) {
+          _this.inputIsHiddenAfterUpdate = !isMulti;
+
+          _this.onMenuClose();
+        } // when the select value should change, we should reset focusedValue
+
+
+        _this.clearFocusValueOnUpdate = true;
+
+        _this.onChange(newValue, {
+          action: action,
+          option: option
+        });
+      };
+
+      _this.selectOption = function (newValue) {
+        var _this$props3 = _this.props,
+            blurInputOnSelect = _this$props3.blurInputOnSelect,
+            isMulti = _this$props3.isMulti;
+        var selectValue = _this.state.selectValue;
+
+        if (isMulti) {
+          if (_this.isOptionSelected(newValue, selectValue)) {
+            var candidate = _this.getOptionValue(newValue);
+
+            _this.setValue(selectValue.filter(function (i$$1) {
+              return _this.getOptionValue(i$$1) !== candidate;
+            }), 'deselect-option', newValue);
+
+            _this.announceAriaLiveSelection({
+              event: 'deselect-option',
+              context: {
+                value: _this.getOptionLabel(newValue)
+              }
+            });
+          } else {
+            if (!_this.isOptionDisabled(newValue, selectValue)) {
+              _this.setValue([].concat(selectValue, [newValue]), 'select-option', newValue);
+
+              _this.announceAriaLiveSelection({
+                event: 'select-option',
+                context: {
+                  value: _this.getOptionLabel(newValue)
+                }
+              });
+            } else {
+              // announce that option is disabled
+              _this.announceAriaLiveSelection({
+                event: 'select-option',
+                context: {
+                  value: _this.getOptionLabel(newValue),
+                  isDisabled: true
+                }
+              });
+            }
+          }
+        } else {
+          if (!_this.isOptionDisabled(newValue, selectValue)) {
+            _this.setValue(newValue, 'select-option');
+
+            _this.announceAriaLiveSelection({
+              event: 'select-option',
+              context: {
+                value: _this.getOptionLabel(newValue)
+              }
+            });
+          } else {
+            // announce that option is disabled
+            _this.announceAriaLiveSelection({
+              event: 'select-option',
+              context: {
+                value: _this.getOptionLabel(newValue),
+                isDisabled: true
+              }
+            });
+          }
+        }
+
+        if (blurInputOnSelect) {
+          _this.blurInput();
+        }
+      };
+
+      _this.removeValue = function (removedValue) {
+        var selectValue = _this.state.selectValue;
+
+        var candidate = _this.getOptionValue(removedValue);
+
+        var newValue = selectValue.filter(function (i$$1) {
+          return _this.getOptionValue(i$$1) !== candidate;
+        });
+
+        _this.onChange(newValue.length ? newValue : null, {
+          action: 'remove-value',
+          removedValue: removedValue
+        });
+
+        _this.announceAriaLiveSelection({
+          event: 'remove-value',
+          context: {
+            value: removedValue ? _this.getOptionLabel(removedValue) : ''
+          }
+        });
+
+        _this.focusInput();
+      };
+
+      _this.clearValue = function () {
+        var isMulti = _this.props.isMulti;
+
+        _this.onChange(isMulti ? [] : null, {
+          action: 'clear'
+        });
+      };
+
+      _this.popValue = function () {
+        var selectValue = _this.state.selectValue;
+        var lastSelectedValue = selectValue[selectValue.length - 1];
+        var newValue = selectValue.slice(0, selectValue.length - 1);
+
+        _this.announceAriaLiveSelection({
+          event: 'pop-value',
+          context: {
+            value: lastSelectedValue ? _this.getOptionLabel(lastSelectedValue) : ''
+          }
+        });
+
+        _this.onChange(newValue.length ? newValue : null, {
+          action: 'pop-value',
+          removedValue: lastSelectedValue
+        });
+      };
+
+      _this.getOptionLabel = function (data) {
+        return _this.props.getOptionLabel(data);
+      };
+
+      _this.getOptionValue = function (data) {
+        return _this.props.getOptionValue(data);
+      };
+
+      _this.getStyles = function (key, props) {
+        var base = defaultStyles[key](props);
+        base.boxSizing = 'border-box';
+        var custom = _this.props.styles[key];
+        return custom ? custom(base, props) : base;
+      };
+
+      _this.getElementId = function (element) {
+        return _this.instancePrefix + "-" + element;
+      };
+
+      _this.getActiveDescendentId = function () {
+        var menuIsOpen = _this.props.menuIsOpen;
+        var _this$state = _this.state,
+            menuOptions = _this$state.menuOptions,
+            focusedOption = _this$state.focusedOption;
+        if (!focusedOption || !menuIsOpen) return undefined;
+        var index = menuOptions.focusable.indexOf(focusedOption);
+        var option = menuOptions.render[index];
+        return option && option.key;
+      };
+
+      _this.announceAriaLiveSelection = function (_ref2) {
+        var event = _ref2.event,
+            context = _ref2.context;
+
+        _this.setState({
+          ariaLiveSelection: valueEventAriaMessage(event, context)
+        });
+      };
+
+      _this.announceAriaLiveContext = function (_ref3) {
+        var event = _ref3.event,
+            context = _ref3.context;
+
+        _this.setState({
+          ariaLiveContext: instructionsAriaMessage(event, _extends$4$1({}, context, {
+            label: _this.props['aria-label']
+          }))
+        });
+      };
+
+      _this.onMenuMouseDown = function (event) {
+        if (event.button !== 0) {
+          return;
+        }
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        _this.focusInput();
+      };
+
+      _this.onMenuMouseMove = function (event) {
+        _this.blockOptionHover = false;
+      };
+
+      _this.onControlMouseDown = function (event) {
+        var openMenuOnClick = _this.props.openMenuOnClick;
+
+        if (!_this.state.isFocused) {
+          if (openMenuOnClick) {
+            _this.openAfterFocus = true;
+          }
+
+          _this.focusInput();
+        } else if (!_this.props.menuIsOpen) {
+          if (openMenuOnClick) {
+            _this.openMenu('first');
+          }
+        } else {
+          if ( // $FlowFixMe
+          event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+            _this.onMenuClose();
+          }
+        }
+
+        if ( // $FlowFixMe
+        event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+          event.preventDefault();
+        }
+      };
+
+      _this.onDropdownIndicatorMouseDown = function (event) {
+        // ignore mouse events that weren't triggered by the primary button
+        if (event && event.type === 'mousedown' && event.button !== 0) {
+          return;
+        }
+
+        if (_this.props.isDisabled) return;
+        var _this$props4 = _this.props,
+            isMulti = _this$props4.isMulti,
+            menuIsOpen = _this$props4.menuIsOpen;
+
+        _this.focusInput();
+
+        if (menuIsOpen) {
+          _this.inputIsHiddenAfterUpdate = !isMulti;
+
+          _this.onMenuClose();
+        } else {
+          _this.openMenu('first');
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+      };
+
+      _this.onClearIndicatorMouseDown = function (event) {
+        // ignore mouse events that weren't triggered by the primary button
+        if (event && event.type === 'mousedown' && event.button !== 0) {
+          return;
+        }
+
+        _this.clearValue();
+
+        event.stopPropagation();
+        _this.openAfterFocus = false;
+
+        if (event.type === 'touchend') {
+          _this.focusInput();
+        } else {
+          setTimeout(function () {
+            return _this.focusInput();
+          });
+        }
+      };
+
+      _this.onScroll = function (event) {
+        if (typeof _this.props.closeMenuOnScroll === 'boolean') {
+          if (event.target instanceof HTMLElement && isDocumentElement(event.target)) {
+            _this.props.onMenuClose();
+          }
+        } else if (typeof _this.props.closeMenuOnScroll === 'function') {
+          if (_this.props.closeMenuOnScroll(event)) {
+            _this.props.onMenuClose();
+          }
+        }
+      };
+
+      _this.onCompositionStart = function () {
+        _this.isComposing = true;
+      };
+
+      _this.onCompositionEnd = function () {
+        _this.isComposing = false;
+      };
+
+      _this.onTouchStart = function (_ref4) {
+        var touches = _ref4.touches;
+        var touch = touches.item(0);
+
+        if (!touch) {
+          return;
+        }
+
+        _this.initialTouchX = touch.clientX;
+        _this.initialTouchY = touch.clientY;
+        _this.userIsDragging = false;
+      };
+
+      _this.onTouchMove = function (_ref5) {
+        var touches = _ref5.touches;
+        var touch = touches.item(0);
+
+        if (!touch) {
+          return;
+        }
+
+        var deltaX = Math.abs(touch.clientX - _this.initialTouchX);
+        var deltaY = Math.abs(touch.clientY - _this.initialTouchY);
+        var moveThreshold = 5;
+        _this.userIsDragging = deltaX > moveThreshold || deltaY > moveThreshold;
+      };
+
+      _this.onTouchEnd = function (event) {
+        if (_this.userIsDragging) return; // close the menu if the user taps outside
+        // we're checking on event.target here instead of event.currentTarget, because we want to assert information
+        // on events on child elements, not the document (which we've attached this handler to).
+
+        if (_this.controlRef && !_this.controlRef.contains(event.target) && _this.menuListRef && !_this.menuListRef.contains(event.target)) {
+          _this.blurInput();
+        } // reset move vars
+
+
+        _this.initialTouchX = 0;
+        _this.initialTouchY = 0;
+      };
+
+      _this.onControlTouchEnd = function (event) {
+        if (_this.userIsDragging) return;
+
+        _this.onControlMouseDown(event);
+      };
+
+      _this.onClearIndicatorTouchEnd = function (event) {
+        if (_this.userIsDragging) return;
+
+        _this.onClearIndicatorMouseDown(event);
+      };
+
+      _this.onDropdownIndicatorTouchEnd = function (event) {
+        if (_this.userIsDragging) return;
+
+        _this.onDropdownIndicatorMouseDown(event);
+      };
+
+      _this.handleInputChange = function (event) {
+        var inputValue = event.currentTarget.value;
+        _this.inputIsHiddenAfterUpdate = false;
+
+        _this.onInputChange(inputValue, {
+          action: 'input-change'
+        });
+
+        _this.onMenuOpen();
+      };
+
+      _this.onInputFocus = function (event) {
+        var _this$props5 = _this.props,
+            isSearchable = _this$props5.isSearchable,
+            isMulti = _this$props5.isMulti;
+
+        if (_this.props.onFocus) {
+          _this.props.onFocus(event);
+        }
+
+        _this.inputIsHiddenAfterUpdate = false;
+
+        _this.announceAriaLiveContext({
+          event: 'input',
+          context: {
+            isSearchable: isSearchable,
+            isMulti: isMulti
+          }
+        });
+
+        _this.setState({
+          isFocused: true
+        });
+
+        if (_this.openAfterFocus || _this.props.openMenuOnFocus) {
+          _this.openMenu('first');
+        }
+
+        _this.openAfterFocus = false;
+      };
+
+      _this.onInputBlur = function (event) {
+        if (_this.menuListRef && _this.menuListRef.contains(document.activeElement)) {
+          _this.inputRef.focus();
+
+          return;
+        }
+
+        if (_this.props.onBlur) {
+          _this.props.onBlur(event);
+        }
+
+        _this.onInputChange('', {
+          action: 'input-blur'
+        });
+
+        _this.onMenuClose();
+
+        _this.setState({
+          focusedValue: null,
+          isFocused: false
+        });
+      };
+
+      _this.onOptionHover = function (focusedOption) {
+        if (_this.blockOptionHover || _this.state.focusedOption === focusedOption) {
+          return;
+        }
+
+        _this.setState({
+          focusedOption: focusedOption
+        });
+      };
+
+      _this.shouldHideSelectedOptions = function () {
+        var _this$props6 = _this.props,
+            hideSelectedOptions = _this$props6.hideSelectedOptions,
+            isMulti = _this$props6.isMulti;
+        if (hideSelectedOptions === undefined) return isMulti;
+        return hideSelectedOptions;
+      };
+
+      _this.onKeyDown = function (event) {
+        var _this$props7 = _this.props,
+            isMulti = _this$props7.isMulti,
+            backspaceRemovesValue = _this$props7.backspaceRemovesValue,
+            escapeClearsValue = _this$props7.escapeClearsValue,
+            inputValue = _this$props7.inputValue,
+            isClearable = _this$props7.isClearable,
+            isDisabled = _this$props7.isDisabled,
+            menuIsOpen = _this$props7.menuIsOpen,
+            onKeyDown = _this$props7.onKeyDown,
+            tabSelectsValue = _this$props7.tabSelectsValue,
+            openMenuOnFocus = _this$props7.openMenuOnFocus;
+        var _this$state2 = _this.state,
+            focusedOption = _this$state2.focusedOption,
+            focusedValue = _this$state2.focusedValue,
+            selectValue = _this$state2.selectValue;
+        if (isDisabled) return;
+
+        if (typeof onKeyDown === 'function') {
+          onKeyDown(event);
+
+          if (event.defaultPrevented) {
+            return;
+          }
+        } // Block option hover events when the user has just pressed a key
+
+
+        _this.blockOptionHover = true;
+
+        switch (event.key) {
+          case 'ArrowLeft':
+            if (!isMulti || inputValue) return;
+
+            _this.focusValue('previous');
+
+            break;
+
+          case 'ArrowRight':
+            if (!isMulti || inputValue) return;
+
+            _this.focusValue('next');
+
+            break;
+
+          case 'Delete':
+          case 'Backspace':
+            if (inputValue) return;
+
+            if (focusedValue) {
+              _this.removeValue(focusedValue);
+            } else {
+              if (!backspaceRemovesValue) return;
+
+              if (isMulti) {
+                _this.popValue();
+              } else if (isClearable) {
+                _this.clearValue();
+              }
+            }
+
+            break;
+
+          case 'Tab':
+            if (_this.isComposing) return;
+
+            if (event.shiftKey || !menuIsOpen || !tabSelectsValue || !focusedOption || // don't capture the event if the menu opens on focus and the focused
+            // option is already selected; it breaks the flow of navigation
+            openMenuOnFocus && _this.isOptionSelected(focusedOption, selectValue)) {
+              return;
+            }
+
+            _this.selectOption(focusedOption);
+
+            break;
+
+          case 'Enter':
+            if (event.keyCode === 229) {
+              // ignore the keydown event from an Input Method Editor(IME)
+              // ref. https://www.w3.org/TR/uievents/#determine-keydown-keyup-keyCode
+              break;
+            }
+
+            if (menuIsOpen) {
+              if (!focusedOption) return;
+              if (_this.isComposing) return;
+
+              _this.selectOption(focusedOption);
+
+              break;
+            }
+
+            return;
+
+          case 'Escape':
+            if (menuIsOpen) {
+              _this.inputIsHiddenAfterUpdate = false;
+
+              _this.onInputChange('', {
+                action: 'menu-close'
+              });
+
+              _this.onMenuClose();
+            } else if (isClearable && escapeClearsValue) {
+              _this.clearValue();
+            }
+
+            break;
+
+          case ' ':
+            // space
+            if (inputValue) {
+              return;
+            }
+
+            if (!menuIsOpen) {
+              _this.openMenu('first');
+
+              break;
+            }
+
+            if (!focusedOption) return;
+
+            _this.selectOption(focusedOption);
+
+            break;
+
+          case 'ArrowUp':
+            if (menuIsOpen) {
+              _this.focusOption('up');
+            } else {
+              _this.openMenu('last');
+            }
+
+            break;
+
+          case 'ArrowDown':
+            if (menuIsOpen) {
+              _this.focusOption('down');
+            } else {
+              _this.openMenu('first');
+            }
+
+            break;
+
+          case 'PageUp':
+            if (!menuIsOpen) return;
+
+            _this.focusOption('pageup');
+
+            break;
+
+          case 'PageDown':
+            if (!menuIsOpen) return;
+
+            _this.focusOption('pagedown');
+
+            break;
+
+          case 'Home':
+            if (!menuIsOpen) return;
+
+            _this.focusOption('first');
+
+            break;
+
+          case 'End':
+            if (!menuIsOpen) return;
+
+            _this.focusOption('last');
+
+            break;
+
+          default:
+            return;
+        }
+
+        event.preventDefault();
+      };
+
+      _this.buildMenuOptions = function (props, selectValue) {
+        var _props$inputValue = props.inputValue,
+            inputValue = _props$inputValue === void 0 ? '' : _props$inputValue,
+            options = props.options;
+
+        var toOption = function toOption(option, id) {
+          var isDisabled = _this.isOptionDisabled(option, selectValue);
+
+          var isSelected = _this.isOptionSelected(option, selectValue);
+
+          var label = _this.getOptionLabel(option);
+
+          var value = _this.getOptionValue(option);
+
+          if (_this.shouldHideSelectedOptions() && isSelected || !_this.filterOption({
+            label: label,
+            value: value,
+            data: option
+          }, inputValue)) {
+            return;
+          }
+
+          var onHover = isDisabled ? undefined : function () {
+            return _this.onOptionHover(option);
+          };
+          var onSelect = isDisabled ? undefined : function () {
+            return _this.selectOption(option);
+          };
+          var optionId = _this.getElementId('option') + "-" + id;
+          return {
+            innerProps: {
+              id: optionId,
+              onClick: onSelect,
+              onMouseMove: onHover,
+              onMouseOver: onHover,
+              tabIndex: -1
+            },
+            data: option,
+            isDisabled: isDisabled,
+            isSelected: isSelected,
+            key: optionId,
+            label: label,
+            type: 'option',
+            value: value
+          };
+        };
+
+        return options.reduce(function (acc, item, itemIndex) {
+          if (item.options) {
+            // TODO needs a tidier implementation
+            if (!_this.hasGroups) _this.hasGroups = true;
+            var items = item.options;
+            var children = items.map(function (child, i$$1) {
+              var option = toOption(child, itemIndex + "-" + i$$1);
+              if (option) acc.focusable.push(child);
+              return option;
+            }).filter(Boolean);
+
+            if (children.length) {
+              var groupId = _this.getElementId('group') + "-" + itemIndex;
+              acc.render.push({
+                type: 'group',
+                key: groupId,
+                data: item,
+                options: children
+              });
+            }
+          } else {
+            var option = toOption(item, "" + itemIndex);
+
+            if (option) {
+              acc.render.push(option);
+              acc.focusable.push(item);
+            }
+          }
+
+          return acc;
+        }, {
+          render: [],
+          focusable: []
+        });
+      };
+
+      var _value = _props.value;
+      _this.cacheComponents = memoizeOne(_this.cacheComponents, exportedEqual).bind(_assertThisInitialized$1(_assertThisInitialized$1(_this)));
+
+      _this.cacheComponents(_props.components);
+
+      _this.instancePrefix = 'react-select-' + (_this.props.instanceId || ++instanceId);
+
+      var _selectValue = cleanValue(_value);
+
+      _this.buildMenuOptions = memoizeOne(_this.buildMenuOptions, function (newArgs, lastArgs) {
+        var _ref6 = newArgs,
+            newProps = _ref6[0],
+            newSelectValue = _ref6[1];
+        var _ref7 = lastArgs,
+            lastProps = _ref7[0],
+            lastSelectValue = _ref7[1];
+        return exportedEqual(newSelectValue, lastSelectValue) && exportedEqual(newProps.inputValue, lastProps.inputValue) && exportedEqual(newProps.options, lastProps.options);
+      }).bind(_assertThisInitialized$1(_assertThisInitialized$1(_this)));
+
+      var _menuOptions = _props.menuIsOpen ? _this.buildMenuOptions(_props, _selectValue) : {
+        render: [],
+        focusable: []
+      };
+
+      _this.state.menuOptions = _menuOptions;
+      _this.state.selectValue = _selectValue;
+      return _this;
+    }
+
+    var _proto = Select.prototype;
+
+    _proto.componentDidMount = function componentDidMount() {
+      this.startListeningComposition();
+      this.startListeningToTouch();
+
+      if (this.props.closeMenuOnScroll && document && document.addEventListener) {
+        // Listen to all scroll events, and filter them out inside of 'onScroll'
+        document.addEventListener('scroll', this.onScroll, true);
+      }
+
+      if (this.props.autoFocus) {
+        this.focusInput();
+      }
+    };
+
+    _proto.UNSAFE_componentWillReceiveProps = function UNSAFE_componentWillReceiveProps(nextProps) {
+      var _this$props8 = this.props,
+          options = _this$props8.options,
+          value = _this$props8.value,
+          menuIsOpen = _this$props8.menuIsOpen,
+          inputValue = _this$props8.inputValue; // re-cache custom components
+
+      this.cacheComponents(nextProps.components); // rebuild the menu options
+
+      if (nextProps.value !== value || nextProps.options !== options || nextProps.menuIsOpen !== menuIsOpen || nextProps.inputValue !== inputValue) {
+        var selectValue = cleanValue(nextProps.value);
+        var menuOptions = nextProps.menuIsOpen ? this.buildMenuOptions(nextProps, selectValue) : {
+          render: [],
+          focusable: []
+        };
+        var focusedValue = this.getNextFocusedValue(selectValue);
+        var focusedOption = this.getNextFocusedOption(menuOptions.focusable);
+        this.setState({
+          menuOptions: menuOptions,
+          selectValue: selectValue,
+          focusedOption: focusedOption,
+          focusedValue: focusedValue
+        });
+      } // some updates should toggle the state of the input visibility
+
+
+      if (this.inputIsHiddenAfterUpdate != null) {
+        this.setState({
+          inputIsHidden: this.inputIsHiddenAfterUpdate
+        });
+        delete this.inputIsHiddenAfterUpdate;
+      }
+    };
+
+    _proto.componentDidUpdate = function componentDidUpdate(prevProps) {
+      var _this$props9 = this.props,
+          isDisabled = _this$props9.isDisabled,
+          menuIsOpen = _this$props9.menuIsOpen;
+      var isFocused = this.state.isFocused;
+
+      if ( // ensure focus is restored correctly when the control becomes enabled
+      isFocused && !isDisabled && prevProps.isDisabled || // ensure focus is on the Input when the menu opens
+      isFocused && menuIsOpen && !prevProps.menuIsOpen) {
+        this.focusInput();
+      } // scroll the focused option into view if necessary
+
+
+      if (this.menuListRef && this.focusedOptionRef && this.scrollToFocusedOptionOnUpdate) {
+        scrollIntoView(this.menuListRef, this.focusedOptionRef);
+        this.scrollToFocusedOptionOnUpdate = false;
+      }
+    };
+
+    _proto.componentWillUnmount = function componentWillUnmount() {
+      this.stopListeningComposition();
+      this.stopListeningToTouch();
+      document.removeEventListener('scroll', this.onScroll, true);
+    };
+
+    // ==============================
+    // Consumer Handlers
+    // ==============================
+    _proto.onMenuOpen = function onMenuOpen() {
+      this.props.onMenuOpen();
+    };
+
+    _proto.onMenuClose = function onMenuClose() {
+      var _this$props10 = this.props,
+          isSearchable = _this$props10.isSearchable,
+          isMulti = _this$props10.isMulti;
+      this.announceAriaLiveContext({
+        event: 'input',
+        context: {
+          isSearchable: isSearchable,
+          isMulti: isMulti
+        }
+      });
+      this.onInputChange('', {
+        action: 'menu-close'
+      });
+      this.props.onMenuClose();
+    };
+
+    _proto.onInputChange = function onInputChange(newValue, actionMeta) {
+      this.props.onInputChange(newValue, actionMeta);
+    } // ==============================
+    // Methods
+    // ==============================
+    ;
+
+    _proto.focusInput = function focusInput() {
+      if (!this.inputRef) return;
+      this.inputRef.focus();
+    };
+
+    _proto.blurInput = function blurInput() {
+      if (!this.inputRef) return;
+      this.inputRef.blur();
+    } // aliased for consumers
+    ;
+
+    _proto.openMenu = function openMenu(focusOption) {
+      var _this2 = this;
+
+      var _this$state3 = this.state,
+          selectValue = _this$state3.selectValue,
+          isFocused = _this$state3.isFocused;
+      var menuOptions = this.buildMenuOptions(this.props, selectValue);
+      var isMulti = this.props.isMulti;
+      var openAtIndex = focusOption === 'first' ? 0 : menuOptions.focusable.length - 1;
+
+      if (!isMulti) {
+        var selectedIndex = menuOptions.focusable.indexOf(selectValue[0]);
+
+        if (selectedIndex > -1) {
+          openAtIndex = selectedIndex;
+        }
+      } // only scroll if the menu isn't already open
+
+
+      this.scrollToFocusedOptionOnUpdate = !(isFocused && this.menuListRef);
+      this.inputIsHiddenAfterUpdate = false;
+      this.setState({
+        menuOptions: menuOptions,
+        focusedValue: null,
+        focusedOption: menuOptions.focusable[openAtIndex]
+      }, function () {
+        _this2.onMenuOpen();
+
+        _this2.announceAriaLiveContext({
+          event: 'menu'
+        });
+      });
+    };
+
+    _proto.focusValue = function focusValue(direction) {
+      var _this$props11 = this.props,
+          isMulti = _this$props11.isMulti,
+          isSearchable = _this$props11.isSearchable;
+      var _this$state4 = this.state,
+          selectValue = _this$state4.selectValue,
+          focusedValue = _this$state4.focusedValue; // Only multiselects support value focusing
+
+      if (!isMulti) return;
+      this.setState({
+        focusedOption: null
+      });
+      var focusedIndex = selectValue.indexOf(focusedValue);
+
+      if (!focusedValue) {
+        focusedIndex = -1;
+        this.announceAriaLiveContext({
+          event: 'value'
+        });
+      }
+
+      var lastIndex = selectValue.length - 1;
+      var nextFocus = -1;
+      if (!selectValue.length) return;
+
+      switch (direction) {
+        case 'previous':
+          if (focusedIndex === 0) {
+            // don't cycle from the start to the end
+            nextFocus = 0;
+          } else if (focusedIndex === -1) {
+            // if nothing is focused, focus the last value first
+            nextFocus = lastIndex;
+          } else {
+            nextFocus = focusedIndex - 1;
+          }
+
+          break;
+
+        case 'next':
+          if (focusedIndex > -1 && focusedIndex < lastIndex) {
+            nextFocus = focusedIndex + 1;
+          }
+
+          break;
+      }
+
+      if (nextFocus === -1) {
+        this.announceAriaLiveContext({
+          event: 'input',
+          context: {
+            isSearchable: isSearchable,
+            isMulti: isMulti
+          }
+        });
+      }
+
+      this.setState({
+        inputIsHidden: nextFocus !== -1,
+        focusedValue: selectValue[nextFocus]
+      });
+    };
+
+    _proto.focusOption = function focusOption(direction) {
+      if (direction === void 0) {
+        direction = 'first';
+      }
+
+      var pageSize = this.props.pageSize;
+      var _this$state5 = this.state,
+          focusedOption = _this$state5.focusedOption,
+          menuOptions = _this$state5.menuOptions;
+      var options = menuOptions.focusable;
+      if (!options.length) return;
+      var nextFocus = 0; // handles 'first'
+
+      var focusedIndex = options.indexOf(focusedOption);
+
+      if (!focusedOption) {
+        focusedIndex = -1;
+        this.announceAriaLiveContext({
+          event: 'menu'
+        });
+      }
+
+      if (direction === 'up') {
+        nextFocus = focusedIndex > 0 ? focusedIndex - 1 : options.length - 1;
+      } else if (direction === 'down') {
+        nextFocus = (focusedIndex + 1) % options.length;
+      } else if (direction === 'pageup') {
+        nextFocus = focusedIndex - pageSize;
+        if (nextFocus < 0) nextFocus = 0;
+      } else if (direction === 'pagedown') {
+        nextFocus = focusedIndex + pageSize;
+        if (nextFocus > options.length - 1) nextFocus = options.length - 1;
+      } else if (direction === 'last') {
+        nextFocus = options.length - 1;
+      }
+
+      this.scrollToFocusedOptionOnUpdate = true;
+      this.setState({
+        focusedOption: options[nextFocus],
+        focusedValue: null
+      });
+      this.announceAriaLiveContext({
+        event: 'menu',
+        context: {
+          isDisabled: isOptionDisabled(options[nextFocus])
+        }
+      });
+    };
+
+    // ==============================
+    // Getters
+    // ==============================
+    _proto.getTheme = function getTheme() {
+      // Use the default theme if there are no customizations.
+      if (!this.props.theme) {
+        return defaultTheme;
+      } // If the theme prop is a function, assume the function
+      // knows how to merge the passed-in default theme with
+      // its own modifications.
+
+
+      if (typeof this.props.theme === 'function') {
+        return this.props.theme(defaultTheme);
+      } // Otherwise, if a plain theme object was passed in,
+      // overlay it with the default theme.
+
+
+      return _extends$4$1({}, defaultTheme, this.props.theme);
+    };
+
+    _proto.getCommonProps = function getCommonProps() {
+      var clearValue = this.clearValue,
+          getStyles = this.getStyles,
+          setValue = this.setValue,
+          selectOption = this.selectOption,
+          props = this.props;
+      var classNamePrefix = props.classNamePrefix,
+          isMulti = props.isMulti,
+          isRtl = props.isRtl,
+          options = props.options;
+      var selectValue = this.state.selectValue;
+      var hasValue = this.hasValue();
+
+      var getValue = function getValue() {
+        return selectValue;
+      };
+
+      var cx = classNames.bind(null, classNamePrefix);
+      return {
+        cx: cx,
+        clearValue: clearValue,
+        getStyles: getStyles,
+        getValue: getValue,
+        hasValue: hasValue,
+        isMulti: isMulti,
+        isRtl: isRtl,
+        options: options,
+        selectOption: selectOption,
+        setValue: setValue,
+        selectProps: props,
+        theme: this.getTheme()
+      };
+    };
+
+    _proto.getNextFocusedValue = function getNextFocusedValue(nextSelectValue) {
+      if (this.clearFocusValueOnUpdate) {
+        this.clearFocusValueOnUpdate = false;
+        return null;
+      }
+
+      var _this$state6 = this.state,
+          focusedValue = _this$state6.focusedValue,
+          lastSelectValue = _this$state6.selectValue;
+      var lastFocusedIndex = lastSelectValue.indexOf(focusedValue);
+
+      if (lastFocusedIndex > -1) {
+        var nextFocusedIndex = nextSelectValue.indexOf(focusedValue);
+
+        if (nextFocusedIndex > -1) {
+          // the focused value is still in the selectValue, return it
+          return focusedValue;
+        } else if (lastFocusedIndex < nextSelectValue.length) {
+          // the focusedValue is not present in the next selectValue array by
+          // reference, so return the new value at the same index
+          return nextSelectValue[lastFocusedIndex];
+        }
+      }
+
+      return null;
+    };
+
+    _proto.getNextFocusedOption = function getNextFocusedOption(options) {
+      var lastFocusedOption = this.state.focusedOption;
+      return lastFocusedOption && options.indexOf(lastFocusedOption) > -1 ? lastFocusedOption : options[0];
+    };
+
+    _proto.hasValue = function hasValue() {
+      var selectValue = this.state.selectValue;
+      return selectValue.length > 0;
+    };
+
+    _proto.hasOptions = function hasOptions() {
+      return !!this.state.menuOptions.render.length;
+    };
+
+    _proto.countOptions = function countOptions() {
+      return this.state.menuOptions.focusable.length;
+    };
+
+    _proto.isClearable = function isClearable() {
+      var _this$props12 = this.props,
+          isClearable = _this$props12.isClearable,
+          isMulti = _this$props12.isMulti; // single select, by default, IS NOT clearable
+      // multi select, by default, IS clearable
+
+      if (isClearable === undefined) return isMulti;
+      return isClearable;
+    };
+
+    _proto.isOptionDisabled = function isOptionDisabled(option, selectValue) {
+      return typeof this.props.isOptionDisabled === 'function' ? this.props.isOptionDisabled(option, selectValue) : false;
+    };
+
+    _proto.isOptionSelected = function isOptionSelected(option, selectValue) {
+      var _this3 = this;
+
+      if (selectValue.indexOf(option) > -1) return true;
+
+      if (typeof this.props.isOptionSelected === 'function') {
+        return this.props.isOptionSelected(option, selectValue);
+      }
+
+      var candidate = this.getOptionValue(option);
+      return selectValue.some(function (i$$1) {
+        return _this3.getOptionValue(i$$1) === candidate;
+      });
+    };
+
+    _proto.filterOption = function filterOption(option, inputValue) {
+      return this.props.filterOption ? this.props.filterOption(option, inputValue) : true;
+    };
+
+    _proto.formatOptionLabel = function formatOptionLabel(data, context) {
+      if (typeof this.props.formatOptionLabel === 'function') {
+        var inputValue = this.props.inputValue;
+        var selectValue = this.state.selectValue;
+        return this.props.formatOptionLabel(data, {
+          context: context,
+          inputValue: inputValue,
+          selectValue: selectValue
+        });
+      } else {
+        return this.getOptionLabel(data);
+      }
+    };
+
+    _proto.formatGroupLabel = function formatGroupLabel(data) {
+      return this.props.formatGroupLabel(data);
+    } // ==============================
+    // Mouse Handlers
+    // ==============================
+    ;
+
+    // ==============================
+    // Composition Handlers
+    // ==============================
+    _proto.startListeningComposition = function startListeningComposition() {
+      if (document && document.addEventListener) {
+        document.addEventListener('compositionstart', this.onCompositionStart, false);
+        document.addEventListener('compositionend', this.onCompositionEnd, false);
+      }
+    };
+
+    _proto.stopListeningComposition = function stopListeningComposition() {
+      if (document && document.removeEventListener) {
+        document.removeEventListener('compositionstart', this.onCompositionStart);
+        document.removeEventListener('compositionend', this.onCompositionEnd);
+      }
+    };
+
+    // ==============================
+    // Touch Handlers
+    // ==============================
+    _proto.startListeningToTouch = function startListeningToTouch() {
+      if (document && document.addEventListener) {
+        document.addEventListener('touchstart', this.onTouchStart, false);
+        document.addEventListener('touchmove', this.onTouchMove, false);
+        document.addEventListener('touchend', this.onTouchEnd, false);
+      }
+    };
+
+    _proto.stopListeningToTouch = function stopListeningToTouch() {
+      if (document && document.removeEventListener) {
+        document.removeEventListener('touchstart', this.onTouchStart);
+        document.removeEventListener('touchmove', this.onTouchMove);
+        document.removeEventListener('touchend', this.onTouchEnd);
+      }
+    };
+
+    // ==============================
+    // Renderers
+    // ==============================
+    _proto.constructAriaLiveMessage = function constructAriaLiveMessage() {
+      var _this$state7 = this.state,
+          ariaLiveContext = _this$state7.ariaLiveContext,
+          selectValue = _this$state7.selectValue,
+          focusedValue = _this$state7.focusedValue,
+          focusedOption = _this$state7.focusedOption;
+      var _this$props13 = this.props,
+          options = _this$props13.options,
+          menuIsOpen = _this$props13.menuIsOpen,
+          inputValue = _this$props13.inputValue,
+          screenReaderStatus = _this$props13.screenReaderStatus; // An aria live message representing the currently focused value in the select.
+
+      var focusedValueMsg = focusedValue ? valueFocusAriaMessage({
+        focusedValue: focusedValue,
+        getOptionLabel: this.getOptionLabel,
+        selectValue: selectValue
+      }) : ''; // An aria live message representing the currently focused option in the select.
+
+      var focusedOptionMsg = focusedOption && menuIsOpen ? optionFocusAriaMessage({
+        focusedOption: focusedOption,
+        getOptionLabel: this.getOptionLabel,
+        options: options
+      }) : ''; // An aria live message representing the set of focusable results and current searchterm/inputvalue.
+
+      var resultsMsg = resultsAriaMessage({
+        inputValue: inputValue,
+        screenReaderMessage: screenReaderStatus({
+          count: this.countOptions()
+        })
+      });
+      return focusedValueMsg + " " + focusedOptionMsg + " " + resultsMsg + " " + ariaLiveContext;
+    };
+
+    _proto.renderInput = function renderInput() {
+      var _this$props14 = this.props,
+          isDisabled = _this$props14.isDisabled,
+          isSearchable = _this$props14.isSearchable,
+          inputId = _this$props14.inputId,
+          inputValue = _this$props14.inputValue,
+          tabIndex = _this$props14.tabIndex;
+      var Input = this.components.Input;
+      var inputIsHidden = this.state.inputIsHidden;
+      var id = inputId || this.getElementId('input'); // aria attributes makes the JSX "noisy", separated for clarity
+
+      var ariaAttributes = {
+        'aria-autocomplete': 'list',
+        'aria-label': this.props['aria-label'],
+        'aria-labelledby': this.props['aria-labelledby']
+      };
+
+      if (!isSearchable) {
+        // use a dummy input to maintain focus/blur functionality
+        return React__default.createElement(DummyInput, _extends$4$1({
+          id: id,
+          innerRef: this.getInputRef,
+          onBlur: this.onInputBlur,
+          onChange: noop,
+          onFocus: this.onInputFocus,
+          readOnly: true,
+          disabled: isDisabled,
+          tabIndex: tabIndex,
+          value: ""
+        }, ariaAttributes));
+      }
+
+      var _this$commonProps = this.commonProps,
+          cx = _this$commonProps.cx,
+          theme = _this$commonProps.theme,
+          selectProps = _this$commonProps.selectProps;
+      return React__default.createElement(Input, _extends$4$1({
+        autoCapitalize: "none",
+        autoComplete: "off",
+        autoCorrect: "off",
+        cx: cx,
+        getStyles: this.getStyles,
+        id: id,
+        innerRef: this.getInputRef,
+        isDisabled: isDisabled,
+        isHidden: inputIsHidden,
+        onBlur: this.onInputBlur,
+        onChange: this.handleInputChange,
+        onFocus: this.onInputFocus,
+        selectProps: selectProps,
+        spellCheck: "false",
+        tabIndex: tabIndex,
+        theme: theme,
+        type: "text",
+        value: inputValue
+      }, ariaAttributes));
+    };
+
+    _proto.renderPlaceholderOrValue = function renderPlaceholderOrValue() {
+      var _this4 = this;
+
+      var _this$components = this.components,
+          MultiValue = _this$components.MultiValue,
+          MultiValueContainer = _this$components.MultiValueContainer,
+          MultiValueLabel = _this$components.MultiValueLabel,
+          MultiValueRemove = _this$components.MultiValueRemove,
+          SingleValue = _this$components.SingleValue,
+          Placeholder = _this$components.Placeholder;
+      var commonProps = this.commonProps;
+      var _this$props15 = this.props,
+          controlShouldRenderValue = _this$props15.controlShouldRenderValue,
+          isDisabled = _this$props15.isDisabled,
+          isMulti = _this$props15.isMulti,
+          inputValue = _this$props15.inputValue,
+          placeholder = _this$props15.placeholder;
+      var _this$state8 = this.state,
+          selectValue = _this$state8.selectValue,
+          focusedValue = _this$state8.focusedValue,
+          isFocused = _this$state8.isFocused;
+
+      if (!this.hasValue() || !controlShouldRenderValue) {
+        return inputValue ? null : React__default.createElement(Placeholder, _extends$4$1({}, commonProps, {
+          key: "placeholder",
+          isDisabled: isDisabled,
+          isFocused: isFocused
+        }), placeholder);
+      }
+
+      if (isMulti) {
+        var selectValues = selectValue.map(function (opt, index) {
+          var isOptionFocused = opt === focusedValue;
+          return React__default.createElement(MultiValue, _extends$4$1({}, commonProps, {
+            components: {
+              Container: MultiValueContainer,
+              Label: MultiValueLabel,
+              Remove: MultiValueRemove
+            },
+            isFocused: isOptionFocused,
+            isDisabled: isDisabled,
+            key: _this4.getOptionValue(opt),
+            index: index,
+            removeProps: {
+              onClick: function onClick() {
+                return _this4.removeValue(opt);
+              },
+              onTouchEnd: function onTouchEnd() {
+                return _this4.removeValue(opt);
+              },
+              onMouseDown: function onMouseDown(e$$1) {
+                e$$1.preventDefault();
+                e$$1.stopPropagation();
+              }
+            },
+            data: opt
+          }), _this4.formatOptionLabel(opt, 'value'));
+        });
+        return selectValues;
+      }
+
+      if (inputValue) {
+        return null;
+      }
+
+      var singleValue = selectValue[0];
+      return React__default.createElement(SingleValue, _extends$4$1({}, commonProps, {
+        data: singleValue,
+        isDisabled: isDisabled
+      }), this.formatOptionLabel(singleValue, 'value'));
+    };
+
+    _proto.renderClearIndicator = function renderClearIndicator() {
+      var ClearIndicator = this.components.ClearIndicator;
+      var commonProps = this.commonProps;
+      var _this$props16 = this.props,
+          isDisabled = _this$props16.isDisabled,
+          isLoading = _this$props16.isLoading;
+      var isFocused = this.state.isFocused;
+
+      if (!this.isClearable() || !ClearIndicator || isDisabled || !this.hasValue() || isLoading) {
+        return null;
+      }
+
+      var innerProps = {
+        onMouseDown: this.onClearIndicatorMouseDown,
+        onTouchEnd: this.onClearIndicatorTouchEnd,
+        'aria-hidden': 'true'
+      };
+      return React__default.createElement(ClearIndicator, _extends$4$1({}, commonProps, {
+        innerProps: innerProps,
+        isFocused: isFocused
+      }));
+    };
+
+    _proto.renderLoadingIndicator = function renderLoadingIndicator() {
+      var LoadingIndicator = this.components.LoadingIndicator;
+      var commonProps = this.commonProps;
+      var _this$props17 = this.props,
+          isDisabled = _this$props17.isDisabled,
+          isLoading = _this$props17.isLoading;
+      var isFocused = this.state.isFocused;
+      if (!LoadingIndicator || !isLoading) return null;
+      var innerProps = {
+        'aria-hidden': 'true'
+      };
+      return React__default.createElement(LoadingIndicator, _extends$4$1({}, commonProps, {
+        innerProps: innerProps,
+        isDisabled: isDisabled,
+        isFocused: isFocused
+      }));
+    };
+
+    _proto.renderIndicatorSeparator = function renderIndicatorSeparator() {
+      var _this$components2 = this.components,
+          DropdownIndicator = _this$components2.DropdownIndicator,
+          IndicatorSeparator = _this$components2.IndicatorSeparator; // separator doesn't make sense without the dropdown indicator
+
+      if (!DropdownIndicator || !IndicatorSeparator) return null;
+      var commonProps = this.commonProps;
+      var isDisabled = this.props.isDisabled;
+      var isFocused = this.state.isFocused;
+      return React__default.createElement(IndicatorSeparator, _extends$4$1({}, commonProps, {
+        isDisabled: isDisabled,
+        isFocused: isFocused
+      }));
+    };
+
+    _proto.renderDropdownIndicator = function renderDropdownIndicator() {
+      var DropdownIndicator = this.components.DropdownIndicator;
+      if (!DropdownIndicator) return null;
+      var commonProps = this.commonProps;
+      var isDisabled = this.props.isDisabled;
+      var isFocused = this.state.isFocused;
+      var innerProps = {
+        onMouseDown: this.onDropdownIndicatorMouseDown,
+        onTouchEnd: this.onDropdownIndicatorTouchEnd,
+        'aria-hidden': 'true'
+      };
+      return React__default.createElement(DropdownIndicator, _extends$4$1({}, commonProps, {
+        innerProps: innerProps,
+        isDisabled: isDisabled,
+        isFocused: isFocused
+      }));
+    };
+
+    _proto.renderMenu = function renderMenu() {
+      var _this5 = this;
+
+      var _this$components3 = this.components,
+          Group = _this$components3.Group,
+          GroupHeading = _this$components3.GroupHeading,
+          Menu = _this$components3.Menu,
+          MenuList = _this$components3.MenuList,
+          MenuPortal = _this$components3.MenuPortal,
+          LoadingMessage = _this$components3.LoadingMessage,
+          NoOptionsMessage = _this$components3.NoOptionsMessage,
+          Option = _this$components3.Option;
+      var commonProps = this.commonProps;
+      var _this$state9 = this.state,
+          focusedOption = _this$state9.focusedOption,
+          menuOptions = _this$state9.menuOptions;
+      var _this$props18 = this.props,
+          captureMenuScroll = _this$props18.captureMenuScroll,
+          inputValue = _this$props18.inputValue,
+          isLoading = _this$props18.isLoading,
+          loadingMessage = _this$props18.loadingMessage,
+          minMenuHeight = _this$props18.minMenuHeight,
+          maxMenuHeight = _this$props18.maxMenuHeight,
+          menuIsOpen = _this$props18.menuIsOpen,
+          menuPlacement = _this$props18.menuPlacement,
+          menuPosition = _this$props18.menuPosition,
+          menuPortalTarget = _this$props18.menuPortalTarget,
+          menuShouldBlockScroll = _this$props18.menuShouldBlockScroll,
+          menuShouldScrollIntoView = _this$props18.menuShouldScrollIntoView,
+          noOptionsMessage = _this$props18.noOptionsMessage,
+          onMenuScrollToTop = _this$props18.onMenuScrollToTop,
+          onMenuScrollToBottom = _this$props18.onMenuScrollToBottom;
+      if (!menuIsOpen) return null; // TODO: Internal Option Type here
+
+      var render = function render(props) {
+        // for performance, the menu options in state aren't changed when the
+        // focused option changes so we calculate additional props based on that
+        var isFocused = focusedOption === props.data;
+        props.innerRef = isFocused ? _this5.getFocusedOptionRef : undefined;
+        return React__default.createElement(Option, _extends$4$1({}, commonProps, props, {
+          isFocused: isFocused
+        }), _this5.formatOptionLabel(props.data, 'menu'));
+      };
+
+      var menuUI;
+
+      if (this.hasOptions()) {
+        menuUI = menuOptions.render.map(function (item) {
+          if (item.type === 'group') {
+            var type = item.type,
+                group = _objectWithoutPropertiesLoose$2$1(item, ["type"]);
+
+            var headingId = item.key + "-heading";
+            return React__default.createElement(Group, _extends$4$1({}, commonProps, group, {
+              Heading: GroupHeading,
+              headingProps: {
+                id: headingId
+              },
+              label: _this5.formatGroupLabel(item.data)
+            }), item.options.map(function (option) {
+              return render(option);
+            }));
+          } else if (item.type === 'option') {
+            return render(item);
+          }
+        });
+      } else if (isLoading) {
+        var message = loadingMessage({
+          inputValue: inputValue
+        });
+        if (message === null) return null;
+        menuUI = React__default.createElement(LoadingMessage, commonProps, message);
+      } else {
+        var _message = noOptionsMessage({
+          inputValue: inputValue
+        });
+
+        if (_message === null) return null;
+        menuUI = React__default.createElement(NoOptionsMessage, commonProps, _message);
+      }
+
+      var menuPlacementProps = {
+        minMenuHeight: minMenuHeight,
+        maxMenuHeight: maxMenuHeight,
+        menuPlacement: menuPlacement,
+        menuPosition: menuPosition,
+        menuShouldScrollIntoView: menuShouldScrollIntoView
+      };
+      var menuElement = React__default.createElement(MenuPlacer, _extends$4$1({}, commonProps, menuPlacementProps), function (_ref8) {
+        var ref = _ref8.ref,
+            _ref8$placerProps = _ref8.placerProps,
+            placement = _ref8$placerProps.placement,
+            maxHeight = _ref8$placerProps.maxHeight;
+        return React__default.createElement(Menu, _extends$4$1({}, commonProps, menuPlacementProps, {
+          innerRef: ref,
+          innerProps: {
+            onMouseDown: _this5.onMenuMouseDown,
+            onMouseMove: _this5.onMenuMouseMove
+          },
+          isLoading: isLoading,
+          placement: placement
+        }), React__default.createElement(ScrollCaptorSwitch, {
+          isEnabled: captureMenuScroll,
+          onTopArrive: onMenuScrollToTop,
+          onBottomArrive: onMenuScrollToBottom
+        }, React__default.createElement(ScrollBlock, {
+          isEnabled: menuShouldBlockScroll
+        }, React__default.createElement(MenuList, _extends$4$1({}, commonProps, {
+          innerRef: _this5.getMenuListRef,
+          isLoading: isLoading,
+          maxHeight: maxHeight
+        }), menuUI))));
+      }); // positioning behaviour is almost identical for portalled and fixed,
+      // so we use the same component. the actual portalling logic is forked
+      // within the component based on `menuPosition`
+
+      return menuPortalTarget || menuPosition === 'fixed' ? React__default.createElement(MenuPortal, _extends$4$1({}, commonProps, {
+        appendTo: menuPortalTarget,
+        controlElement: this.controlRef,
+        menuPlacement: menuPlacement,
+        menuPosition: menuPosition
+      }), menuElement) : menuElement;
+    };
+
+    _proto.renderFormField = function renderFormField() {
+      var _this6 = this;
+
+      var _this$props19 = this.props,
+          delimiter = _this$props19.delimiter,
+          isDisabled = _this$props19.isDisabled,
+          isMulti = _this$props19.isMulti,
+          name = _this$props19.name;
+      var selectValue = this.state.selectValue;
+      if (!name || isDisabled) return;
+
+      if (isMulti) {
+        if (delimiter) {
+          var value = selectValue.map(function (opt) {
+            return _this6.getOptionValue(opt);
+          }).join(delimiter);
+          return React__default.createElement("input", {
+            name: name,
+            type: "hidden",
+            value: value
+          });
+        } else {
+          var input = selectValue.length > 0 ? selectValue.map(function (opt, i$$1) {
+            return React__default.createElement("input", {
+              key: "i-" + i$$1,
+              name: name,
+              type: "hidden",
+              value: _this6.getOptionValue(opt)
+            });
+          }) : React__default.createElement("input", {
+            name: name,
+            type: "hidden"
+          });
+          return React__default.createElement("div", null, input);
+        }
+      } else {
+        var _value2 = selectValue[0] ? this.getOptionValue(selectValue[0]) : '';
+
+        return React__default.createElement("input", {
+          name: name,
+          type: "hidden",
+          value: _value2
+        });
+      }
+    };
+
+    _proto.renderLiveRegion = function renderLiveRegion() {
+      if (!this.state.isFocused) return null;
+      return React__default.createElement(A11yText, {
+        "aria-live": "polite"
+      }, React__default.createElement("p", {
+        id: "aria-selection-event"
+      }, "\xA0", this.state.ariaLiveSelection), React__default.createElement("p", {
+        id: "aria-context"
+      }, "\xA0", this.constructAriaLiveMessage()));
+    };
+
+    _proto.render = function render() {
+      var _this$components4 = this.components,
+          Control = _this$components4.Control,
+          IndicatorsContainer = _this$components4.IndicatorsContainer,
+          SelectContainer = _this$components4.SelectContainer,
+          ValueContainer = _this$components4.ValueContainer;
+      var _this$props20 = this.props,
+          className = _this$props20.className,
+          id = _this$props20.id,
+          isDisabled = _this$props20.isDisabled,
+          menuIsOpen = _this$props20.menuIsOpen;
+      var isFocused = this.state.isFocused;
+      var commonProps = this.commonProps = this.getCommonProps();
+      return React__default.createElement(SelectContainer, _extends$4$1({}, commonProps, {
+        className: className,
+        innerProps: {
+          id: id,
+          onKeyDown: this.onKeyDown
+        },
+        isDisabled: isDisabled,
+        isFocused: isFocused
+      }), this.renderLiveRegion(), React__default.createElement(Control, _extends$4$1({}, commonProps, {
+        innerRef: this.getControlRef,
+        innerProps: {
+          onMouseDown: this.onControlMouseDown,
+          onTouchEnd: this.onControlTouchEnd
+        },
+        isDisabled: isDisabled,
+        isFocused: isFocused,
+        menuIsOpen: menuIsOpen
+      }), React__default.createElement(ValueContainer, _extends$4$1({}, commonProps, {
+        isDisabled: isDisabled
+      }), this.renderPlaceholderOrValue(), this.renderInput()), React__default.createElement(IndicatorsContainer, _extends$4$1({}, commonProps, {
+        isDisabled: isDisabled
+      }), this.renderClearIndicator(), this.renderLoadingIndicator(), this.renderIndicatorSeparator(), this.renderDropdownIndicator())), this.renderMenu(), this.renderFormField());
+    };
+
+    return Select;
+  }(React.Component);
+
+  Select.defaultProps = defaultProps;
+
+  function _extends$c() { _extends$c = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$c.apply(this, arguments); }
+
+  function _objectWithoutPropertiesLoose$4(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+  function _inheritsLoose$5(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+  var defaultProps$1 = {
+    defaultInputValue: '',
+    defaultMenuIsOpen: false,
+    defaultValue: null
   };
 
-  // Default prop methods
-  CreatableSelect.isOptionUnique = isOptionUnique;
-  CreatableSelect.isValidNewOption = isValidNewOption;
-  CreatableSelect.newOptionCreator = newOptionCreator;
-  CreatableSelect.promptTextCreator = promptTextCreator;
-  CreatableSelect.shouldKeyDownEventCreateNewOption = shouldKeyDownEventCreateNewOption;
+  var manageState = function manageState(SelectComponent) {
+    var _class, _temp;
 
-  CreatableSelect.defaultProps = {
-  	filterOptions: filterOptions,
-  	isOptionUnique: isOptionUnique,
-  	isValidNewOption: isValidNewOption,
-  	menuRenderer: menuRenderer,
-  	newOptionCreator: newOptionCreator,
-  	promptTextCreator: promptTextCreator,
-  	shouldKeyDownEventCreateNewOption: shouldKeyDownEventCreateNewOption
+    return _temp = _class =
+    /*#__PURE__*/
+    function (_Component) {
+      _inheritsLoose$5(StateManager, _Component);
+
+      function StateManager() {
+        var _this;
+
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        _this = _Component.call.apply(_Component, [this].concat(args)) || this;
+        _this.select = void 0;
+        _this.state = {
+          inputValue: _this.props.inputValue !== undefined ? _this.props.inputValue : _this.props.defaultInputValue,
+          menuIsOpen: _this.props.menuIsOpen !== undefined ? _this.props.menuIsOpen : _this.props.defaultMenuIsOpen,
+          value: _this.props.value !== undefined ? _this.props.value : _this.props.defaultValue
+        };
+
+        _this.onChange = function (value, actionMeta) {
+          _this.callProp('onChange', value, actionMeta);
+
+          _this.setState({
+            value: value
+          });
+        };
+
+        _this.onInputChange = function (value, actionMeta) {
+          // TODO: for backwards compatibility, we allow the prop to return a new
+          // value, but now inputValue is a controllable prop we probably shouldn't
+          var newValue = _this.callProp('onInputChange', value, actionMeta);
+
+          _this.setState({
+            inputValue: newValue !== undefined ? newValue : value
+          });
+        };
+
+        _this.onMenuOpen = function () {
+          _this.callProp('onMenuOpen');
+
+          _this.setState({
+            menuIsOpen: true
+          });
+        };
+
+        _this.onMenuClose = function () {
+          _this.callProp('onMenuClose');
+
+          _this.setState({
+            menuIsOpen: false
+          });
+        };
+
+        return _this;
+      }
+
+      var _proto = StateManager.prototype;
+
+      _proto.focus = function focus() {
+        this.select.focus();
+      };
+
+      _proto.blur = function blur() {
+        this.select.blur();
+      } // FIXME: untyped flow code, return any
+      ;
+
+      _proto.getProp = function getProp(key) {
+        return this.props[key] !== undefined ? this.props[key] : this.state[key];
+      } // FIXME: untyped flow code, return any
+      ;
+
+      _proto.callProp = function callProp(name) {
+        if (typeof this.props[name] === 'function') {
+          var _this$props;
+
+          for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+            args[_key2 - 1] = arguments[_key2];
+          }
+
+          return (_this$props = this.props)[name].apply(_this$props, args);
+        }
+      };
+
+      _proto.render = function render() {
+        var _this2 = this;
+
+        var _this$props2 = this.props,
+            defaultInputValue = _this$props2.defaultInputValue,
+            defaultMenuIsOpen = _this$props2.defaultMenuIsOpen,
+            defaultValue = _this$props2.defaultValue,
+            props = _objectWithoutPropertiesLoose$4(_this$props2, ["defaultInputValue", "defaultMenuIsOpen", "defaultValue"]);
+
+        return React__default.createElement(SelectComponent, _extends$c({}, props, {
+          ref: function ref(_ref) {
+            _this2.select = _ref;
+          },
+          inputValue: this.getProp('inputValue'),
+          menuIsOpen: this.getProp('menuIsOpen'),
+          onChange: this.onChange,
+          onInputChange: this.onInputChange,
+          onMenuClose: this.onMenuClose,
+          onMenuOpen: this.onMenuOpen,
+          value: this.getProp('value')
+        }));
+      };
+
+      return StateManager;
+    }(React.Component), _class.defaultProps = defaultProps$1, _temp;
   };
 
-  CreatableSelect.propTypes = {
-  	// Child function responsible for creating the inner Select component
-  	// This component can be used to compose HOCs (eg Creatable and Async)
-  	// (props: Object): PropTypes.element
-  	children: PropTypes.func,
+  function _inheritsLoose$6(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
-  	// See Select.propTypes.filterOptions
-  	filterOptions: PropTypes.any,
+  var NonceProvider =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose$6(NonceProvider, _Component);
 
-  	// Searches for any matching option within the set of options.
-  	// This function prevents duplicate options from being created.
-  	// ({ option: Object, options: Array, labelKey: string, valueKey: string }): boolean
-  	isOptionUnique: PropTypes.func,
+    function NonceProvider(props) {
+      var _this;
 
-  	// Determines if the current input text represents a valid option.
-  	// ({ label: string }): boolean
-  	isValidNewOption: PropTypes.func,
+      _this = _Component.call(this, props) || this;
 
-  	// See Select.propTypes.menuRenderer
-  	menuRenderer: PropTypes.any,
+      _this.createEmotionCache = function (nonce) {
+        return createCache({
+          nonce: nonce
+        });
+      };
 
-  	// Factory to create new option.
-  	// ({ label: string, labelKey: string, valueKey: string }): Object
-  	newOptionCreator: PropTypes.func,
+      _this.createEmotionCache = memoizeOne(_this.createEmotionCache);
+      return _this;
+    }
 
-  	// input change handler: function (inputValue) {}
-  	onInputChange: PropTypes.func,
+    var _proto = NonceProvider.prototype;
 
-  	// input keyDown handler: function (event) {}
-  	onInputKeyDown: PropTypes.func,
+    _proto.render = function render() {
+      var emotionCache = this.createEmotionCache(this.props.nonce);
+      return React__default.createElement(CacheProvider, {
+        value: emotionCache
+      }, this.props.children);
+    };
 
-  	// new option click handler: function (option) {}
-  	onNewOptionClick: PropTypes.func,
+    return NonceProvider;
+  }(React.Component);
 
-  	// See Select.propTypes.options
-  	options: PropTypes.array,
-
-  	// Creates prompt/placeholder option text.
-  	// (filterText: string): string
-  	promptTextCreator: PropTypes.func,
-
-  	ref: PropTypes.func,
-
-  	// Decides if a keyDown event (eg its `keyCode`) should result in the creation of a new option.
-  	shouldKeyDownEventCreateNewOption: PropTypes.func
-  };
-
-  var AsyncCreatableSelect = function (_React$Component) {
-  	inherits(AsyncCreatableSelect, _React$Component);
-
-  	function AsyncCreatableSelect() {
-  		classCallCheck(this, AsyncCreatableSelect);
-  		return possibleConstructorReturn(this, (AsyncCreatableSelect.__proto__ || Object.getPrototypeOf(AsyncCreatableSelect)).apply(this, arguments));
-  	}
-
-  	createClass(AsyncCreatableSelect, [{
-  		key: 'focus',
-  		value: function focus() {
-  			this.select.focus();
-  		}
-  	}, {
-  		key: 'render',
-  		value: function render() {
-  			var _this2 = this;
-
-  			return React__default.createElement(
-  				Async,
-  				this.props,
-  				function (_ref) {
-  					var ref = _ref.ref,
-  					    asyncProps = objectWithoutProperties(_ref, ['ref']);
-
-  					var asyncRef = ref;
-  					return React__default.createElement(
-  						CreatableSelect,
-  						asyncProps,
-  						function (_ref2) {
-  							var ref = _ref2.ref,
-  							    creatableProps = objectWithoutProperties(_ref2, ['ref']);
-
-  							var creatableRef = ref;
-  							return _this2.props.children(_extends$1({}, creatableProps, {
-  								ref: function ref(select) {
-  									creatableRef(select);
-  									asyncRef(select);
-  									_this2.select = select;
-  								}
-  							}));
-  						}
-  					);
-  				}
-  			);
-  		}
-  	}]);
-  	return AsyncCreatableSelect;
-  }(React__default.Component);
-
-  var defaultChildren$1 = function defaultChildren(props) {
-  	return React__default.createElement(Select$1, props);
-  };
-
-  AsyncCreatableSelect.propTypes = {
-  	children: PropTypes.func.isRequired // Child function responsible for creating the inner Select component; (props: Object): PropTypes.element
-  };
-
-  AsyncCreatableSelect.defaultProps = {
-  	children: defaultChildren$1
-  };
-
-  Select$1.Async = Async;
-  Select$1.AsyncCreatable = AsyncCreatableSelect;
-  Select$1.Creatable = CreatableSelect;
-  Select$1.Value = Value;
-  Select$1.Option = Option;
+  var index = manageState(Select);
 
   var CitySelect =
   /*#__PURE__*/
@@ -3123,7 +6910,7 @@
     }, {
       key: "render",
       value: function render() {
-        return React__default.createElement(Select$1, {
+        return React__default.createElement(index, {
           name: this.props.name,
           className: "city-select ".concat(this.props.classes),
           value: this.state.value,
@@ -3145,7 +6932,57 @@
     classes: PropTypes.string
   };
 
-  function _inheritsLoose$1(subClass, superClass) {
+  var classnames$1 = createCommonjsModule(function (module) {
+  /*!
+    Copyright (c) 2016 Jed Watson.
+    Licensed under the MIT License (MIT), see
+    http://jedwatson.github.io/classnames
+  */
+  /* global define */
+
+  (function () {
+
+  	var hasOwn = {}.hasOwnProperty;
+
+  	function classNames () {
+  		var classes = [];
+
+  		for (var i = 0; i < arguments.length; i++) {
+  			var arg = arguments[i];
+  			if (!arg) continue;
+
+  			var argType = typeof arg;
+
+  			if (argType === 'string' || argType === 'number') {
+  				classes.push(arg);
+  			} else if (Array.isArray(arg)) {
+  				classes.push(classNames.apply(null, arg));
+  			} else if (argType === 'object') {
+  				for (var key in arg) {
+  					if (hasOwn.call(arg, key) && arg[key]) {
+  						classes.push(key);
+  					}
+  				}
+  			}
+  		}
+
+  		return classes.join(' ');
+  	}
+
+  	if (module.exports) {
+  		module.exports = classNames;
+  	} else if (typeof undefined === 'function' && typeof undefined.amd === 'object' && undefined.amd) {
+  		// register as 'classnames', consistent with npm package name
+  		undefined('classnames', [], function () {
+  			return classNames;
+  		});
+  	} else {
+  		window.classNames = classNames;
+  	}
+  }());
+  });
+
+  function _inheritsLoose$7(subClass, superClass) {
     subClass.prototype = Object.create(superClass.prototype);
     subClass.prototype.constructor = subClass;
     subClass.__proto__ = superClass;
@@ -3299,7 +7136,7 @@
     return _temp = _class =
     /*#__PURE__*/
     function (_Component) {
-      _inheritsLoose$1(onClickOutside, _Component);
+      _inheritsLoose$7(onClickOutside, _Component);
 
       function onClickOutside(props) {
         var _this;
@@ -3558,7 +7395,7 @@
     tag: 'div'
   };
 
-  var _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  var _extends$d = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
   function _objectWithoutProperties$3(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
@@ -3583,7 +7420,7 @@
       return children({ targetProps: targetProps, restProps: restProps });
     }
 
-    var componentProps = _extends$2({}, restProps);
+    var componentProps = _extends$d({}, restProps);
 
     if (typeof component === 'string') {
       componentProps.ref = targetRef;
@@ -3628,12 +7465,12 @@
    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    * SOFTWARE.
    */
-  var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+  var isBrowser$3 = typeof window !== 'undefined' && typeof document !== 'undefined';
 
   var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
   var timeoutDuration = 0;
   for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
-    if (isBrowser && navigator.userAgent.indexOf(longerTimeoutBrowsers[i]) >= 0) {
+    if (isBrowser$3 && navigator.userAgent.indexOf(longerTimeoutBrowsers[i]) >= 0) {
       timeoutDuration = 1;
       break;
     }
@@ -3666,7 +7503,7 @@
     };
   }
 
-  var supportsMicroTasks = isBrowser && window.Promise;
+  var supportsMicroTasks = isBrowser$3 && window.Promise;
 
   /**
   * Create a debounced version of a method, that's asynchronously deferred
@@ -3728,7 +7565,7 @@
    * @argument {Element} element
    * @returns {Element} scroll parent
    */
-  function getScrollParent(element) {
+  function getScrollParent$1(element) {
     // Return body, `getScroll` will take care to get the correct `scrollTop` from it
     if (!element) {
       return document.body;
@@ -3753,11 +7590,11 @@
       return element;
     }
 
-    return getScrollParent(getParentNode(element));
+    return getScrollParent$1(getParentNode(element));
   }
 
-  var isIE11 = isBrowser && !!(window.MSInputMethodContext && document.documentMode);
-  var isIE10 = isBrowser && /MSIE 10/.test(navigator.userAgent);
+  var isIE11 = isBrowser$3 && !!(window.MSInputMethodContext && document.documentMode);
+  var isIE10 = isBrowser$3 && /MSIE 10/.test(navigator.userAgent);
 
   /**
    * Determines if the browser is Internet Explorer
@@ -3957,13 +7794,13 @@
     };
   }
 
-  var classCallCheck$1 = function (instance, Constructor) {
+  var classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  var createClass$1 = function () {
+  var createClass = function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -3985,7 +7822,7 @@
 
 
 
-  var defineProperty$1 = function (obj, key, value) {
+  var defineProperty = function (obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -4000,7 +7837,7 @@
     return obj;
   };
 
-  var _extends$3 = Object.assign || function (target) {
+  var _extends$e = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -4022,7 +7859,7 @@
    * @returns {Object} ClientRect like output
    */
   function getClientRect(offsets) {
-    return _extends$3({}, offsets, {
+    return _extends$e({}, offsets, {
       right: offsets.left + offsets.width,
       bottom: offsets.top + offsets.height
     });
@@ -4091,7 +7928,7 @@
     var isHTML = parent.nodeName === 'HTML';
     var childrenRect = getBoundingClientRect(children);
     var parentRect = getBoundingClientRect(parent);
-    var scrollParent = getScrollParent(children);
+    var scrollParent = getScrollParent$1(children);
 
     var styles = getStyleComputedProperty(parent);
     var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
@@ -4222,7 +8059,7 @@
       // Handle other cases based on DOM element used as boundaries
       var boundariesNode = void 0;
       if (boundariesElement === 'scrollParent') {
-        boundariesNode = getScrollParent(getParentNode(reference));
+        boundariesNode = getScrollParent$1(getParentNode(reference));
         if (boundariesNode.nodeName === 'BODY') {
           boundariesNode = popper.ownerDocument.documentElement;
         }
@@ -4304,7 +8141,7 @@
     };
 
     var sortedAreas = Object.keys(rects).map(function (key) {
-      return _extends$3({
+      return _extends$e({
         key: key
       }, rects[key], {
         area: getArea(rects[key])
@@ -4624,7 +8461,7 @@
     target.addEventListener(event, callback, { passive: true });
 
     if (!isBody) {
-      attachToScrollParents(getScrollParent(target.parentNode), event, callback, scrollParents);
+      attachToScrollParents(getScrollParent$1(target.parentNode), event, callback, scrollParents);
     }
     scrollParents.push(target);
   }
@@ -4641,7 +8478,7 @@
     getWindow(reference).addEventListener('resize', state.updateBound, { passive: true });
 
     // Scroll event listener on scroll parents
-    var scrollElement = getScrollParent(reference);
+    var scrollElement = getScrollParent$1(reference);
     attachToScrollParents(scrollElement, 'scroll', state.updateBound, state.scrollParents);
     state.scrollElement = scrollElement;
     state.eventsEnabled = true;
@@ -4892,9 +8729,9 @@
     };
 
     // Update `data` attributes, styles and arrowStyles
-    data.attributes = _extends$3({}, attributes, data.attributes);
-    data.styles = _extends$3({}, styles, data.styles);
-    data.arrowStyles = _extends$3({}, data.offsets.arrow, data.arrowStyles);
+    data.attributes = _extends$e({}, attributes, data.attributes);
+    data.styles = _extends$e({}, styles, data.styles);
+    data.arrowStyles = _extends$e({}, data.offsets.arrow, data.arrowStyles);
 
     return data;
   }
@@ -5004,7 +8841,7 @@
     sideValue = Math.max(Math.min(popper[len] - arrowElementSize, sideValue), 0);
 
     data.arrowElement = arrowElement;
-    data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty$1(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty$1(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
+    data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
 
     return data;
   }
@@ -5167,7 +9004,7 @@
 
         // this object contains `position`, we want to preserve it along with
         // any additional property we may add in the future
-        data.offsets.popper = _extends$3({}, data.offsets.popper, getPopperOffsets(data.instance.popper, data.offsets.reference, data.placement));
+        data.offsets.popper = _extends$e({}, data.offsets.popper, getPopperOffsets(data.instance.popper, data.offsets.reference, data.placement));
 
         data = runModifiers(data.instance.modifiers, data, 'flip');
       }
@@ -5427,7 +9264,7 @@
         if (popper[placement] < boundaries[placement] && !options.escapeWithReference) {
           value = Math.max(popper[placement], boundaries[placement]);
         }
-        return defineProperty$1({}, placement, value);
+        return defineProperty({}, placement, value);
       },
       secondary: function secondary(placement) {
         var mainSide = placement === 'right' ? 'left' : 'top';
@@ -5435,13 +9272,13 @@
         if (popper[placement] > boundaries[placement] && !options.escapeWithReference) {
           value = Math.min(popper[mainSide], boundaries[placement] - (placement === 'right' ? popper.width : popper.height));
         }
-        return defineProperty$1({}, mainSide, value);
+        return defineProperty({}, mainSide, value);
       }
     };
 
     order.forEach(function (placement) {
       var side = ['left', 'top'].indexOf(placement) !== -1 ? 'primary' : 'secondary';
-      popper = _extends$3({}, popper, check[side](placement));
+      popper = _extends$e({}, popper, check[side](placement));
     });
 
     data.offsets.popper = popper;
@@ -5472,11 +9309,11 @@
       var measurement = isVertical ? 'width' : 'height';
 
       var shiftOffsets = {
-        start: defineProperty$1({}, side, reference[side]),
-        end: defineProperty$1({}, side, reference[side] + reference[measurement] - popper[measurement])
+        start: defineProperty({}, side, reference[side]),
+        end: defineProperty({}, side, reference[side] + reference[measurement] - popper[measurement])
       };
 
-      data.offsets.popper = _extends$3({}, popper, shiftOffsets[shiftvariation]);
+      data.offsets.popper = _extends$e({}, popper, shiftOffsets[shiftvariation]);
     }
 
     return data;
@@ -5982,7 +9819,7 @@
       var _this = this;
 
       var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      classCallCheck$1(this, Popper);
+      classCallCheck(this, Popper);
 
       this.scheduleUpdate = function () {
         return requestAnimationFrame(_this.update);
@@ -5992,7 +9829,7 @@
       this.update = debounce(this.update.bind(this));
 
       // with {} we create a new object with the options inside it
-      this.options = _extends$3({}, Popper.Defaults, options);
+      this.options = _extends$e({}, Popper.Defaults, options);
 
       // init state
       this.state = {
@@ -6007,13 +9844,13 @@
 
       // Deep merge modifiers options
       this.options.modifiers = {};
-      Object.keys(_extends$3({}, Popper.Defaults.modifiers, options.modifiers)).forEach(function (name) {
-        _this.options.modifiers[name] = _extends$3({}, Popper.Defaults.modifiers[name] || {}, options.modifiers ? options.modifiers[name] : {});
+      Object.keys(_extends$e({}, Popper.Defaults.modifiers, options.modifiers)).forEach(function (name) {
+        _this.options.modifiers[name] = _extends$e({}, Popper.Defaults.modifiers[name] || {}, options.modifiers ? options.modifiers[name] : {});
       });
 
       // Refactoring modifiers' list (Object => Array)
       this.modifiers = Object.keys(this.options.modifiers).map(function (name) {
-        return _extends$3({
+        return _extends$e({
           name: name
         }, _this.options.modifiers[name]);
       })
@@ -6048,7 +9885,7 @@
     // class prototype and break stuff like Sinon stubs
 
 
-    createClass$1(Popper, [{
+    createClass(Popper, [{
       key: 'update',
       value: function update$$1() {
         return update.call(this);
@@ -6122,7 +9959,7 @@
   Popper.placements = placements;
   Popper.Defaults = Defaults;
 
-  var _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  var _extends$f = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
   var _createClass$2 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -6190,7 +10027,7 @@
           };
         }
 
-        return _extends$4({
+        return _extends$f({
           position: data.offsets.popper.position
         }, data.styles);
       }, _this._getPopperPlacement = function () {
@@ -6257,12 +10094,12 @@
             placement = _props.placement,
             eventsEnabled = _props.eventsEnabled;
 
-        var modifiers = _extends$4({}, this.props.modifiers, {
+        var modifiers = _extends$f({}, this.props.modifiers, {
           applyStyle: { enabled: false },
           updateState: this._updateStateModifier
         });
         if (this._arrowNode) {
-          modifiers.arrow = _extends$4({}, this.props.modifiers.arrow || {}, {
+          modifiers.arrow = _extends$f({}, this.props.modifiers.arrow || {}, {
             element: this._arrowNode
           });
         }
@@ -6314,8 +10151,8 @@
           });
         }
 
-        var componentProps = _extends$4({}, restProps, {
-          style: _extends$4({}, restProps.style, popperStyle),
+        var componentProps = _extends$f({}, restProps, {
+          style: _extends$f({}, restProps.style, popperStyle),
           'data-placement': popperPlacement,
           'data-x-out-of-boundaries': popperHide
         });
@@ -6361,7 +10198,7 @@
     modifiers: {}
   };
 
-  var _extends$5 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  var _extends$g = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
   function _objectWithoutProperties$5(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
@@ -6390,8 +10227,8 @@
       return children({ arrowProps: arrowProps, restProps: restProps });
     }
 
-    var componentProps = _extends$5({}, restProps, {
-      style: _extends$5({}, arrowStyle, restProps.style)
+    var componentProps = _extends$g({}, restProps, {
+      style: _extends$g({}, arrowStyle, restProps.style)
     });
 
     if (typeof component === 'string') {
@@ -6413,7 +10250,7 @@
     children: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
   };
 
-  var _typeof$2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
   } : function (obj) {
     return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
@@ -6427,13 +10264,13 @@
 
 
 
-  var classCallCheck$2 = function (instance, Constructor) {
+  var classCallCheck$1 = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   };
 
-  var createClass$2 = function () {
+  var createClass$1 = function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -6459,7 +10296,7 @@
 
 
 
-  var inherits$1 = function (subClass, superClass) {
+  var inherits = function (subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
     }
@@ -6485,7 +10322,7 @@
 
 
 
-  var possibleConstructorReturn$1 = function (self, call) {
+  var possibleConstructorReturn = function (self, call) {
     if (!self) {
       throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     }
@@ -6516,12 +10353,12 @@
   }
 
   var YearDropdownOptions = function (_React$Component) {
-    inherits$1(YearDropdownOptions, _React$Component);
+    inherits(YearDropdownOptions, _React$Component);
 
     function YearDropdownOptions(props) {
-      classCallCheck$2(this, YearDropdownOptions);
+      classCallCheck$1(this, YearDropdownOptions);
 
-      var _this = possibleConstructorReturn$1(this, _React$Component.call(this, props));
+      var _this = possibleConstructorReturn(this, _React$Component.call(this, props));
 
       _this.renderOptions = function () {
         var selectedYear = _this.props.year;
@@ -6617,7 +10454,7 @@
     }
 
     YearDropdownOptions.prototype.render = function render() {
-      var dropdownClass = classnames({
+      var dropdownClass = classnames$1({
         "react-datepicker__year-dropdown": true,
         "react-datepicker__year-dropdown--scrollable": this.props.scrollableYearDropdown
       });
@@ -7052,7 +10889,7 @@
           classNamesArr.push(defaultClassName);
           dateClasses.set(key, classNamesArr);
         }
-      } else if ((typeof obj === "undefined" ? "undefined" : _typeof$2(obj)) === "object") {
+      } else if ((typeof obj === "undefined" ? "undefined" : _typeof$1(obj)) === "object") {
         var keys = Object.keys(obj);
         var className = keys[0];
         var arrOfMoments = obj[keys[0]];
@@ -7090,18 +10927,18 @@
   var WrappedYearDropdownOptions = onClickOutsideHOC(YearDropdownOptions);
 
   var YearDropdown = function (_React$Component) {
-    inherits$1(YearDropdown, _React$Component);
+    inherits(YearDropdown, _React$Component);
 
     function YearDropdown() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, YearDropdown);
+      classCallCheck$1(this, YearDropdown);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
         dropdownVisible: false
       }, _this.renderSelectOptions = function () {
         var minYear = _this.props.minDate ? getYear(_this.props.minDate) : 1900;
@@ -7189,7 +11026,7 @@
         if (_this.props.setOpen) {
           _this.props.setOpen(true);
         }
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     YearDropdown.prototype.render = function render() {
@@ -7230,18 +11067,18 @@
   };
 
   var MonthDropdownOptions = function (_React$Component) {
-    inherits$1(MonthDropdownOptions, _React$Component);
+    inherits(MonthDropdownOptions, _React$Component);
 
     function MonthDropdownOptions() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, MonthDropdownOptions);
+      classCallCheck$1(this, MonthDropdownOptions);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.renderOptions = function () {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.renderOptions = function () {
         return _this.props.monthNames.map(function (month, i) {
           return React__default.createElement(
             "div",
@@ -7263,7 +11100,7 @@
         return _this.props.onChange(month);
       }, _this.handleClickOutside = function () {
         return _this.props.onCancel();
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     MonthDropdownOptions.prototype.render = function render() {
@@ -7287,18 +11124,18 @@
   var WrappedMonthDropdownOptions = onClickOutsideHOC(MonthDropdownOptions);
 
   var MonthDropdown = function (_React$Component) {
-    inherits$1(MonthDropdown, _React$Component);
+    inherits(MonthDropdown, _React$Component);
 
     function MonthDropdown() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, MonthDropdown);
+      classCallCheck$1(this, MonthDropdown);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
         dropdownVisible: false
       }, _this.renderSelectOptions = function (monthNames) {
         return monthNames.map(function (M, i) {
@@ -7362,7 +11199,7 @@
         return _this.setState({
           dropdownVisible: !_this.state.dropdownVisible
         });
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     MonthDropdown.prototype.render = function render() {
@@ -7422,12 +11259,12 @@
   }
 
   var MonthYearDropdownOptions = function (_React$Component) {
-    inherits$1(MonthYearDropdownOptions, _React$Component);
+    inherits(MonthYearDropdownOptions, _React$Component);
 
     function MonthYearDropdownOptions(props) {
-      classCallCheck$2(this, MonthYearDropdownOptions);
+      classCallCheck$1(this, MonthYearDropdownOptions);
 
-      var _this = possibleConstructorReturn$1(this, _React$Component.call(this, props));
+      var _this = possibleConstructorReturn(this, _React$Component.call(this, props));
 
       _this.renderOptions = function () {
         return _this.state.monthYearsList.map(function (monthYear) {
@@ -7468,7 +11305,7 @@
     }
 
     MonthYearDropdownOptions.prototype.render = function render() {
-      var dropdownClass = classnames({
+      var dropdownClass = classnames$1({
         "react-datepicker__month-year-dropdown": true,
         "react-datepicker__month-year-dropdown--scrollable": this.props.scrollableMonthYearDropdown
       });
@@ -7496,18 +11333,18 @@
   var WrappedMonthYearDropdownOptions = onClickOutsideHOC(MonthYearDropdownOptions);
 
   var MonthYearDropdown = function (_React$Component) {
-    inherits$1(MonthYearDropdown, _React$Component);
+    inherits(MonthYearDropdown, _React$Component);
 
     function MonthYearDropdown() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, MonthYearDropdown);
+      classCallCheck$1(this, MonthYearDropdown);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
         dropdownVisible: false
       }, _this.renderSelectOptions = function () {
         var currDate = getStartOfMonth(localizeDate(_this.props.minDate, _this.props.locale));
@@ -7593,7 +11430,7 @@
         return _this.setState({
           dropdownVisible: !_this.state.dropdownVisible
         });
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     MonthYearDropdown.prototype.render = function render() {
@@ -7631,18 +11468,18 @@
   };
 
   var Day = function (_React$Component) {
-    inherits$1(Day, _React$Component);
+    inherits(Day, _React$Component);
 
     function Day() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, Day);
+      classCallCheck$1(this, Day);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
         if (!_this.isDisabled() && _this.props.onClick) {
           _this.props.onClick(event);
         }
@@ -7763,7 +11600,7 @@
         return _this.props.month !== undefined && _this.props.month !== getMonth(_this.props.day);
       }, _this.getClassNames = function (date) {
         var dayClassName = _this.props.dayClassName ? _this.props.dayClassName(date) : undefined;
-        return classnames("react-datepicker__day", dayClassName, "react-datepicker__day--" + getDayOfWeekCode(_this.props.day), {
+        return classnames$1("react-datepicker__day", dayClassName, "react-datepicker__day--" + getDayOfWeekCode(_this.props.day), {
           "react-datepicker__day--disabled": _this.isDisabled(),
           "react-datepicker__day--selected": _this.isSameDay(_this.props.selected),
           "react-datepicker__day--keyboard-selected": _this.isKeyboardSelected(),
@@ -7777,7 +11614,7 @@
           "react-datepicker__day--weekend": _this.isWeekend(),
           "react-datepicker__day--outside-month": _this.isOutsideMonth()
         }, _this.getHighLightedClass("react-datepicker__day--highlighted"));
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     Day.prototype.render = function render() {
@@ -7816,22 +11653,22 @@
   };
 
   var WeekNumber = function (_React$Component) {
-    inherits$1(WeekNumber, _React$Component);
+    inherits(WeekNumber, _React$Component);
 
     function WeekNumber() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, WeekNumber);
+      classCallCheck$1(this, WeekNumber);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
         if (_this.props.onClick) {
           _this.props.onClick(event);
         }
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     WeekNumber.prototype.render = function render() {
@@ -7842,7 +11679,7 @@
       return React__default.createElement(
         "div",
         {
-          className: classnames(weekNumberClasses),
+          className: classnames$1(weekNumberClasses),
           "aria-label": "week-" + this.props.weekNumber,
           onClick: this.handleClick
         },
@@ -7859,18 +11696,18 @@
   };
 
   var Week = function (_React$Component) {
-    inherits$1(Week, _React$Component);
+    inherits(Week, _React$Component);
 
     function Week() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, Week);
+      classCallCheck$1(this, Week);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleDayClick = function (day, event) {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleDayClick = function (day, event) {
         if (_this.props.onDayClick) {
           _this.props.onDayClick(day, event);
         }
@@ -7921,7 +11758,7 @@
             utcOffset: _this.props.utcOffset
           });
         }));
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     Week.prototype.render = function render() {
@@ -7964,18 +11801,18 @@
   var FIXED_HEIGHT_STANDARD_WEEK_COUNT = 6;
 
   var Month = function (_React$Component) {
-    inherits$1(Month, _React$Component);
+    inherits(Month, _React$Component);
 
     function Month() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, Month);
+      classCallCheck$1(this, Month);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleDayClick = function (day, event) {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleDayClick = function (day, event) {
         if (_this.props.onDayClick) {
           _this.props.onDayClick(day, event);
         }
@@ -8052,10 +11889,10 @@
             selectsStart = _this$props.selectsStart,
             selectsEnd = _this$props.selectsEnd;
 
-        return classnames("react-datepicker__month", {
+        return classnames$1("react-datepicker__month", {
           "react-datepicker__month--selecting-range": selectingDate && (selectsStart || selectsEnd)
         });
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     Month.prototype.render = function render() {
@@ -8102,18 +11939,18 @@
   };
 
   var Time = function (_React$Component) {
-    inherits$1(Time, _React$Component);
+    inherits(Time, _React$Component);
 
     function Time() {
       var _temp, _this, _ret;
 
-      classCallCheck$2(this, Time);
+      classCallCheck$1(this, Time);
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return _ret = (_temp = (_this = possibleConstructorReturn$1(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (time) {
+      return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (time) {
         if ((_this.props.minTime || _this.props.maxTime) && isTimeInDisabledRange(time, _this.props) || _this.props.excludeTimes && isTimeDisabled(time, _this.props.excludeTimes) || _this.props.includeTimes && !isTimeDisabled(time, _this.props.includeTimes)) {
           return;
         }
@@ -8166,7 +12003,7 @@
             formatDate(time, format)
           );
         });
-      }, _temp), possibleConstructorReturn$1(_this, _ret);
+      }, _temp), possibleConstructorReturn(_this, _ret);
     }
 
     Time.prototype.componentDidMount = function componentDidMount() {
@@ -8220,7 +12057,7 @@
       );
     };
 
-    createClass$2(Time, null, [{
+    createClass$1(Time, null, [{
       key: "defaultProps",
       get: function get$$1() {
         return {
@@ -8261,8 +12098,8 @@
   };
 
   var Calendar = function (_React$Component) {
-    inherits$1(Calendar, _React$Component);
-    createClass$2(Calendar, null, [{
+    inherits(Calendar, _React$Component);
+    createClass$1(Calendar, null, [{
       key: "defaultProps",
       get: function get$$1() {
         return {
@@ -8275,9 +12112,9 @@
     }]);
 
     function Calendar(props) {
-      classCallCheck$2(this, Calendar);
+      classCallCheck$1(this, Calendar);
 
-      var _this = possibleConstructorReturn$1(this, _React$Component.call(this, props));
+      var _this = possibleConstructorReturn(this, _React$Component.call(this, props));
 
       _this.handleClickOutside = function (event) {
         _this.props.onClickOutside(event);
@@ -8692,7 +12529,7 @@
       return React__default.createElement(
         "div",
         {
-          className: classnames("react-datepicker", this.props.className, {
+          className: classnames$1("react-datepicker", this.props.className, {
             "react-datepicker--time-only": this.props.showTimeSelectOnly
           })
         },
@@ -8773,11 +12610,11 @@
   var popperPlacementPositions = ["auto", "auto-left", "auto-right", "bottom", "bottom-end", "bottom-start", "left", "left-end", "left-start", "right", "right-end", "right-start", "top", "top-end", "top-start"];
 
   var PopperComponent = function (_React$Component) {
-    inherits$1(PopperComponent, _React$Component);
+    inherits(PopperComponent, _React$Component);
 
     function PopperComponent() {
-      classCallCheck$2(this, PopperComponent);
-      return possibleConstructorReturn$1(this, _React$Component.apply(this, arguments));
+      classCallCheck$1(this, PopperComponent);
+      return possibleConstructorReturn(this, _React$Component.apply(this, arguments));
     }
 
     PopperComponent.prototype.render = function render() {
@@ -8793,7 +12630,7 @@
       var popper = void 0;
 
       if (!hidePopper) {
-        var classes = classnames("react-datepicker-popper", className);
+        var classes = classnames$1("react-datepicker-popper", className);
         popper = React__default.createElement(
           Popper$1,
           {
@@ -8821,7 +12658,7 @@
       );
     };
 
-    createClass$2(PopperComponent, null, [{
+    createClass$1(PopperComponent, null, [{
       key: "defaultProps",
       get: function get$$1() {
         return {
@@ -8867,8 +12704,8 @@
    */
 
   var DatePicker = function (_React$Component) {
-    inherits$1(DatePicker, _React$Component);
-    createClass$2(DatePicker, null, [{
+    inherits(DatePicker, _React$Component);
+    createClass$1(DatePicker, null, [{
       key: "defaultProps",
       get: function get$$1() {
         return {
@@ -8901,9 +12738,9 @@
     }]);
 
     function DatePicker(props) {
-      classCallCheck$2(this, DatePicker);
+      classCallCheck$1(this, DatePicker);
 
-      var _this = possibleConstructorReturn$1(this, _React$Component.call(this, props));
+      var _this = possibleConstructorReturn(this, _React$Component.call(this, props));
 
       _this.getPreSelection = function () {
         return _this.props.openToDate ? newDate(_this.props.openToDate) : _this.props.selectsEnd && _this.props.startDate ? newDate(_this.props.startDate) : _this.props.selectsStart && _this.props.endDate ? newDate(_this.props.endDate) : now(_this.props.utcOffset);
@@ -9245,7 +13082,7 @@
       _this.renderDateInput = function () {
         var _classnames, _React$cloneElement;
 
-        var className = classnames(_this.props.className, (_classnames = {}, _classnames[outsideClickIgnoreClass] = _this.state.open, _classnames));
+        var className = classnames$1(_this.props.className, (_classnames = {}, _classnames[outsideClickIgnoreClass] = _this.state.open, _classnames));
 
         var customInput = _this.props.customInput || React__default.createElement("input", { type: "text" });
         var customInputRef = _this.props.customInputRef || "ref";
@@ -9424,8 +13261,7 @@
 
   var DatePickerWithLabel = function DatePickerWithLabel(props) {
     var onChange = function onChange(value) {
-      var date = !!value ? value.format('YYYY-MM-DD') : null; //TODO
-
+      var date = !!value ? value.format('YYYY-MM-DD') : null;
       props.handleChange(_defineProperty({}, props.name, date));
     };
 
@@ -9662,7 +13498,7 @@
           className: "form-group ".concat(props.classes)
         }, React__default.createElement("label", {
           htmlFor: props.name
-        }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement(Select$1, {
+        }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement(index, {
           name: props.name,
           className: props.selectClasses,
           value: value,
@@ -9871,7 +13707,7 @@
   */
   /* eslint-disable no-unused-vars */
   var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-  var hasOwnProperty = Object.prototype.hasOwnProperty;
+  var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
   function toObject(val) {
@@ -9935,7 +13771,7 @@
   		from = Object(arguments[s]);
 
   		for (var key in from) {
-  			if (hasOwnProperty.call(from, key)) {
+  			if (hasOwnProperty$1.call(from, key)) {
   				to[key] = from[key];
   			}
   		}
@@ -11587,7 +15423,7 @@
         var options = this.state.hits.map(function (place) {
           return _this4.generateCityOption(place);
         });
-        return React__default.createElement("div", null, React__default.createElement(Select$1.Async, {
+        return React__default.createElement("div", null, React__default.createElement(index.Async, {
           name: this.props.name,
           className: "city-select ".concat(this.props.classes),
           value: this.state.value,
@@ -11733,7 +15569,7 @@
   /**
    * Detects whether window and document objects are available in current environment.
    */
-  var isBrowser$1 = typeof window !== 'undefined' && typeof document !== 'undefined' && window.document === document;
+  var isBrowser$4 = typeof window !== 'undefined' && typeof document !== 'undefined' && window.document === document;
 
   // Returns global object of a current environment.
   var global$1 = (function () {
@@ -11977,7 +15813,7 @@
   ResizeObserverController.prototype.connect_ = function () {
       // Do nothing if running in a non-browser environment or if listeners
       // have been already added.
-      if (!isBrowser$1 || this.connected_) {
+      if (!isBrowser$4 || this.connected_) {
           return;
       }
 
@@ -12015,7 +15851,7 @@
   ResizeObserverController.prototype.disconnect_ = function () {
       // Do nothing if running in a non-browser environment or if listeners
       // have been already removed.
-      if (!isBrowser$1 || !this.connected_) {
+      if (!isBrowser$4 || !this.connected_) {
           return;
       }
 
@@ -12232,7 +16068,7 @@
       // client[Width/Height] properties represent viewport area of the window.
       // Besides, it's as well not necessary as the <html> itself neither has
       // rendered scroll bars nor it can be clipped.
-      if (!isDocumentElement(target)) {
+      if (!isDocumentElement$1(target)) {
           // In some browsers (only in Firefox, actually) CSS width & height
           // include scroll bars size which can be removed at this step as scroll
           // bars are the only difference between rounded dimensions + paddings
@@ -12282,7 +16118,7 @@
    * @param {Element} target - Element to be checked.
    * @returns {boolean}
    */
-  function isDocumentElement(target) {
+  function isDocumentElement$1(target) {
       return target === getWindowOf(target).document.documentElement;
   }
 
@@ -12293,7 +16129,7 @@
    * @returns {DOMRectInit}
    */
   function getContentRect(target) {
-      if (!isBrowser$1) {
+      if (!isBrowser$4) {
           return emptyRect;
       }
 
@@ -12619,7 +16455,7 @@
       };
   });
 
-  var index = (function () {
+  var index$1 = (function () {
       // Export existing implementation if available.
       if (typeof global$1.ResizeObserver !== 'undefined') {
           return global$1.ResizeObserver;
@@ -12629,7 +16465,7 @@
   })();
 
   var ResizeObserver_es = /*#__PURE__*/Object.freeze({
-    default: index
+    default: index$1
   });
 
   var utils = createCommonjsModule(function (module, exports) {
@@ -12665,7 +16501,7 @@
   var utils_1 = utils.capitalize;
   var utils_2 = utils.clamp;
 
-  var _resizeObserverPolyfill = ( ResizeObserver_es && index ) || ResizeObserver_es;
+  var _resizeObserverPolyfill = ( ResizeObserver_es && index$1 ) || ResizeObserver_es;
 
   var Rangeslider = createCommonjsModule(function (module, exports) {
 
@@ -12677,7 +16513,7 @@
 
 
 
-  var _classnames2 = _interopRequireDefault(classnames);
+  var _classnames2 = _interopRequireDefault(classnames$1);
 
 
 
@@ -13190,7 +17026,7 @@
       className: "".concat(props.classes)
     }, React__default.createElement("label", {
       htmlFor: props.name
-    }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement(Select$1, {
+    }, "".concat(props.label, " ").concat(props.required ? '*' : '')), React__default.createElement(index, {
       name: props.name,
       className: props.selectClasses,
       value: props.value,
@@ -13303,7 +17139,7 @@
 
   var TimePickerWithLabel = function TimePickerWithLabel(props) {
     var saveFormat = 'HH:mm';
-    var displayFormat = 'h:mm a'; //TODO
+    var displayFormat = 'h:mm a';
 
     var onChange = function onChange(value) {
       var time = !!value ? value.format(saveFormat) : null;
@@ -13434,7 +17270,7 @@
             label: tz
           };
         });
-        return React__default.createElement("div", null, React__default.createElement(Select$1, (_React$createElement = {
+        return React__default.createElement("div", null, React__default.createElement(index, (_React$createElement = {
           name: this.props.name,
           className: 'form-group input-with-label',
           value: this.state.value,

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 import axios from 'axios';
-import Select from 'react-select';
-
-import 'react-select/dist/react-select.css';
+import AsyncSelect from 'react-select/async';
 
 const ALGOLIA_ENDPOINT = 'https://places-dsn.algolia.net/1/places'
 
@@ -34,7 +33,7 @@ export default class PlaceSelect extends Component {
     this.generateCityOption = (place) => this._generateCityOption(place);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!!this.props.place_id) {
       this.fetchPlaceById();
     } else if (this.props.city === 'Kansas City, Missouri, United States of America') {
@@ -63,7 +62,7 @@ export default class PlaceSelect extends Component {
       }
     }
 
-    this.props.handleSelect(cityData)
+    this.props.handleChange(cityData)
     this.setState({ value: selected })
   }
 
@@ -88,7 +87,7 @@ export default class PlaceSelect extends Component {
       if (query.toLowerCase().includes('kansas')) {
         options.unshift(KANSAS_CITY_OPTION)
       }
-      return { options }
+      return options
     }).catch(err => {
       console.log(err)
     })
@@ -118,16 +117,28 @@ export default class PlaceSelect extends Component {
     const options = this.state.hits.map(place => this.generateCityOption(place))
 
     return(
-      <div>
-        <Select.Async
+      <div className={`${this.props.classes}`} >
+        { this.props.label && <label htmlFor={this.props.name}>{`${this.props.label} ${this.props.required ? '*' : ''}`}</label> }
+        <AsyncSelect
           name={ this.props.name }
-          className={ `city-select ${this.props.classes}` }
+          className={ `city-select ${this.props.selectClasses}` }
           value={ this.state.value }
           options={ options }
           onChange={ this.handleChange }
-          noResultsText={ this.props.noResultsText || 'No results for this city'}
-          placeholder={ this.props.placeholder || 'Start typing a city name...'}
-          loadOptions={this.searchPlaces}
+          noResultsText={ this.props.noResultsText }
+          placeholder={ this.props.placeholder }
+          loadOptions={ this.searchPlaces }
+          isClearable={ this.props.isClearable }
+          theme={theme => ({
+            ...theme,
+            colors: {
+              ...theme.colors,
+              primary: '#05c6b4',
+              primary75: '#D3D8E6',
+              primary50: '#e0f7f5',
+              primary25: '#F3F4F8'
+            },
+          })}
         />
         {
           this.props.errorMessage &&
@@ -137,3 +148,26 @@ export default class PlaceSelect extends Component {
     )
   }
 }
+
+PlaceSelect.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func,
+  name: PropTypes.string.isRequired,
+  classes: PropTypes.string,
+  noResultsText: PropTypes.string,
+  placeholder: PropTypes.string,
+  place_id: PropTypes.string,
+  city: PropTypes.string,
+  errorMessage: PropTypes.string,
+  isClearable: PropTypes.bool
+}
+
+PlaceSelect.defaultProps = {
+  noResultsText: "No results for this city",
+  placeholder: "Start typing a city name...",
+  classes: "",
+  name: "select-place",
+  handleChange: (selected) => console.log("Implement a function to save selection", selected),
+  isClearable: true
+}
+

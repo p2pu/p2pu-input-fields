@@ -10,6 +10,7 @@
   "module": "dist/p2pu-input-fields.esm.js",
   "sideEffects": false,
   "scripts": {
+    "start": "webpack-dev-server --mode development --config webpack.config.demo.js",
     "build:umd": "rollup -c",
     "build:es": "NODE_ENV=production babel ./src --out-dir ./dist --ignore ./src/components/*",
     "build:examples": "webpack --config webpack.config.js"
@@ -31,10 +32,13 @@
     "@babel/plugin-external-helpers": "^7.2.0",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
+    "axios": "^0.17.1",
     "babel-loader": "^8.0.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "css-loader": "^2.1.0",
+    "html-webpack-plugin": "^4.3.0",
+    "mini-css-extract-plugin": "^0.9.0",
     "rollup": "^0.60.1",
     "rollup-plugin-analyzer": "^2.0.1",
     "rollup-plugin-babel": "^4.3.2",
@@ -48,13 +52,21 @@
     "style-loader": "^0.23.1",
     "webpack": "^4.29.0",
     "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "react-countup": "^3.0.3",
     "react-datepicker": "1.4.1",
     "react-rangeslider": "^2.2.0",
-    "react-select": "^1.2.1",
-    "react-visibility-sensor": "^3.11.0"
+    "react-select": "^3.1.0",
+    "react-visibility-sensor": "^3.11.0",
+    "react": ">=15.0.1",
+    "react-dom": ">=15.0.1",
+    "prop-types": "^15.6.1",
+    "axios": "^0.17.1",
+    "jsonp": "^0.2.1",
+    "moment": "^2.24.0",
+    "rc-time-picker": "^3.6.1"
   }
 }

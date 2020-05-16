@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import Select from 'react-select'
 import jsonp from 'jsonp'
 
-import 'react-select/dist/react-select.css'
-
 export default class CitySelect extends Component {
   constructor(props) {
     super(props)
@@ -17,9 +15,9 @@ export default class CitySelect extends Component {
     this.populateCities();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props !== nextProps) {
-      const value = !nextProps.value ? this.state.value : this.convertCityToSelectOption(nextProps.value);
+  componentDidUpdate(prevProps) {
+    if (this.props !== prevProps) {
+      const value = !this.props.value ? this.state.value : this.convertCityToSelectOption(this.props.value);
       this.setState({ value })
     }
   }
@@ -34,7 +32,7 @@ export default class CitySelect extends Component {
   _handleChange(selected) {
     const query = selected ? selected.label : selected;
 
-    this.props.handleSelect(query)
+    this.props.handleChange(query)
     this.setState({ value: selected })
   }
 
@@ -66,23 +64,51 @@ export default class CitySelect extends Component {
 
   render() {
     return(
-      <Select
-        name={ this.props.name }
-        className={ `city-select ${this.props.classes}` }
-        value={ this.state.value }
-        options={ this.state.cities }
-        onChange={ this.handleChange }
-        onInputChange={ this.props.handleInputChange }
-        noResultsText={ this.props.noResultsText || 'No results for this city'}
-        placeholder={ this.props.placeholder || 'Start typing a city name...'}
-      />
+      <div className={`${this.props.classes}`}>
+        { this.props.label && <label htmlFor={this.props.name}>{`${this.props.label} ${this.props.required ? '*' : ''}`}</label> }
+        <Select
+          name={ this.props.name }
+          className={ `city-select ${this.props.selectClasses}` }
+          value={ this.state.value }
+          options={ this.state.cities }
+          onChange={ this.handleChange }
+          onInputChange={ this.props.handleInputChange }
+          noResultsText={ this.props.noResultsText }
+          placeholder={ this.props.placeholder }
+          isClearable={ this.props.isClearable }
+          theme={theme => ({
+            ...theme,
+            colors: {
+              ...theme.colors,
+              primary: '#05c6b4',
+              primary75: '#D3D8E6',
+              primary50: '#e0f7f5',
+              primary25: '#F3F4F8'
+            },
+          })}
+        />
+      </div>
     )
   }
 }
 
+
 CitySelect.propTypes = {
-  handleSelect: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func,
   name: PropTypes.string.isRequired,
-  classes: PropTypes.string
+  classes: PropTypes.string,
+  noResultsText: PropTypes.string,
+  placeholder: PropTypes.string,
+  isClearable: PropTypes.bool,
 }
+
+CitySelect.defaultProps = {
+  noResultsText: "No results for this city",
+  placeholder: "Start typing a city name...",
+  classes: "",
+  name: "select-city",
+  handleChange: (selected) => console.log("Implement a function to save selection", selected),
+  isClearable: true
+}
+

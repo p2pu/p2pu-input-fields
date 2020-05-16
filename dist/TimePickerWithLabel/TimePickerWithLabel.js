@@ -19,7 +19,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var TimePickerWithLabel = function TimePickerWithLabel(props) {
   var saveFormat = 'HH:mm';
-  var displayFormat = 'h:mm a'; //TODO
+  var displayFormat = 'h:mm a';
 
   var onChange = function onChange(value) {
     var time = !!value ? value.format(saveFormat) : null;

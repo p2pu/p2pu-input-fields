@@ -1,7 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Select from 'react-select'
-
-import 'react-select/dist/react-select.css';
 
 const SelectWithLabel = (props) => {
   return(
@@ -12,11 +11,22 @@ const SelectWithLabel = (props) => {
         className={ props.selectClasses }
         value={ props.value }
         options={ props.options }
-        onChange={ props.onChange }
+        onChange={ props.handleChange }
         onInputChange={ props.onInputChange }
         noResultsText={ props.noResultsText }
         placeholder={ props.placeholder }
         multi={ props.multi || false }
+        isClearable={ props.isClearable }
+        theme={theme => ({
+          ...theme,
+          colors: {
+            ...theme.colors,
+            primary: '#05c6b4',
+            primary75: '#D3D8E6',
+            primary50: '#e0f7f5',
+            primary25: '#F3F4F8'
+          },
+        })}
       />
       {
         props.errorMessage &&
@@ -26,6 +36,32 @@ const SelectWithLabel = (props) => {
       }
     </div>
   )
+}
+
+SelectWithLabel.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  handleInputChange: PropTypes.func,
+  classes: PropTypes.string,
+  selectClasses: PropTypes.string,
+  required: PropTypes.bool,
+  noResultsText: PropTypes.string,
+  placeholder: PropTypes.string,
+  multi: PropTypes.bool,
+  options: PropTypes.array,
+  errorMessage: PropTypes.string,
+  isClearable: PropTypes.bool,
+}
+
+SelectWithLabel.defaultProps = {
+  noResultsText: "No results",
+  classes: "",
+  name: "select-with-label",
+  label: "Select one",
+  options: [],
+  handleChange: (selected) => console.log("Implement a function to save selection", selected),
+  isClearable: true,
 }
 
 export default SelectWithLabel;

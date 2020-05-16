@@ -1,7 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Select from 'react-select'
-
-import 'react-select/dist/react-select.css';
 
 const LANGUAGES = [
   {label: 'English', value: 'en'},
@@ -45,8 +44,19 @@ export default class LanguageSelect extends React.Component {
           noResultsText={ props.noResultsText }
           placeholder={ props.placeholder }
           multi={ props.multi || false }
+          isClearable={ props.isClearable }
+          theme={theme => ({
+            ...theme,
+            colors: {
+              ...theme.colors,
+              primary: '#05c6b4',
+              primary75: '#D3D8E6',
+              primary50: '#e0f7f5',
+              primary25: '#F3F4F8'
+            },
+          })}
         />
-        { props.helpText && 
+        { props.helpText &&
             <small id={props.id + "Help"} className="form-text text-muted">{props.helpText}</small>
         }
         {
@@ -58,4 +68,31 @@ export default class LanguageSelect extends React.Component {
       </div>
     )
   }
+}
+
+LanguageSelect.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  handleInputChange: PropTypes.func,
+  classes: PropTypes.string,
+  selectClasses: PropTypes.string,
+  required: PropTypes.bool,
+  noResultsText: PropTypes.string,
+  placeholder: PropTypes.string,
+  multi: PropTypes.bool,
+  options: PropTypes.array,
+  errorMessage: PropTypes.string,
+  helpText: PropTypes.string,
+  id: PropTypes.string,
+  isClearable: PropTypes.bool,
+}
+
+LanguageSelect.defaultProps = {
+  noResultsText: "No results",
+  classes: "",
+  name: "select-language",
+  label: "Select a language",
+  handleChange: (selected) => console.log("Implement a function to save selection", selected),
+  isClearable: true,
 }
