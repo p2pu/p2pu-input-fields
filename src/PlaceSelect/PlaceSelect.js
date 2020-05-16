@@ -125,6 +125,7 @@ export default class PlaceSelect extends Component {
           value={ this.state.value }
           options={ options }
           onChange={ this.handleChange }
+          onInputChange={ this.props.handleInputChange }
           noResultsText={ this.props.noResultsText }
           placeholder={ this.props.placeholder }
           loadOptions={ this.searchPlaces }

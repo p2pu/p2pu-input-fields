@@ -8,7 +8,6 @@ export default class CitySelect extends Component {
     super(props)
     this.state = {}
     this.handleChange = (s) => this._handleChange(s)
-    this.handleInputChange = (s) => this._handleInputChange(s)
     this.populateCities = () => this._populateCities()
     this.convertCityToSelectOption = (city) => this._convertCityToSelectOption(city)
     this.filterCitiesFromResults = (r) => this._filterCitiesFromResults(r)
@@ -96,8 +95,8 @@ export default class CitySelect extends Component {
 
 CitySelect.propTypes = {
   handleChange: PropTypes.func.isRequired,
-  handleInputChange: PropTypes.func,
   name: PropTypes.string.isRequired,
+  handleInputChange: PropTypes.func,
   classes: PropTypes.string,
   noResultsText: PropTypes.string,
   placeholder: PropTypes.string,
@@ -112,6 +111,6 @@ CitySelect.defaultProps = {
   name: "select-city",
   handleChange: (selected) => console.log("Implement a function to save selection", selected),
   isClearable: true,
-  isMulti: true,
+  isMulti: false,
 }
 
