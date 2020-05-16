@@ -18,10 +18,10 @@
   "author": "Sharon Kennedy <sharon@p2pu.org>",
   "license": "MIT",
   "peerDependencies": {
-    "react": ">=15.0.1",
-    "react-dom": ">=15.0.1",
-    "prop-types": "^15.6.1",
-    "axios": "^0.17.1",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "prop-types": "^15.7.2",
+    "axios": "^0.19.1",
     "jsonp": "^0.2.1",
     "moment": "^2.24.0",
     "rc-time-picker": "^3.6.1"
@@ -60,13 +60,6 @@
     "react-datepicker": "1.4.1",
     "react-rangeslider": "^2.2.0",
     "react-select": "^3.1.0",
-    "react-visibility-sensor": "^3.11.0",
-    "react": ">=15.0.1",
-    "react-dom": ">=15.0.1",
-    "prop-types": "^15.6.1",
-    "axios": "^0.17.1",
-    "jsonp": "^0.2.1",
-    "moment": "^2.24.0",
-    "rc-time-picker": "^3.6.1"
+    "react-visibility-sensor": "^3.11.0"
   }
 }
