@@ -129,6 +129,7 @@ export default class PlaceSelect extends Component {
           placeholder={ this.props.placeholder }
           loadOptions={ this.searchPlaces }
           isClearable={ this.props.isClearable }
+          isMulti={ this.props.isMulti }
           theme={theme => ({
             ...theme,
             colors: {
@@ -159,7 +160,8 @@ PlaceSelect.propTypes = {
   place_id: PropTypes.string,
   city: PropTypes.string,
   errorMessage: PropTypes.string,
-  isClearable: PropTypes.bool
+  isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool,
 }
 
 PlaceSelect.defaultProps = {
@@ -168,6 +170,7 @@ PlaceSelect.defaultProps = {
   classes: "",
   name: "select-place",
   handleChange: (selected) => console.log("Implement a function to save selection", selected),
-  isClearable: true
+  isClearable: true,
+  isMulti: false,
 }
 

@@ -154,7 +154,7 @@ function (_Component) {
         value: this.state.value,
         onChange: this.onChange,
         options: timezoneOptions
-      }, _defineProperty(_React$createElement, "name", 'timezone'), _defineProperty(_React$createElement, "id", 'id_timezone'), _defineProperty(_React$createElement, "isClearable", this.props.isClearable), _defineProperty(_React$createElement, "theme", function theme(_theme) {
+      }, _defineProperty(_React$createElement, "name", 'timezone'), _defineProperty(_React$createElement, "id", 'id_timezone'), _defineProperty(_React$createElement, "isClearable", this.props.isClearable), _defineProperty(_React$createElement, "isMulti", this.props.isMulti), _defineProperty(_React$createElement, "theme", function theme(_theme) {
         return _objectSpread({}, _theme, {
           colors: _objectSpread({}, _theme.colors, {
             primary: '#05c6b4',
@@ -181,7 +181,8 @@ TimeZoneSelect.propTypes = {
   latitude: _propTypes.default.string,
   longitude: _propTypes.default.string,
   errorMessage: _propTypes.default.string,
-  isClearable: _propTypes.default.bool
+  isClearable: _propTypes.default.bool,
+  isMulti: _propTypes.default.bool
 };
 TimeZoneSelect.defaultProps = {
   classes: "",
@@ -189,5 +190,6 @@ TimeZoneSelect.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: false
 };

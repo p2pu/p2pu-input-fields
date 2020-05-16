@@ -60,6 +60,7 @@ export default class TimeZoneSelect extends Component {
           name={'timezone'}
           id={'id_timezone'}
           isClearable={ this.props.isClearable }
+          isMulti={ this.props.isMulti }
           theme={theme => ({
             ...theme,
             colors: {
@@ -89,6 +90,7 @@ TimeZoneSelect.propTypes = {
   longitude: PropTypes.string,
   errorMessage: PropTypes.string,
   isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool,
 }
 
 TimeZoneSelect.defaultProps = {
@@ -96,5 +98,6 @@ TimeZoneSelect.defaultProps = {
   name: "select-timezone",
   handleChange: (selected) => console.log("Implement a function to save selection", selected),
   isClearable: true,
+  isMulti: false,
 }
 

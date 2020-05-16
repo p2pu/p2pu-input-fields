@@ -102,7 +102,7 @@ function (_React$Component) {
         onInputChange: props.onInputChange,
         noResultsText: props.noResultsText,
         placeholder: props.placeholder,
-        multi: props.multi || false,
+        isMulti: props.isMulti,
         isClearable: props.isClearable,
         theme: function theme(_theme) {
           return _objectSpread({}, _theme, {
@@ -137,12 +137,12 @@ LanguageSelect.propTypes = {
   required: _propTypes.default.bool,
   noResultsText: _propTypes.default.string,
   placeholder: _propTypes.default.string,
-  multi: _propTypes.default.bool,
   options: _propTypes.default.array,
   errorMessage: _propTypes.default.string,
   helpText: _propTypes.default.string,
   id: _propTypes.default.string,
-  isClearable: _propTypes.default.bool
+  isClearable: _propTypes.default.bool,
+  isMulti: _propTypes.default.bool
 };
 LanguageSelect.defaultProps = {
   noResultsText: "No results",
@@ -152,5 +152,6 @@ LanguageSelect.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: false
 };

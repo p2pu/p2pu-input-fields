@@ -31,7 +31,7 @@ var SelectWithLabel = function SelectWithLabel(props) {
     onInputChange: props.onInputChange,
     noResultsText: props.noResultsText,
     placeholder: props.placeholder,
-    multi: props.multi || false,
+    isMulti: props.isMulti,
     isClearable: props.isClearable,
     theme: function theme(_theme) {
       return _objectSpread({}, _theme, {
@@ -58,10 +58,10 @@ SelectWithLabel.propTypes = {
   required: _propTypes.default.bool,
   noResultsText: _propTypes.default.string,
   placeholder: _propTypes.default.string,
-  multi: _propTypes.default.bool,
   options: _propTypes.default.array,
   errorMessage: _propTypes.default.string,
-  isClearable: _propTypes.default.bool
+  isClearable: _propTypes.default.bool,
+  isMulti: _propTypes.default.bool
 };
 SelectWithLabel.defaultProps = {
   noResultsText: "No results",
@@ -72,7 +72,8 @@ SelectWithLabel.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: false
 };
 var _default = SelectWithLabel;
 exports.default = _default;

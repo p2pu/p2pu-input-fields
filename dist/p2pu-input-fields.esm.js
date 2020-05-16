@@ -6948,6 +6948,7 @@ function (_Component) {
         noResultsText: this.props.noResultsText,
         placeholder: this.props.placeholder,
         isClearable: this.props.isClearable,
+        isMulti: this.props.isMulti,
         theme: function theme(_theme) {
           return _objectSpread({}, _theme, {
             colors: _objectSpread({}, _theme.colors, {
@@ -6971,7 +6972,8 @@ CitySelect.propTypes = {
   classes: PropTypes.string,
   noResultsText: PropTypes.string,
   placeholder: PropTypes.string,
-  isClearable: PropTypes.bool
+  isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool
 };
 CitySelect.defaultProps = {
   noResultsText: "No results for this city",
@@ -6981,7 +6983,8 @@ CitySelect.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: true
 };
 
 var classnames$1 = createCommonjsModule(function (module) {
@@ -13559,7 +13562,7 @@ function (_React$Component) {
         onInputChange: props.onInputChange,
         noResultsText: props.noResultsText,
         placeholder: props.placeholder,
-        multi: props.multi || false,
+        isMulti: props.isMulti,
         isClearable: props.isClearable,
         theme: function theme(_theme) {
           return _objectSpread({}, _theme, {
@@ -13592,12 +13595,12 @@ LanguageSelect.propTypes = {
   required: PropTypes.bool,
   noResultsText: PropTypes.string,
   placeholder: PropTypes.string,
-  multi: PropTypes.bool,
   options: PropTypes.array,
   errorMessage: PropTypes.string,
   helpText: PropTypes.string,
   id: PropTypes.string,
-  isClearable: PropTypes.bool
+  isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool
 };
 LanguageSelect.defaultProps = {
   noResultsText: "No results",
@@ -13607,7 +13610,8 @@ LanguageSelect.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: false
 };
 
 var countUp_min = createCommonjsModule(function (module, exports) {
@@ -15714,6 +15718,7 @@ function (_Component) {
         placeholder: this.props.placeholder,
         loadOptions: this.searchPlaces,
         isClearable: this.props.isClearable,
+        isMulti: this.props.isMulti,
         theme: function theme(_theme) {
           return _objectSpread({}, _theme, {
             colors: _objectSpread({}, _theme.colors, {
@@ -15742,7 +15747,8 @@ PlaceSelect.propTypes = {
   place_id: PropTypes.string,
   city: PropTypes.string,
   errorMessage: PropTypes.string,
-  isClearable: PropTypes.bool
+  isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool
 };
 PlaceSelect.defaultProps = {
   noResultsText: "No results for this city",
@@ -15752,7 +15758,8 @@ PlaceSelect.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: false
 };
 
 /**
@@ -17349,7 +17356,7 @@ var SelectWithLabel = function SelectWithLabel(props) {
     onInputChange: props.onInputChange,
     noResultsText: props.noResultsText,
     placeholder: props.placeholder,
-    multi: props.multi || false,
+    isMulti: props.isMulti,
     isClearable: props.isClearable,
     theme: function theme(_theme) {
       return _objectSpread({}, _theme, {
@@ -17376,10 +17383,10 @@ SelectWithLabel.propTypes = {
   required: PropTypes.bool,
   noResultsText: PropTypes.string,
   placeholder: PropTypes.string,
-  multi: PropTypes.bool,
   options: PropTypes.array,
   errorMessage: PropTypes.string,
-  isClearable: PropTypes.bool
+  isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool
 };
 SelectWithLabel.defaultProps = {
   noResultsText: "No results",
@@ -17390,7 +17397,8 @@ SelectWithLabel.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: false
 };
 
 var SwitchWithLabels =
@@ -17632,7 +17640,7 @@ function (_Component) {
         value: this.state.value,
         onChange: this.onChange,
         options: timezoneOptions
-      }, _defineProperty(_React$createElement, "name", 'timezone'), _defineProperty(_React$createElement, "id", 'id_timezone'), _defineProperty(_React$createElement, "isClearable", this.props.isClearable), _defineProperty(_React$createElement, "theme", function theme(_theme) {
+      }, _defineProperty(_React$createElement, "name", 'timezone'), _defineProperty(_React$createElement, "id", 'id_timezone'), _defineProperty(_React$createElement, "isClearable", this.props.isClearable), _defineProperty(_React$createElement, "isMulti", this.props.isMulti), _defineProperty(_React$createElement, "theme", function theme(_theme) {
         return _objectSpread({}, _theme, {
           colors: _objectSpread({}, _theme.colors, {
             primary: '#05c6b4',
@@ -17657,7 +17665,8 @@ TimeZoneSelect.propTypes = {
   latitude: PropTypes.string,
   longitude: PropTypes.string,
   errorMessage: PropTypes.string,
-  isClearable: PropTypes.bool
+  isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool
 };
 TimeZoneSelect.defaultProps = {
   classes: "",
@@ -17665,7 +17674,8 @@ TimeZoneSelect.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: false
 };
 
 export { CitySelect, CheckboxWithLabel, DatePickerWithLabel, ImageUploader, InputWithLabel, LanguageSelect, NumberWithLabel, PlaceSelect, RangeSliderWithLabel, SelectWithLabel, SwitchWithLabels, TextareaWithLabel, TimePickerWithLabel, TimeZoneSelect };

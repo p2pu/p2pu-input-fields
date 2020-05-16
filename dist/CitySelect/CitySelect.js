@@ -173,6 +173,7 @@ function (_Component) {
         noResultsText: this.props.noResultsText,
         placeholder: this.props.placeholder,
         isClearable: this.props.isClearable,
+        isMulti: this.props.isMulti,
         theme: function theme(_theme) {
           return _objectSpread({}, _theme, {
             colors: _objectSpread({}, _theme.colors, {
@@ -198,7 +199,8 @@ CitySelect.propTypes = {
   classes: _propTypes.default.string,
   noResultsText: _propTypes.default.string,
   placeholder: _propTypes.default.string,
-  isClearable: _propTypes.default.bool
+  isClearable: _propTypes.default.bool,
+  isMulti: _propTypes.default.bool
 };
 CitySelect.defaultProps = {
   noResultsText: "No results for this city",
@@ -208,5 +210,6 @@ CitySelect.defaultProps = {
   handleChange: function handleChange(selected) {
     return console.log("Implement a function to save selection", selected);
   },
-  isClearable: true
+  isClearable: true,
+  isMulti: true
 };

@@ -43,7 +43,7 @@ export default class LanguageSelect extends React.Component {
           onInputChange={ props.onInputChange }
           noResultsText={ props.noResultsText }
           placeholder={ props.placeholder }
-          multi={ props.multi || false }
+          isMulti={ props.isMulti }
           isClearable={ props.isClearable }
           theme={theme => ({
             ...theme,
@@ -80,12 +80,12 @@ LanguageSelect.propTypes = {
   required: PropTypes.bool,
   noResultsText: PropTypes.string,
   placeholder: PropTypes.string,
-  multi: PropTypes.bool,
   options: PropTypes.array,
   errorMessage: PropTypes.string,
   helpText: PropTypes.string,
   id: PropTypes.string,
   isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool,
 }
 
 LanguageSelect.defaultProps = {
@@ -95,4 +95,5 @@ LanguageSelect.defaultProps = {
   label: "Select a language",
   handleChange: (selected) => console.log("Implement a function to save selection", selected),
   isClearable: true,
+  isMulti: false,
 }

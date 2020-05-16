@@ -76,6 +76,7 @@ export default class CitySelect extends Component {
           noResultsText={ this.props.noResultsText }
           placeholder={ this.props.placeholder }
           isClearable={ this.props.isClearable }
+          isMulti={ this.props.isMulti }
           theme={theme => ({
             ...theme,
             colors: {
@@ -101,6 +102,7 @@ CitySelect.propTypes = {
   noResultsText: PropTypes.string,
   placeholder: PropTypes.string,
   isClearable: PropTypes.bool,
+  isMulti: PropTypes.bool,
 }
 
 CitySelect.defaultProps = {
@@ -109,6 +111,7 @@ CitySelect.defaultProps = {
   classes: "",
   name: "select-city",
   handleChange: (selected) => console.log("Implement a function to save selection", selected),
-  isClearable: true
+  isClearable: true,
+  isMulti: true,
 }
 
