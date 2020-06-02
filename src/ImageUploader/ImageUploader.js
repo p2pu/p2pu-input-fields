@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
+const defaultStyles = {
+  maxWidth: '250px',
+  height: 'auto',
+}
+
 export default class ImageUploader extends Component {
   constructor(props) {
     super(props);
@@ -76,8 +81,8 @@ export default class ImageUploader extends Component {
         }
         {
           this.state.image &&
-          <div className='image-preview' style={{ width: '250px'}}>
-            <img src={this.state.image} alt='Image preview' style={{ width: '100%', height: '100%'}} />
+          <div className='image-preview' style={{ marginTop: '10px' }}>
+            <img src={this.state.image} alt='Image preview' style={{...defaultStyles, this.props.imgStyles}} />
           </div>
         }
       </div>
@@ -93,5 +98,6 @@ ImageUploader.propTypes = {
   label: PropTypes.string,
   id: PropTypes.string,
   errorMessage: PropTypes.string,
-  image: PropTypes.string
+  image: PropTypes.string,
+  imgStyles: PropTypes.object,
 }
