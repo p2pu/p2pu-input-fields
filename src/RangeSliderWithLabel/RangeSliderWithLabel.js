@@ -1,6 +1,7 @@
 import React from 'react'
 import Slider from 'react-rangeslider'
 import 'react-rangeslider/lib/index.css'
+import './rangeslider.scss'
 
 const RangeSliderWithLabel = (props) => {
   const disabledClass = props.disabled ? 'disabled' : '';

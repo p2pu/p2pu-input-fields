@@ -1,0 +1,32 @@
+.rangeslider {
+  background-color: #F3F4F8;
+}
+
+.rangeslider-horizontal {
+  .rangeslider__fill {
+    background-color: #05c6b4;
+    box-shadow: inset 0 1px 3px transparentize(#515665, 0.4);
+  }
+
+  .rangeslider__handle-tooltip {
+    background-color: #515665;
+
+    &:after {
+      border-top-color: #515665;
+    }
+  }
+
+  .rangeslider__handle {
+    background: #fff;
+    border: 1px solid #fff;
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    box-shadow: 0 1px 3px transparentize(#515665, 0.4), 0 -1px 3px transparentize(#515665, 0.4);
+
+    &:after {
+      background-color: #515665;
+      box-shadow: none;
+    }
+  }
+}

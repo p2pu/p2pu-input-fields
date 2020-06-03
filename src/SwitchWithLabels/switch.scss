@@ -1,0 +1,57 @@
+.switch-container {
+  display: flex;
+
+  label {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  span {
+    cursor: pointer;
+  }
+
+  input[type="checkbox"].switch {
+    position: absolute;
+    opacity: 0;
+
+    + div.switch-background {
+      vertical-align: middle;
+      width: 47px;
+      height: 25px;
+      border-radius: 999px;
+      background-color: #05c6b4;
+      cursor: pointer;
+      transition-timing-function: cubic-bezier(1,0,0,1);
+      transition-duration: 0.4s;
+      transition-property: all;
+
+      &.off {
+        background-color: #5f9ea0;
+      }
+
+      > div.switch-button {
+        float: left;
+        width: 23px;
+        height: 23px;
+        border-radius: inherit;
+        background: #ffffff;
+        transition-timing-function: cubic-bezier(1,0,0,1);
+        transition-duration: 0.4s;
+        transition-property: transform;
+        pointer-events: none;
+        margin-top: 1px;
+        margin-left: 1px;
+      }
+    }
+
+    &:checked {
+      + div.switch-background {
+        background-position: 0 0;
+
+        > div.switch-button {
+          transform: translate3d(22px, 0, 0);
+        }
+      }
+    }
+  }
+}

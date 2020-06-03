@@ -3,14 +3,41 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 
 const defaultStyles = {
-  maxWidth: '250px',
-  height: 'auto',
+  preview: {
+    maxWidth: '250px',
+    height: 'auto',
+  },
+  input: {
+    display: "none !important"
+  },
+  label: {
+    borderRadius: "2em",
+    textTransform: "uppercase",
+    fontSize: "0.8em",
+    fontFamily: "'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif",
+    fontWeight: "700",
+    padding: "10px 20px",
+    transform: "perspective(1px) translateZ(0)",
+    boxShadow: "0 0 1px transparent",
+    position: "relative",
+    transition: "color 0.3s linear",
+    display: "inline-block",
+    margin: '2px',
+    background: "#515665",
+    border: "2px solid #515665",
+    color: "#fff",
+    marginRight: '6px',
+  }
 }
 
 export default class ImageUploader extends Component {
   constructor(props) {
     super(props);
-    this.state = { image: this.props.image };
+    this.state = {
+      image: this.props.image,
+      loading: false,
+
+    };
     this.onChange = (e) => this._onChange(e);
   }
 
@@ -42,6 +69,8 @@ export default class ImageUploader extends Component {
     const data = new FormData();
     data.append('image', file)
 
+    this.setState({ file })
+
     const onSuccess = (data) => {
       this.setState({ image: data.image_url });
       this.props.handleChange({ [this.props.name]: data.image_url })
@@ -65,14 +94,22 @@ export default class ImageUploader extends Component {
   render() {
     return(
       <div className={`input-with-label form-group ${this.props.classes}`}>
-        <label htmlFor={this.props.name}>{this.props.label}</label>
-        <input
-          className='image-upload form-control'
-          type='file'
-          name={this.props.name}
-          id={this.props.id}
-          onChange={this.onChange}
-        />
+        <div>
+          <label htmlFor={this.props.name} className="btn p2pu-btn blue" style={{...defaultStyles.label, ...this.props.labelStyles}}>{this.props.label}
+            <input
+              className='image-upload form-control hidden'
+              type='file'
+              name={this.props.name}
+              id={this.props.name}
+              onChange={this.onChange}
+              style={{...defaultStyles.input, ...this.props.inputStyles}}
+              hidden={true}
+            />
+          </label>
+          {
+            this.state.file ? <span>{this.state.file.name}</span> : <span>No file selected</span>
+          }
+        </div>
         {
           this.props.errorMessage &&
           <div className='error-message'>
@@ -82,7 +119,7 @@ export default class ImageUploader extends Component {
         {
           this.state.image &&
           <div className='image-preview' style={{ marginTop: '10px' }}>
-            <img src={this.state.image} alt='Image preview' style={{...defaultStyles, ...this.props.imgStyles}} />
+            <img src={this.state.image} alt='Image preview' style={{...defaultStyles.preview, ...this.props.imgStyles}} />
           </div>
         }
       </div>
@@ -96,8 +133,13 @@ ImageUploader.propTypes = {
   name: PropTypes.string.isRequired,
   classes: PropTypes.string,
   label: PropTypes.string,
-  id: PropTypes.string,
   errorMessage: PropTypes.string,
   image: PropTypes.string,
   imgStyles: PropTypes.object,
+  labelStyles: PropTypes.object,
+  inputStyles: PropTypes.object,
+}
+
+ImageUploader.defaultProps = {
+  handleChange: (imgUrl) => `Implement a function to save image ${imgUrl}`,
 }
