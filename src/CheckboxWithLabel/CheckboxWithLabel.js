@@ -1,29 +1,45 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import InputWrapper from '../InputWrapper'
 
 const CheckboxWithLabel = (props) => {
   const onChange = (e) => {
     props.handleChange({ [props.name]: e.currentTarget.checked })
   }
 
-  return(
-    <div className={`checkbox-with-label label-right ${props.classes}`} >
+  return (
+    <InputWrapper
+      label={props.label}
+      name={props.name}
+      required={props.required}
+      errorMessage={props.errorMessage}
+      labelPosition={"right"}
+    >
       <input
         type="checkbox"
-        name={props.name}
-        id={props.id || props.name}
-        onChange={onChange}
+        id={props.id}
         checked={props.checked}
-        style={{marginRight: '10px'}}
+        disabled={props.disabled}
+        onChange={onChange}
       />
-      <label htmlFor={props.name}>{props.label}</label>
-      {
-        props.errorMessage &&
-        <div className='error-message minicaps'>
-          { props.errorMessage }
-        </div>
-      }
-    </div>
+    </InputWrapper>
   )
+}
+
+CheckboxWithLabel.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  classes: PropTypes.string,
+  checked: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+}
+
+CheckboxWithLabel.defaultProps = {
+  classes: "",
+  label: "Checkbox label",
+  handleChange: (input) => console.log("Implement a function to save selection", input),
 }
 
 export default CheckboxWithLabel;

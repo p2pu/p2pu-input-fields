@@ -1,43 +1,67 @@
 import React from 'react';
-import TimePicker from 'rc-time-picker';
+import PropTypes from 'prop-types'
+import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import InputWrapper from '../InputWrapper'
 
-import 'rc-time-picker/assets/index.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const TimePickerWithLabel = (props) => {
   const saveFormat = 'HH:mm';
   const displayFormat = 'h:mm a';
 
   const onChange = (value) => {
-    const time = !!value ? value.format(saveFormat) : null;
+    const time = !!value ? moment(value).format(saveFormat) : null;
     props.handleChange({ [props.name]: time })
   }
 
-  const time = !!props.value ? moment(props.value, saveFormat) : null;
+  const time = !!props.value ? moment(props.value, displayFormat).toDate() : new Date();
 
   return(
-    <div className={`input-with-label form-group ${props.classes}`}>
-      <label htmlFor={props.name}>{`${props.label} ${props.required ? '*' : ''}`}</label>
-      <TimePicker
-        showSecond={false}
-        use12Hours={true}
-        value={time}
-        format={displayFormat}
-        name={props.name}
-        id={props.id}
-        onChange={onChange}
-        minuteStep={15}
-        allowEmpty={true}
-        disabled={props.disabled}
-      />
-      {
-        props.errorMessage &&
-        <div className='error-message minicaps'>
-          { props.errorMessage }
-        </div>
-      }
-    </div>
+    <InputWrapper
+      label={props.label}
+      name={props.name}
+      required={props.required}
+      errorMessage={props.errorMessage}
+      className="timpickerbaby"
+    >
+      <div>
+        <DatePicker
+          selected={time}
+          onChange={onChange}
+          showTimeSelect
+          showTimeSelectOnly
+          timeIntervals={30}
+          timeCaption="Time"
+          dateFormat={displayFormat}
+          name={props.name}
+          id={props.id}
+          className="form-control"
+        />
+      </div>
+    </InputWrapper>
   )
+}
+
+TimePickerWithLabel.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  classes: PropTypes.string,
+  required: PropTypes.bool,
+  disabled: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  value: PropTypes.string,
+}
+
+TimePickerWithLabel.defaultProps = {
+  classes: "",
+  label: "Time picker",
+  handleChange: (input) => console.log("Implement a function to save selection", input),
+  required: false,
+  disabled: false,
+  errorMessage: null,
+  value: "",
 }
 
 export default TimePickerWithLabel;

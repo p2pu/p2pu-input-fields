@@ -18,18 +18,18 @@ export default class LanguageSelect extends React.Component {
   }
 
   onChange(selected){
+    const value = selected ? selected.value : null
     this.props.handleChange(
-      {[this.props.name]: selected.value}
+      {[this.props.name]: value }
     );
   }
 
   render(){
     const {
-      label = 'Language'
+      label = 'Language',
     } = this.props;
     const props = this.props;
-    let value_search = LANGUAGES.filter(({value, label}) => value == this.props.value);
-    let value = value_search.length==1?value_search[0]:null;
+    const selectedValue = LANGUAGES.find(({value, label}) => value === props.value) || null
 
     return(
       <div className={`form-group ${props.classes}`} >
@@ -37,7 +37,7 @@ export default class LanguageSelect extends React.Component {
         <Select
           name={ props.name }
           className={ props.selectClasses }
-          value={ value }
+          value={ selectedValue }
           options={ LANGUAGES }
           onChange={ this.onChange }
           onInputChange={ props.onInputChange }

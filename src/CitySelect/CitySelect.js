@@ -31,7 +31,7 @@ export default class CitySelect extends Component {
   _handleChange(selected) {
     const query = selected ? selected.label : selected;
 
-    this.props.handleChange(query)
+    this.props.handleChange({ [this.props.name]: query })
     this.setState({ value: selected })
   }
 

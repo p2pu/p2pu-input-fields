@@ -3,15 +3,24 @@ import PropTypes from 'prop-types'
 import Select from 'react-select'
 
 const SelectWithLabel = (props) => {
+  const onChange = selected => {
+    const value = selected ? selected.value : null
+    props.handleChange(
+      {[props.name]: value }
+    );
+  }
+
+  const selectedOption = props.options.find(opt => opt.value === props.value)
+
   return(
-    <div className={`${props.classes}`} >
+    <div className={`form-group ${props.classes}`} >
       <label htmlFor={props.name}>{`${props.label} ${props.required ? '*' : ''}`}</label>
       <Select
         name={ props.name }
         className={ props.selectClasses }
-        value={ props.value }
+        value={ selectedOption }
         options={ props.options }
-        onChange={ props.handleChange }
+        onChange={ onChange }
         onInputChange={ props.onInputChange }
         noResultsText={ props.noResultsText }
         placeholder={ props.placeholder }

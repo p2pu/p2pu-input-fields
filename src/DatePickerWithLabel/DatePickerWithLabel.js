@@ -1,37 +1,64 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import InputWrapper from '../InputWrapper'
 
 import 'react-datepicker/dist/react-datepicker.css';
 
+const saveFormat = 'YYYY-MM-DD'
+const displayFormat = 'MMMM d, yyyy'
+
 const DatePickerWithLabel = (props) => {
   const onChange = (value) => {
-    const date = !!value ? value.format('YYYY-MM-DD') : null;
+    const date = !!value ? moment(value, displayFormat).format(saveFormat) : null;
     props.handleChange({ [props.name]: date })
   }
 
-  const date = !!props.value ? moment(props.value) : null;
+  const date = !!props.value ? moment(props.value, saveFormat).toDate() : new Date();
 
   return(
-    <div className={`input-with-label form-group ${props.classes}`}>
-      <label htmlFor={props.name}>{`${props.label} ${props.required ? '*' : ''}`}</label>
-      <DatePicker
-        selected={date}
-        name={props.name}
-        id={props.id}
-        onChange={onChange}
-        className="form-control"
-        minDate={props.minDate}
-        disabled={props.disabled}
-      />
-      {
-        props.errorMessage &&
-        <div className='error-message minicaps'>
-          { props.errorMessage }
-        </div>
-      }
-    </div>
+    <InputWrapper
+      label={props.label}
+      name={props.name}
+      required={props.required}
+      errorMessage={props.errorMessage}
+    >
+      <div>
+        <DatePicker
+          selected={date}
+          id={props.id}
+          onChange={onChange}
+          className="form-control"
+          minDate={props.minDate}
+          disabled={props.disabled}
+          required={props.required}
+          dateFormat={displayFormat}
+        />
+      </div>
+    </InputWrapper>
   )
+}
+
+DatePickerWithLabel.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  classes: PropTypes.string,
+  required: PropTypes.bool,
+  disabled: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  value: PropTypes.string,
+}
+
+DatePickerWithLabel.defaultProps = {
+  classes: "",
+  label: "Time picker",
+  handleChange: (input) => console.log("Implement a function to save selection", input),
+  required: false,
+  disabled: false,
+  errorMessage: null,
+  value: "",
 }
 
 export default DatePickerWithLabel;

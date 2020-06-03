@@ -1,34 +1,40 @@
 import React from 'react'
+import InputWrapper from '../InputWrapper'
 
 const InputWithLabel = (props) => {
-  const onChange = (e) => {
+  const onChange = e => {
     props.handleChange({ [props.name]: e.currentTarget.value })
   }
 
-  return(
-    <div className={`input-with-label form-group ${props.classes}`}>
-      <label htmlFor={props.name}>{`${props.label} ${props.required ? '*' : ''}`}</label>
+  return (
+    <InputWrapper
+      label={props.label}
+      name={props.name}
+      required={props.required}
+      errorMessage={props.errorMessage}
+    >
       <input
-        className='form-control'
-        type={props.type || 'text'}
-        name={props.name}
+        type={props.type}
         id={props.id}
+        value={props.value}
         onChange={onChange}
-        value={props.value || props.defaultValue}
         placeholder={props.placeholder}
-        required={props.required || false}
         min={props.min}
         max={props.max}
         disabled={props.disabled}
+        className="form-control"
       />
-      {
-        props.errorMessage &&
-        <div className='error-message minicaps'>
-          { props.errorMessage }
-        </div>
-      }
-    </div>
+    </InputWrapper>
   )
+}
+
+InputWithLabel.defaultProps = {
+  type: 'text',
+  value: "",
+  required: false,
+  disabled: false,
+  label: 'Text input',
+  handleChange: (input) => console.log("Implement a function to save input", input),
 }
 
 export default InputWithLabel;

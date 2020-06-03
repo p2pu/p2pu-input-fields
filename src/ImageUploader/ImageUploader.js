@@ -67,7 +67,7 @@ export default class ImageUploader extends Component {
       <div className={`input-with-label form-group ${this.props.classes}`}>
         <label htmlFor={this.props.name}>{this.props.label}</label>
         <input
-          className='image-upload'
+          className='image-upload form-control'
           type='file'
           name={this.props.name}
           id={this.props.id}
@@ -82,7 +82,7 @@ export default class ImageUploader extends Component {
         {
           this.state.image &&
           <div className='image-preview' style={{ marginTop: '10px' }}>
-            <img src={this.state.image} alt='Image preview' style={{...defaultStyles, this.props.imgStyles}} />
+            <img src={this.state.image} alt='Image preview' style={{...defaultStyles, ...this.props.imgStyles}} />
           </div>
         }
       </div>
