@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'react-select'
+import InputWrapper from '../InputWrapper'
 
 const SelectWithLabel = (props) => {
   const onChange = selected => {
@@ -11,21 +12,28 @@ const SelectWithLabel = (props) => {
   }
 
   const selectedOption = props.options.find(opt => opt.value === props.value)
+  const { name, label, required, errorMessage, helpText, classes, selectClasses, options, onInputChange, noResultsText, placeholder, isMulti, isClearable } = props
 
   return(
-    <div className={`form-group ${props.classes}`} >
-      <label htmlFor={props.name}>{`${props.label} ${props.required ? '*' : ''}`}</label>
+    <InputWrapper
+      label={label}
+      name={name}
+      required={required}
+      errorMessage={errorMessage}
+      helpText={helpText}
+      classes={classes}
+    >
       <Select
-        name={ props.name }
-        className={ props.selectClasses }
+        name={ name }
+        className={ selectClasses }
         value={ selectedOption }
-        options={ props.options }
+        options={ options }
         onChange={ onChange }
-        onInputChange={ props.onInputChange }
-        noResultsText={ props.noResultsText }
-        placeholder={ props.placeholder }
-        isMulti={ props.isMulti }
-        isClearable={ props.isClearable }
+        onInputChange={ onInputChange }
+        noResultsText={ noResultsText }
+        placeholder={ placeholder }
+        isMulti={ isMulti }
+        isClearable={ isClearable }
         theme={theme => ({
           ...theme,
           colors: {
@@ -37,13 +45,7 @@ const SelectWithLabel = (props) => {
           },
         })}
       />
-      {
-        props.errorMessage &&
-        <div className='error-message minicaps'>
-          { props.errorMessage }
-        </div>
-      }
-    </div>
+    </InputWrapper>
   )
 }
 

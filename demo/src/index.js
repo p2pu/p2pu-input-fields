@@ -53,6 +53,8 @@ const App = () => {
         name='language-demo'
         value={content['language-demo']}
         handleChange={handleChange}
+        helpText={'Choose as many languages as you want.'}
+        errorMessage={'uh oh you messed up'}
       />
       <SelectWithLabel
         options={[{ label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' }]}
@@ -65,6 +67,8 @@ const App = () => {
         label="Checkbox"
         value={content['checkbox-demo']}
         handleChange={handleChange}
+        helpText={'help meee'}
+        errorMessage={'booohooo'}
       />
       <DatePickerWithLabel
         name="datepicker-demo"

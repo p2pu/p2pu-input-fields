@@ -23,7 +23,7 @@ const TimePickerWithLabel = (props) => {
       name={props.name}
       required={props.required}
       errorMessage={props.errorMessage}
-      className="timpickerbaby"
+      classes={props.classes}
     >
       <div>
         <DatePicker

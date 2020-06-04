@@ -3,14 +3,12 @@ import PropTypes from 'prop-types'
 import Select from 'react-select'
 import jsonp from 'jsonp'
 
+import InputWrapper from '../InputWrapper'
+
 export default class CitySelect extends Component {
   constructor(props) {
     super(props)
     this.state = {}
-    this.handleChange = (s) => this._handleChange(s)
-    this.populateCities = () => this._populateCities()
-    this.convertCityToSelectOption = (city) => this._convertCityToSelectOption(city)
-    this.filterCitiesFromResults = (r) => this._filterCitiesFromResults(r)
     this.populateCities();
   }
 
@@ -21,21 +19,21 @@ export default class CitySelect extends Component {
     }
   }
 
-  _convertCityToSelectOption(city) {
+  convertCityToSelectOption = (city) => {
     return {
       label: city,
       value: city.split(',')[0].toLowerCase().replace(/ /, '_')
     }
   }
 
-  _handleChange(selected) {
+  onChange = (selected) => {
     const query = selected ? selected.label : selected;
 
     this.props.handleChange({ [this.props.name]: query })
     this.setState({ value: selected })
   }
 
-  _populateCities() {
+  populateCities = () => {
     const url = 'https://learningcircles.p2pu.org/api/learningcircles/?active=true&signup=open'
     jsonp(url, null, (err, res) => {
       if (err) {
@@ -46,7 +44,7 @@ export default class CitySelect extends Component {
     })
   }
 
-  _filterCitiesFromResults(courses) {
+  filterCitiesFromResults = (courses) => {
     let cities = courses.map(course => {
       if (course.city.length > 0) {
         return this.convertCityToSelectOption(course.city)
@@ -62,20 +60,28 @@ export default class CitySelect extends Component {
   }
 
   render() {
+    const { label, name, required, errorMessage, helpText, classes, selectClasses, handleInputChange, noResultsText, placeholder, isClearable, isMulti } = this.props;
+    const { value, cities } = this.state;
     return(
-      <div className={`${this.props.classes}`}>
-        { this.props.label && <label htmlFor={this.props.name}>{`${this.props.label} ${this.props.required ? '*' : ''}`}</label> }
+      <InputWrapper
+        label={label}
+        name={name}
+        required={required}
+        errorMessage={errorMessage}
+        helpText={helpText}
+        classes={classes}
+      >
         <Select
-          name={ this.props.name }
-          className={ `city-select ${this.props.selectClasses}` }
-          value={ this.state.value }
-          options={ this.state.cities }
-          onChange={ this.handleChange }
-          onInputChange={ this.props.handleInputChange }
-          noResultsText={ this.props.noResultsText }
-          placeholder={ this.props.placeholder }
-          isClearable={ this.props.isClearable }
-          isMulti={ this.props.isMulti }
+          name={ name }
+          className={ `city-select ${selectClasses}` }
+          value={ value }
+          options={ cities }
+          onChange={ this.onChange }
+          onInputChange={ handleInputChange }
+          noResultsText={ noResultsText }
+          placeholder={ placeholder }
+          isClearable={ isClearable }
+          isMulti={ isMulti }
           theme={theme => ({
             ...theme,
             colors: {
@@ -87,7 +93,7 @@ export default class CitySelect extends Component {
             },
           })}
         />
-      </div>
+      </InputWrapper>
     )
   }
 }
@@ -100,6 +106,8 @@ CitySelect.propTypes = {
   classes: PropTypes.string,
   noResultsText: PropTypes.string,
   placeholder: PropTypes.string,
+  helpText: PropTypes.string,
+  errorMessage: PropTypes.string,
   isClearable: PropTypes.bool,
   isMulti: PropTypes.bool,
 }

@@ -1,30 +1,51 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import InputWrapper from '../InputWrapper'
 
 const TextareaWithLabel = (props) => {
-  const onChange = (e) => {
+  const onChange = e => {
     props.handleChange({ [props.name]: e.currentTarget.value })
   }
 
-  return(
-    <div className={`input-with-label form-group ${props.classes}`}>
-      <label htmlFor={props.name}>{`${props.label} ${props.required ? '*' : ''}`}</label>
+  return (
+    <InputWrapper
+      label={props.label}
+      name={props.name}
+      required={props.required}
+      errorMessage={props.errorMessage}
+      helpText={props.helpText}
+      classes={props.classes}
+    >
       <textarea
-        className='form-control'
-        type={props.type || 'text'}
-        name={props.name}
-        id={props.id}
-        onChange={onChange}
         value={props.value}
+        onChange={onChange}
         placeholder={props.placeholder}
+        disabled={props.disabled}
+        className="form-control"
       />
-      {
-        props.errorMessage &&
-        <div className='error-message minicaps'>
-          { props.errorMessage }
-        </div>
-      }
-    </div>
+    </InputWrapper>
   )
+}
+
+TextareaWithLabel.defaultProps = {
+  type: 'text',
+  value: "",
+  required: false,
+  disabled: false,
+  label: 'Textarea input',
+  classes: '',
+  handleChange: (input) => console.log("Implement a function to save input", input)
+}
+
+TextareaWithLabel.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  value: PropTypes.string,
+  required: PropTypes.bool,
+  disabled: PropTypes.bool,
+  label: PropTypes.string,
+  classes: PropTypes.string,
 }
 
 export default TextareaWithLabel;

@@ -13,6 +13,8 @@ const CheckboxWithLabel = (props) => {
       name={props.name}
       required={props.required}
       errorMessage={props.errorMessage}
+      helpText={props.helpText}
+      classes={props.classes}
       labelPosition={"right"}
     >
       <input
@@ -34,6 +36,7 @@ CheckboxWithLabel.propTypes = {
   checked: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
+  helpText: PropTypes.string,
 }
 
 CheckboxWithLabel.defaultProps = {

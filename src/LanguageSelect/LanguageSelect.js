@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'react-select'
+import InputWrapper from '../InputWrapper'
 
 const LANGUAGES = [
   {label: 'English', value: 'en'},
@@ -32,8 +33,14 @@ export default class LanguageSelect extends React.Component {
     const selectedValue = LANGUAGES.find(({value, label}) => value === props.value) || null
 
     return(
-      <div className={`form-group ${props.classes}`} >
-        <label htmlFor={props.name}>{`${props.label} ${props.required ? '*' : ''}`}</label>
+      <InputWrapper
+        label={props.label}
+        name={props.name}
+        required={props.required}
+        errorMessage={props.errorMessage}
+        helpText={props.helpText}
+        classes={props.classes}
+      >
         <Select
           name={ props.name }
           className={ props.selectClasses }
@@ -56,16 +63,7 @@ export default class LanguageSelect extends React.Component {
             },
           })}
         />
-        { props.helpText &&
-            <small id={props.id + "Help"} className="form-text text-muted">{props.helpText}</small>
-        }
-        {
-          props.errorMessage &&
-            <div className='error-message minicaps'>
-              { props.errorMessage }
-            </div>
-        }
-      </div>
+      </InputWrapper>
     )
   }
 }

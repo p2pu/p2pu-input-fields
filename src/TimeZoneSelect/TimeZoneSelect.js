@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import axios from 'axios';
 import Select from 'react-select';
 import timezones from './timezone-names.js';
+import InputWrapper from '../InputWrapper'
 
 const GEONAMES_ENDPOINT = 'https://secure.geonames.org/timezoneJSON'
 
@@ -10,21 +11,19 @@ export default class TimeZoneSelect extends Component {
   constructor(props) {
     super(props);
     this.state = { value: this.props.timezone };
-    this.onChange = (s) => this._onChange(s);
-    this.detectTimeZone = () => this._detectTimeZone();
   }
 
   componentDidMount() {
     this.detectTimeZone()
   }
 
-  _onChange(selected) {
+  onChange = (selected) => {
     const timezone = !!selected ? selected.value : null;
-    this.props.handleChange({ timezone });
+    this.props.handleChange({ [this.props.name]: timezone });
     this.setState({ value: selected });
   }
 
-  _detectTimeZone() {
+  detectTimeZone = () => {
     if (!!this.props.timezone) {
       // use selected timezone
       this.setState({ value: { value: this.props.timezone, label: this.props.timezone } })
@@ -47,20 +46,27 @@ export default class TimeZoneSelect extends Component {
 
   render() {
     const timezoneOptions = timezones.map((tz) => ({value: tz, label: tz }))
+    const { label, name, required, errorMessage, helpText, classes, selectClasses, isClearable, isMulti } = this.props
+    const { value } = this.state;
 
     return(
-      <div className={`${this.props.classes}`}>
-        { this.props.label && <label htmlFor={this.props.name}>{`${this.props.label} ${this.props.required ? '*' : ''}`}</label> }
+      <InputWrapper
+        label={label}
+        name={name}
+        required={required}
+        errorMessage={errorMessage}
+        helpText={helpText}
+        classes={classes}
+      >
         <Select
-          name={ this.props.name }
-          className={ `form-group input-with-label ${this.props.selectClasses}` }
-          value={ this.state.value }
+          name={ name }
+          id={ name }
+          className={ `form-group input-with-label ${selectClasses}` }
+          value={ value }
           onChange={ this.onChange }
           options={timezoneOptions}
-          name={'timezone'}
-          id={'id_timezone'}
-          isClearable={ this.props.isClearable }
-          isMulti={ this.props.isMulti }
+          isClearable={ isClearable }
+          isMulti={ isMulti }
           theme={theme => ({
             ...theme,
             colors: {
@@ -72,11 +78,7 @@ export default class TimeZoneSelect extends Component {
             },
           })}
         />
-        {
-          this.props.errorMessage &&
-          <div className="error-message minicaps">{this.props.errorMessage}</div>
-        }
-      </div>
+      </InputWrapper>
     )
   }
 }
@@ -85,6 +87,7 @@ TimeZoneSelect.propTypes = {
   handleChange: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   classes: PropTypes.string,
+  selectClasses: PropTypes.string,
   timezone: PropTypes.string,
   latitude: PropTypes.string,
   longitude: PropTypes.string,
@@ -95,7 +98,8 @@ TimeZoneSelect.propTypes = {
 
 TimeZoneSelect.defaultProps = {
   classes: "",
-  name: "select-timezone",
+  selectClasses: "",
+  name: "id_timezone",
   handleChange: (selected) => console.log("Implement a function to save selection", selected),
   isClearable: true,
   isMulti: false,

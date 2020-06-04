@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import InputWrapper from '../InputWrapper'
 
 const defaultStyles = {
   preview: {
@@ -92,37 +93,42 @@ export default class ImageUploader extends Component {
   }
 
   render() {
+    const { label, name, required, errorMessage, helpText, labelStyles, inputStyles, imgStyles, acceptedMimetypes, buttonText, classes } = this.props;
+    const { image, file } = this.state;
     return(
-      <div className={`input-with-label form-group ${this.props.classes}`}>
+      <InputWrapper
+        label={label}
+        name={'image-upload'}
+        required={required}
+        errorMessage={errorMessage}
+        helpText={helpText}
+        classes={classes}
+      >
         <div>
-          <label htmlFor={this.props.name} className="btn p2pu-btn blue" style={{...defaultStyles.label, ...this.props.labelStyles}}>{this.props.label}
+          <label htmlFor={name} className="btn p2pu-btn dark" style={{...defaultStyles.label, ...labelStyles}}>
+            { buttonText }
             <input
               className='image-upload form-control hidden'
               type='file'
-              name={this.props.name}
-              id={this.props.name}
+              name={name}
+              id={name}
               onChange={this.onChange}
-              style={{...defaultStyles.input, ...this.props.inputStyles}}
+              style={{...defaultStyles.input, ...inputStyles}}
               hidden={true}
+              accept={acceptedMimetypes}
             />
           </label>
           {
-            this.state.file ? <span>{this.state.file.name}</span> : <span>No file selected</span>
+            file ? <span>{file.name}</span> : <span>No file selected</span>
+          }
+          {
+            image &&
+            <div className='image-preview' style={{ marginTop: '10px' }}>
+              <img src={image} alt='Image preview' style={{...defaultStyles.preview, ...imgStyles}} />
+            </div>
           }
         </div>
-        {
-          this.props.errorMessage &&
-          <div className='error-message'>
-            { this.props.errorMessage }
-          </div>
-        }
-        {
-          this.state.image &&
-          <div className='image-preview' style={{ marginTop: '10px' }}>
-            <img src={this.state.image} alt='Image preview' style={{...defaultStyles.preview, ...this.props.imgStyles}} />
-          </div>
-        }
-      </div>
+      </InputWrapper>
     )
   }
 }
@@ -134,12 +140,17 @@ ImageUploader.propTypes = {
   classes: PropTypes.string,
   label: PropTypes.string,
   errorMessage: PropTypes.string,
+  helpText: PropTypes.string,
   image: PropTypes.string,
   imgStyles: PropTypes.object,
   labelStyles: PropTypes.object,
   inputStyles: PropTypes.object,
+  acceptedMimetypes: PropTypes.string,
+  buttonText: PropTypes.string,
 }
 
 ImageUploader.defaultProps = {
   handleChange: (imgUrl) => `Implement a function to save image ${imgUrl}`,
+  acceptedMimetypes: "image/*",
+  buttonText: 'Choose file',
 }

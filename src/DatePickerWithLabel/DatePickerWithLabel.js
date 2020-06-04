@@ -23,6 +23,8 @@ const DatePickerWithLabel = (props) => {
       name={props.name}
       required={props.required}
       errorMessage={props.errorMessage}
+      helpText={props.helpText}
+      classes={props.classes}
     >
       <div>
         <DatePicker
@@ -48,6 +50,7 @@ DatePickerWithLabel.propTypes = {
   required: PropTypes.bool,
   disabled: PropTypes.bool,
   errorMessage: PropTypes.string,
+  helpText: PropTypes.string,
   value: PropTypes.string,
 }
 
@@ -57,7 +60,6 @@ DatePickerWithLabel.defaultProps = {
   handleChange: (input) => console.log("Implement a function to save selection", input),
   required: false,
   disabled: false,
-  errorMessage: null,
   value: "",
 }
 

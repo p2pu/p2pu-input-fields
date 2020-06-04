@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import axios from 'axios';
 import AsyncSelect from 'react-select/async';
+import InputWrapper from '../InputWrapper'
 
 const ALGOLIA_ENDPOINT = 'https://places-dsn.algolia.net/1/places'
 
@@ -27,10 +28,6 @@ export default class PlaceSelect extends Component {
   constructor(props) {
     super(props);
     this.state = { hits: [], value: null };
-    this.handleChange = (s) => this._handleChange(s);
-    this.searchPlaces = (query) => this._searchPlaces(query);
-    this.fetchPlaceById = () => this._fetchPlaceById();
-    this.generateCityOption = (place) => this._generateCityOption(place);
   }
 
   componentDidMount() {
@@ -44,7 +41,7 @@ export default class PlaceSelect extends Component {
     }
   }
 
-  _handleChange(selected) {
+  handleChange = (selected) => {
     console.log(selected)
     let cityData = {};
 
@@ -66,7 +63,7 @@ export default class PlaceSelect extends Component {
     this.setState({ value: selected })
   }
 
-  _searchPlaces(query) {
+  searchPlaces = (query) => {
     const url = `${ALGOLIA_ENDPOINT}/query/`;
     const data = {
       "type": "city",
@@ -93,7 +90,7 @@ export default class PlaceSelect extends Component {
     })
   }
 
-  _fetchPlaceById() {
+  fetchPlaceById = () => {
     const url = `${ALGOLIA_ENDPOINT}/${this.props.place_id}`;
 
     axios.get(url)
@@ -106,7 +103,7 @@ export default class PlaceSelect extends Component {
       })
   }
 
-  _generateCityOption(place) {
+  generateCityOption = (place) => {
     return {
       label: `${place.locale_names.default[0]}, ${place.administrative[0]}, ${place.country.default}`,
       value: place
@@ -115,22 +112,30 @@ export default class PlaceSelect extends Component {
 
   render() {
     const options = this.state.hits.map(place => this.generateCityOption(place))
+    const { label, name, required, errorMessage, helpText, classes, selectClasses, handleInputChange, noResultsText, placeholder, isClearable, isMulti } = this.props
+    const { value } = this.state;
 
     return(
-      <div className={`${this.props.classes}`} >
-        { this.props.label && <label htmlFor={this.props.name}>{`${this.props.label} ${this.props.required ? '*' : ''}`}</label> }
+      <InputWrapper
+        label={label}
+        name={name}
+        required={required}
+        errorMessage={errorMessage}
+        helpText={helpText}
+        classes={classes}
+      >
         <AsyncSelect
-          name={ this.props.name }
-          className={ `city-select ${this.props.selectClasses}` }
-          value={ this.state.value }
+          name={ name }
+          className={ `city-select ${selectClasses}` }
+          value={ value }
           options={ options }
           onChange={ this.handleChange }
-          onInputChange={ this.props.handleInputChange }
-          noResultsText={ this.props.noResultsText }
-          placeholder={ this.props.placeholder }
+          onInputChange={ handleInputChange }
+          noResultsText={ noResultsText }
+          placeholder={ placeholder }
           loadOptions={ this.searchPlaces }
-          isClearable={ this.props.isClearable }
-          isMulti={ this.props.isMulti }
+          isClearable={ isClearable }
+          isMulti={ isMulti }
           theme={theme => ({
             ...theme,
             colors: {
@@ -142,11 +147,7 @@ export default class PlaceSelect extends Component {
             },
           })}
         />
-        {
-          this.props.errorMessage &&
-          <div className="error-message minicaps">{this.props.errorMessage}</div>
-        }
-      </div>
+      </InputWrapper>
     )
   }
 }
@@ -169,6 +170,7 @@ PlaceSelect.defaultProps = {
   noResultsText: "No results for this city",
   placeholder: "Start typing a city name...",
   classes: "",
+  selectClasses: "",
   name: "select-place",
   handleChange: (selected) => console.log("Implement a function to save selection", selected),
   isClearable: true,

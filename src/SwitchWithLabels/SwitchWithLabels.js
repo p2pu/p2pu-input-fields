@@ -1,43 +1,53 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
+import InputWrapper from '../InputWrapper'
 import "./switch.scss"
 
 export default class SwitchWithLabels extends Component {
   constructor(props) {
     super(props)
     this.state = { checked: this.props.defaultChecked }
-    this.handleChange = (event) => this._handleChange(event);
-    this.handleClickLabel = (value) => this._handleClickLabel(value);
-    this.handleChange = (event) => this._handleChange(event);
   }
 
-  _handleChange(event) {
+  onChange = (event) => {
     const checked = event.currentTarget.checked;
 
     this.setState({ checked }, this.props.handleChange({ [this.props.name]: checked }));
   }
 
-  _handleClickLabel(checked) {
+  onClickLabel = (checked) => {
     return () => { this.setState({ checked }, this.props.handleChange({ [this.props.name]: checked })) };
   }
 
   render() {
+    const { falseLabel, trueLabel, label, name, required, errorMessage, helpText, classes } = this.props;
+    const { checked } = this.state;
+
     return(
-      <div className="switch-container">
-        <span onClick={this.handleClickLabel(false)}>{ this.props.falseLabel }</span>
-        <label>
-          <input
-            checked={ this.state.checked }
-            onChange={ this.handleChange }
-            className="switch"
-            type="checkbox"
-          />
-          <div className={`switch-background ${this.state.checked ? 'on' : 'off'}`}>
-            <div className="switch-button"></div>
-          </div>
-        </label>
-        <span onClick={this.handleClickLabel(true)}>{ this.props.trueLabel }</span>
-      </div>
+      <InputWrapper
+        label={label}
+        name={name}
+        required={required}
+        errorMessage={errorMessage}
+        helpText={helpText}
+        classes={classes}
+      >
+        <div className="switch-container">
+          <span onClick={this.onClickLabel(false)}>{ falseLabel }</span>
+          <label>
+            <input
+              checked={ checked }
+              onChange={ this.onChange }
+              className="switch"
+              type="checkbox"
+            />
+            <div className={`switch-background ${checked ? 'on' : 'off'}`}>
+              <div className="switch-button"></div>
+            </div>
+          </label>
+          <span onClick={this.onClickLabel(true)}>{ trueLabel }</span>
+        </div>
+      </InputWrapper>
     );
   }
 }
@@ -46,7 +56,12 @@ SwitchWithLabels.propTypes = {
   handleChange: PropTypes.func.isRequired,
   falseLabel: PropTypes.string.isRequired,
   trueLabel: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  name: PropTypes.name,
+  errorMessage: PropTypes.errorMessage,
+  helpText: PropTypes.helpText,
   defaultChecked: PropTypes.bool,
+  required: PropTypes.bool,
 }
 
 SwitchWithLabels.defaultProps = {

@@ -1,0 +1,32 @@
+.minicaps {
+  font-size: .875rem;
+  font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+  text-transform: uppercase;
+}
+
+.error-message {
+  font-weight: bold;
+  color: #FC7100;
+  margin-top: 0.25rem;
+}
+
+.help-text {
+  font-size: .875rem;
+  color: transparentize(#515665, 0.25);
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+}
+
+.input-label {
+  margin-bottom: 0.25rem;
+
+  &.left {
+    margin-bottom: 0;
+    margin-right: 0.5rem;
+  }
+
+  &.right {
+    margin-bottom: 0;
+    margin-left: 0.5rem;
+  }
+}
