@@ -1,104 +1,105 @@
 "use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
 
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
 var _react = _interopRequireWildcard(require("react"));
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+var _propTypes = _interopRequireDefault(require("prop-types"));
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+var _InputWrapper = _interopRequireDefault(require("../InputWrapper"));
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+require("./switch.scss");
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var SwitchWithLabels =
-/*#__PURE__*/
-function (_Component) {
-  _inherits(SwitchWithLabels, _Component);
-
-  function SwitchWithLabels(props) {
-    var _this;
-
-    _classCallCheck(this, SwitchWithLabels);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(SwitchWithLabels).call(this, props));
-    _this.state = {
-      checked: _this.props.defaultChecked
+class SwitchWithLabels extends _react.Component {
+  constructor(props) {
+    super(props);
+    (0, _defineProperty2.default)(this, "onChange", event => {
+      const checked = event.currentTarget.checked;
+      this.setState({
+        checked
+      }, this.props.handleChange({
+        [this.props.name]: checked
+      }));
+    });
+    (0, _defineProperty2.default)(this, "onClickLabel", checked => {
+      return () => {
+        this.setState({
+          checked
+        }, this.props.handleChange({
+          [this.props.name]: checked
+        }));
+      };
+    });
+    this.state = {
+      checked: this.props.defaultChecked
     };
-
-    _this.handleChange = function (event) {
-      return _this._handleChange(event);
-    };
-
-    _this.handleClickLabel = function (value) {
-      return _this._handleClickLabel(value);
-    };
-
-    _this.handleChange = function (event) {
-      return _this._handleChange(event);
-    };
-
-    return _this;
   }
 
-  _createClass(SwitchWithLabels, [{
-    key: "_handleChange",
-    value: function _handleChange(event) {
-      var checked = event.currentTarget.checked;
-      this.setState({
-        checked: checked
-      }, this.props.onChange(checked));
-    }
-  }, {
-    key: "_handleClickLabel",
-    value: function _handleClickLabel(value) {
-      var _this2 = this;
+  render() {
+    const {
+      falseLabel,
+      trueLabel,
+      label,
+      name,
+      required,
+      errorMessage,
+      helpText,
+      classes
+    } = this.props;
+    const {
+      checked
+    } = this.state;
+    return _react.default.createElement(_InputWrapper.default, {
+      label: label,
+      name: name,
+      required: required,
+      errorMessage: errorMessage,
+      helpText: helpText,
+      classes: classes
+    }, _react.default.createElement("div", {
+      className: "switch-container"
+    }, _react.default.createElement("span", {
+      onClick: this.onClickLabel(false)
+    }, falseLabel), _react.default.createElement("label", null, _react.default.createElement("input", {
+      checked: checked,
+      onChange: this.onChange,
+      className: "switch",
+      type: "checkbox"
+    }), _react.default.createElement("div", {
+      className: `switch-background ${checked ? 'on' : 'off'}`
+    }, _react.default.createElement("div", {
+      className: "switch-button"
+    }))), _react.default.createElement("span", {
+      onClick: this.onClickLabel(true)
+    }, trueLabel)));
+  }
 
-      return function () {
-        _this2.setState({
-          checked: value
-        }, _this2.props.onChange(value));
-      };
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return _react.default.createElement("div", {
-        className: "switch-container"
-      }, _react.default.createElement("span", {
-        onClick: this.handleClickLabel(false)
-      }, this.props.labelLeft), _react.default.createElement("label", null, _react.default.createElement("input", {
-        checked: this.state.checked,
-        onChange: this.handleChange,
-        className: "switch",
-        type: "checkbox"
-      }), _react.default.createElement("div", {
-        className: "switch-background"
-      }, _react.default.createElement("div", {
-        className: "switch-button"
-      }))), _react.default.createElement("span", {
-        onClick: this.handleClickLabel(true)
-      }, this.props.labelRight));
-    }
-  }]);
-
-  return SwitchWithLabels;
-}(_react.Component);
+}
 
 exports.default = SwitchWithLabels;
+SwitchWithLabels.propTypes = {
+  handleChange: _propTypes.default.func.isRequired,
+  falseLabel: _propTypes.default.string.isRequired,
+  trueLabel: _propTypes.default.string.isRequired,
+  label: _propTypes.default.string,
+  name: _propTypes.default.string,
+  errorMessage: _propTypes.default.string,
+  helpText: _propTypes.default.string,
+  defaultChecked: _propTypes.default.bool,
+  required: _propTypes.default.bool
+};
+SwitchWithLabels.defaultProps = {
+  handleChange: checked => `Implement a function to save checked input: ${checked}`,
+  falseLabel: "Off",
+  trueLabel: "On",
+  defaultChecked: true
+};

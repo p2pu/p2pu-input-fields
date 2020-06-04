@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -7,35 +9,55 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _propTypes = _interopRequireDefault(require("prop-types"));
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+var _InputWrapper = _interopRequireDefault(require("../InputWrapper"));
 
-var InputWithLabel = function InputWithLabel(props) {
-  var onChange = function onChange(e) {
-    props.handleChange(_defineProperty({}, props.name, e.currentTarget.value));
+const InputWithLabel = props => {
+  const onChange = e => {
+    props.handleChange({
+      [props.name]: e.currentTarget.value
+    });
   };
 
-  return _react.default.createElement("div", {
-    className: "input-with-label form-group ".concat(props.classes)
-  }, _react.default.createElement("label", {
-    htmlFor: props.name
-  }, "".concat(props.label, " ").concat(props.required ? '*' : '')), _react.default.createElement("input", {
-    className: 'form-control',
-    type: props.type || 'text',
+  return _react.default.createElement(_InputWrapper.default, {
+    label: props.label,
     name: props.name,
+    required: props.required,
+    errorMessage: props.errorMessage,
+    helpText: props.helpText,
+    classes: props.classes
+  }, _react.default.createElement("input", {
+    type: props.type,
     id: props.id,
+    value: props.value,
     onChange: onChange,
-    value: props.value || props.defaultValue,
     placeholder: props.placeholder,
-    required: props.required || false,
     min: props.min,
     max: props.max,
-    disabled: props.disabled
-  }), props.errorMessage && _react.default.createElement("div", {
-    className: 'error-message minicaps'
-  }, props.errorMessage));
+    disabled: props.disabled,
+    className: "form-control"
+  }));
 };
 
+InputWithLabel.defaultProps = {
+  type: 'text',
+  value: "",
+  required: false,
+  disabled: false,
+  label: 'Text input',
+  classes: '',
+  handleChange: input => console.log("Implement a function to save input", input)
+};
+InputWithLabel.propTypes = {
+  handleChange: _propTypes.default.func.isRequired,
+  name: _propTypes.default.string.isRequired,
+  type: _propTypes.default.string,
+  value: _propTypes.default.string,
+  required: _propTypes.default.bool,
+  disabled: _propTypes.default.bool,
+  label: _propTypes.default.string,
+  classes: _propTypes.default.string
+};
 var _default = InputWithLabel;
 exports.default = _default;

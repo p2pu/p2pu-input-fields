@@ -1,89 +1,91 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 Object.defineProperty(exports, "CheckboxWithLabel", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _CheckboxWithLabel.default;
   }
 });
 Object.defineProperty(exports, "CitySelect", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _CitySelect.default;
   }
 });
 Object.defineProperty(exports, "DatePickerWithLabel", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _DatePickerWithLabel.default;
   }
 });
 Object.defineProperty(exports, "ImageUploader", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _ImageUploader.default;
   }
 });
 Object.defineProperty(exports, "InputWithLabel", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _InputWithLabel.default;
   }
 });
 Object.defineProperty(exports, "LanguageSelect", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _LanguageSelect.default;
   }
 });
 Object.defineProperty(exports, "NumberWithLabel", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _NumberWithLabel.default;
   }
 });
 Object.defineProperty(exports, "PlaceSelect", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _PlaceSelect.default;
   }
 });
 Object.defineProperty(exports, "RangeSliderWithLabel", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _RangeSliderWithLabel.default;
   }
 });
 Object.defineProperty(exports, "SelectWithLabel", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _SelectWithLabel.default;
   }
 });
 Object.defineProperty(exports, "SwitchWithLabels", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _SwitchWithLabels.default;
   }
 });
 Object.defineProperty(exports, "TextareaWithLabel", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _TextareaWithLabel.default;
   }
 });
 Object.defineProperty(exports, "TimePickerWithLabel", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _TimePickerWithLabel.default;
   }
 });
 Object.defineProperty(exports, "TimeZoneSelect", {
   enumerable: true,
-  get: function get() {
+  get: function () {
     return _TimeZoneSelect.default;
   }
 });
@@ -115,5 +117,3 @@ var _TextareaWithLabel = _interopRequireDefault(require("./TextareaWithLabel/Tex
 var _TimePickerWithLabel = _interopRequireDefault(require("./TimePickerWithLabel/TimePickerWithLabel.js"));
 
 var _TimeZoneSelect = _interopRequireDefault(require("./TimeZoneSelect/TimeZoneSelect.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

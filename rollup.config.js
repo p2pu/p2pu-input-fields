@@ -27,8 +27,7 @@ export default {
         axios: "axios",
         jsonp: "jsonp",
         moment: "moment",
-        "moment-timezone": "moment-timezone",
-        "rc-time-picker": "rc-time-picker",
+        "moment-timezone": "moment-timezone"
       }
     },
     {
@@ -42,8 +41,7 @@ export default {
         axios: "axios",
         jsonp: "jsonp",
         moment: "moment",
-        "moment-timezone": "moment-timezone",
-        "rc-time-picker": "rc-time-picker",
+        "moment-timezone": "moment-timezone"
       }
 
     }
@@ -57,7 +55,6 @@ export default {
     "jsonp",
     "moment",
     "moment-timezone",
-    "rc-time-picker"
   ],
   plugins: [
     resolve({

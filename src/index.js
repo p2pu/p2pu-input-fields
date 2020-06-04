@@ -13,8 +13,6 @@ import TextareaWithLabel from "./TextareaWithLabel/TextareaWithLabel.js";
 import TimePickerWithLabel from "./TimePickerWithLabel/TimePickerWithLabel.js";
 import TimeZoneSelect from "./TimeZoneSelect/TimeZoneSelect.js";
 
-import './main.scss'
-
 export {
   CitySelect,
   CheckboxWithLabel,

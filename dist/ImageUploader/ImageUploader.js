@@ -1,9 +1,15 @@
 "use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -11,151 +17,170 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _axios = _interopRequireDefault(require("axios"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _InputWrapper = _interopRequireDefault(require("../InputWrapper"));
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+const defaultStyles = {
+  preview: {
+    maxWidth: '250px',
+    height: 'auto'
+  },
+  input: {
+    display: "none !important"
+  },
+  label: {
+    borderRadius: "2em",
+    textTransform: "uppercase",
+    fontSize: "0.8em",
+    fontFamily: "'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif",
+    fontWeight: "700",
+    padding: "10px 20px",
+    transform: "perspective(1px) translateZ(0)",
+    boxShadow: "0 0 1px transparent",
+    position: "relative",
+    transition: "color 0.3s linear",
+    display: "inline-block",
+    margin: '2px',
+    background: "#515665",
+    border: "2px solid #515665",
+    color: "#fff",
+    marginRight: '6px'
+  }
+};
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var ImageUploader =
-/*#__PURE__*/
-function (_Component) {
-  _inherits(ImageUploader, _Component);
-
-  function ImageUploader(props) {
-    var _this;
-
-    _classCallCheck(this, ImageUploader);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ImageUploader).call(this, props));
-
-    _this.saveImage = function (opts) {
-      var url = opts.url;
-      var data = opts.data;
-      var config = opts.config;
+class ImageUploader extends _react.Component {
+  constructor(props) {
+    super(props);
+    (0, _defineProperty2.default)(this, "saveImage", opts => {
+      const url = opts.url;
+      const data = opts.data;
+      const config = opts.config;
       (0, _axios.default)({
-        url: url,
-        data: data,
-        config: config,
+        url,
+        data,
+        config,
         method: 'post',
         responseType: 'json'
-      }).then(function (res) {
+      }).then(res => {
         if (res.data.errors) {
           return opts.onError(res.data);
         }
 
         opts.onSuccess(res.data);
-      }).catch(function (err) {
+      }).catch(err => {
         console.log(err);
         opts.onFail(err);
       });
+    });
+    this.state = {
+      image: this.props.image,
+      loading: false
     };
 
-    _this.state = {
-      image: _this.props.image
-    };
-
-    _this.onChange = function (e) {
-      return _this._onChange(e);
-    };
-
-    return _this;
+    this.onChange = e => this._onChange(e);
   }
 
-  _createClass(ImageUploader, [{
-    key: "_onChange",
-    value: function _onChange(e) {
-      var _this2 = this;
+  _onChange(e) {
+    const url = this.props.imageUploadUrl;
+    const file = e.currentTarget.files[0];
+    const data = new FormData();
+    data.append('image', file);
+    this.setState({
+      file
+    });
 
-      var url = this.props.imageUploadUrl;
-      var file = e.currentTarget.files[0];
-      var data = new FormData();
-      data.append('image', file);
+    const onSuccess = data => {
+      this.setState({
+        image: data.image_url
+      });
+      this.props.handleChange({
+        [this.props.name]: data.image_url
+      });
+    };
 
-      var onSuccess = function onSuccess(data) {
-        _this2.setState({
-          image: data.image_url
-        });
+    const onError = data => {
+      console.log(data.errors);
+      this.props.handleChange({
+        [this.props.name]: null
+      });
+    };
 
-        _this2.props.handleChange(_defineProperty({}, _this2.props.name, data.image_url));
-      };
+    const onFail = err => {
+      console.log(err);
+    };
 
-      var onError = function onError(data) {
-        console.log(data.errors);
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    };
+    const opts = {
+      url,
+      data,
+      config,
+      onSuccess,
+      onError,
+      onFail
+    };
+    this.saveImage(opts);
+  }
 
-        _this2.props.handleChange(_defineProperty({}, _this2.props.name, null));
-      };
+  render() {
+    const {
+      label,
+      name,
+      required,
+      errorMessage,
+      helpText,
+      labelStyles,
+      inputStyles,
+      imgStyles,
+      acceptedMimetypes,
+      buttonText,
+      classes
+    } = this.props;
+    const {
+      image,
+      file
+    } = this.state;
+    return _react.default.createElement(_InputWrapper.default, {
+      label: label,
+      name: 'image-upload',
+      required: required,
+      errorMessage: errorMessage,
+      helpText: helpText,
+      classes: classes
+    }, _react.default.createElement("div", null, _react.default.createElement("label", {
+      htmlFor: name,
+      className: "btn p2pu-btn dark",
+      style: { ...defaultStyles.label,
+        ...labelStyles
+      }
+    }, buttonText, _react.default.createElement("input", {
+      className: "image-upload form-control hidden",
+      type: "file",
+      name: name,
+      id: name,
+      onChange: this.onChange,
+      style: { ...defaultStyles.input,
+        ...inputStyles
+      },
+      hidden: true,
+      accept: acceptedMimetypes
+    })), file ? _react.default.createElement("span", null, file.name) : _react.default.createElement("span", null, "No file selected"), image && _react.default.createElement("div", {
+      className: "image-preview",
+      style: {
+        marginTop: '10px'
+      }
+    }, _react.default.createElement("img", {
+      src: image,
+      alt: "Image preview",
+      style: { ...defaultStyles.preview,
+        ...imgStyles
+      }
+    }))));
+  }
 
-      var onFail = function onFail(err) {
-        console.log(err);
-      };
-
-      var config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      };
-      var opts = {
-        url: url,
-        data: data,
-        config: config,
-        onSuccess: onSuccess,
-        onError: onError,
-        onFail: onFail
-      };
-      this.saveImage(opts);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return _react.default.createElement("div", {
-        className: "input-with-label form-group ".concat(this.props.classes)
-      }, _react.default.createElement("label", {
-        htmlFor: this.props.name
-      }, this.props.label), _react.default.createElement("input", {
-        className: 'image-upload',
-        type: 'file',
-        name: this.props.name,
-        id: this.props.id,
-        onChange: this.onChange
-      }), this.props.errorMessage && _react.default.createElement("div", {
-        className: 'error-message'
-      }, this.props.errorMessage), this.state.image && _react.default.createElement("div", {
-        className: 'image-preview',
-        style: {
-          width: '250px'
-        }
-      }, _react.default.createElement("img", {
-        src: this.state.image,
-        alt: 'Image preview',
-        style: {
-          width: '100%',
-          height: '100%'
-        }
-      })));
-    }
-  }]);
-
-  return ImageUploader;
-}(_react.Component);
+}
 
 exports.default = ImageUploader;
 ImageUploader.propTypes = {
@@ -164,7 +189,17 @@ ImageUploader.propTypes = {
   name: _propTypes.default.string.isRequired,
   classes: _propTypes.default.string,
   label: _propTypes.default.string,
-  id: _propTypes.default.string,
   errorMessage: _propTypes.default.string,
-  image: _propTypes.default.string
+  helpText: _propTypes.default.string,
+  image: _propTypes.default.string,
+  imgStyles: _propTypes.default.object,
+  labelStyles: _propTypes.default.object,
+  inputStyles: _propTypes.default.object,
+  acceptedMimetypes: _propTypes.default.string,
+  buttonText: _propTypes.default.string
+};
+ImageUploader.defaultProps = {
+  handleChange: imgUrl => `Implement a function to save image ${imgUrl}`,
+  acceptedMimetypes: "image/*",
+  buttonText: 'Choose file'
 };
