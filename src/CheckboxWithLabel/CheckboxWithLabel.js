@@ -15,7 +15,7 @@ const CheckboxWithLabel = (props) => {
       errorMessage={props.errorMessage}
       helpText={props.helpText}
       classes={props.classes}
-      labelPosition={"right"}
+      labelPosition={props.labelPosition}
     >
       <input
         type="checkbox"
@@ -31,6 +31,7 @@ const CheckboxWithLabel = (props) => {
 CheckboxWithLabel.propTypes = {
   handleChange: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
+  labelPosition: PropTypes.string,
   name: PropTypes.string.isRequired,
   classes: PropTypes.string,
   checked: PropTypes.bool,
@@ -42,6 +43,7 @@ CheckboxWithLabel.propTypes = {
 CheckboxWithLabel.defaultProps = {
   classes: "",
   label: "Checkbox label",
+  labelPosition: "left",
   handleChange: (input) => console.log("Implement a function to save selection", input),
 }
 

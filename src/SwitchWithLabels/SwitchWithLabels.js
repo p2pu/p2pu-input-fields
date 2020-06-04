@@ -57,9 +57,9 @@ SwitchWithLabels.propTypes = {
   falseLabel: PropTypes.string.isRequired,
   trueLabel: PropTypes.string.isRequired,
   label: PropTypes.string,
-  name: PropTypes.name,
-  errorMessage: PropTypes.errorMessage,
-  helpText: PropTypes.helpText,
+  name: PropTypes.string,
+  errorMessage: PropTypes.string,
+  helpText: PropTypes.string,
   defaultChecked: PropTypes.bool,
   required: PropTypes.bool,
 }
