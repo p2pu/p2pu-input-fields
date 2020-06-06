@@ -6,8 +6,8 @@
     "type": "git",
     "url": "git+https://github.com/p2pu/p2pu-input-fields.git"
   },
-  "main": "dist/p2pu-input-fields.umd.js",
-  "module": "dist/p2pu-input-fields.esm.js",
+  "main": "dist/build.js",
+  "module": "dist/index.js",
   "sideEffects": false,
   "scripts": {
     "start": "webpack-dev-server --mode development --config webpack.config.demo.js",
