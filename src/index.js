@@ -4,7 +4,6 @@ import DatePickerWithLabel from "./DatePickerWithLabel/DatePickerWithLabel.js";
 import ImageUploader from "./ImageUploader/ImageUploader.js";
 import InputWithLabel from "./InputWithLabel/InputWithLabel.js";
 import LanguageSelect from "./LanguageSelect/LanguageSelect.js";
-import NumberWithLabel from "./NumberWithLabel/NumberWithLabel.js";
 import PlaceSelect from "./PlaceSelect/PlaceSelect.js";
 import RangeSliderWithLabel from "./RangeSliderWithLabel/RangeSliderWithLabel.js";
 import SelectWithLabel from "./SelectWithLabel/SelectWithLabel.js";
@@ -20,7 +19,6 @@ export {
   ImageUploader,
   InputWithLabel,
   LanguageSelect,
-  NumberWithLabel,
   PlaceSelect,
   RangeSliderWithLabel,
   SelectWithLabel,

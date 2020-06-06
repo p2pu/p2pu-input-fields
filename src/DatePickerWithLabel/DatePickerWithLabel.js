@@ -1,21 +1,27 @@
-import React from 'react';
+import React from 'react'
 import PropTypes from 'prop-types'
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
+import DatePicker from 'react-datepicker'
 import InputWrapper from '../InputWrapper'
 
-import 'react-datepicker/dist/react-datepicker.css';
+import 'react-datepicker/dist/react-datepicker.css'
 
-const saveFormat = 'YYYY-MM-DD'
 const displayFormat = 'MMMM d, yyyy'
+
+const formatDateString = date => {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  return `${year}-${month}-${day}`
+}
 
 const DatePickerWithLabel = (props) => {
   const onChange = (value) => {
-    const date = !!value ? moment(value, displayFormat).format(saveFormat) : null;
+    const date = !!value ? formatDateString(value) : null;
     props.handleChange({ [props.name]: date })
   }
 
-  const date = !!props.value ? moment(props.value, saveFormat).toDate() : new Date();
+  const date = !!props.value ? Date.parse(props.value) : new Date();
 
   return(
     <InputWrapper

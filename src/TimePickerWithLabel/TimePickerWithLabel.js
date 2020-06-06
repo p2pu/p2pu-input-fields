@@ -1,21 +1,32 @@
-import React from 'react';
+import React from 'react'
 import PropTypes from 'prop-types'
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
+import DatePicker from 'react-datepicker'
 import InputWrapper from '../InputWrapper'
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-const TimePickerWithLabel = (props) => {
-  const saveFormat = 'HH:mm';
-  const displayFormat = 'h:mm a';
+const saveFormat = 'HH:mm';
+const displayFormat = 'h:mm a';
 
+const formatTimeString = date => {
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+}
+
+const generateDateTime = value => {
+  const [hours, minutes] = value.split(':')
+  const date = new Date()
+  date.setHours(hours)
+  date.setMinutes(minutes)
+  return date
+}
+
+const TimePickerWithLabel = (props) => {
   const onChange = (value) => {
-    const time = !!value ? moment(value).format(saveFormat) : null;
+    const time = !!value ? formatTimeString(value) : null;
     props.handleChange({ [props.name]: time })
   }
 
-  const time = !!props.value ? moment(props.value, displayFormat).toDate() : new Date();
+  const time = !!props.value ? generateDateTime(props.value) : new Date();
 
   return(
     <InputWrapper
