@@ -28,60 +28,60 @@ const InputWrapper = props => {
 
   switch (labelPosition) {
     case 'left':
-      return _react.default.createElement("div", {
+      return /*#__PURE__*/_react.default.createElement("div", {
         className: wrapperClasses
-      }, _react.default.createElement("div", {
+      }, /*#__PURE__*/_react.default.createElement("div", {
         style: {
           display: 'flex',
           alignItems: 'center'
         }
-      }, _react.default.createElement("label", {
+      }, /*#__PURE__*/_react.default.createElement("label", {
         htmlFor: name,
         className: "input-label left"
-      }, `${label} ${required ? '*' : ''}`), _react.default.cloneElement(children, {
+      }, `${label} ${required ? '*' : ''}`), /*#__PURE__*/_react.default.cloneElement(children, {
         id: name,
         name,
         required
-      })), helpText && _react.default.createElement("div", {
+      })), helpText && /*#__PURE__*/_react.default.createElement("div", {
         className: "form-text help-text"
-      }, helpText), errorMessage && _react.default.createElement("div", {
+      }, helpText), errorMessage && /*#__PURE__*/_react.default.createElement("div", {
         className: "error-message minicaps"
       }, errorMessage));
 
     case 'right':
-      return _react.default.createElement("div", {
+      return /*#__PURE__*/_react.default.createElement("div", {
         className: wrapperClasses
-      }, _react.default.createElement("div", {
+      }, /*#__PURE__*/_react.default.createElement("div", {
         style: {
           display: 'flex',
           alignItems: 'center'
         }
-      }, _react.default.cloneElement(children, {
+      }, /*#__PURE__*/_react.default.cloneElement(children, {
         id: name,
         name,
         required
-      }), _react.default.createElement("label", {
+      }), /*#__PURE__*/_react.default.createElement("label", {
         htmlFor: name,
         className: "input-label right"
-      }, `${label} ${required ? '*' : ''}`)), helpText && _react.default.createElement("div", {
+      }, `${label} ${required ? '*' : ''}`)), helpText && /*#__PURE__*/_react.default.createElement("div", {
         className: "form-text help-text"
-      }, helpText), errorMessage && _react.default.createElement("div", {
+      }, helpText), errorMessage && /*#__PURE__*/_react.default.createElement("div", {
         className: "error-message minicaps"
       }, errorMessage));
 
     default:
-      return _react.default.createElement("div", {
+      return /*#__PURE__*/_react.default.createElement("div", {
         className: wrapperClasses
-      }, _react.default.createElement("label", {
+      }, /*#__PURE__*/_react.default.createElement("label", {
         htmlFor: name,
         className: "input-label"
-      }, `${label} ${required ? '*' : ''}`), helpText && _react.default.createElement("div", {
+      }, `${label} ${required ? '*' : ''}`), helpText && /*#__PURE__*/_react.default.createElement("div", {
         className: "form-text help-text"
-      }, helpText), _react.default.cloneElement(children, {
+      }, helpText), /*#__PURE__*/_react.default.cloneElement(children, {
         id: name,
         name,
         required
-      }), errorMessage && _react.default.createElement("div", {
+      }), errorMessage && /*#__PURE__*/_react.default.createElement("div", {
         className: "error-message minicaps"
       }, errorMessage));
   }

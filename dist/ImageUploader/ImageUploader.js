@@ -142,20 +142,20 @@ class ImageUploader extends _react.Component {
       image,
       file
     } = this.state;
-    return _react.default.createElement(_InputWrapper.default, {
+    return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
       label: label,
       name: 'image-upload',
       required: required,
       errorMessage: errorMessage,
       helpText: helpText,
       classes: classes
-    }, _react.default.createElement("div", null, _react.default.createElement("label", {
+    }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("label", {
       htmlFor: name,
       className: "btn p2pu-btn dark",
       style: { ...defaultStyles.label,
         ...labelStyles
       }
-    }, buttonText, _react.default.createElement("input", {
+    }, buttonText, /*#__PURE__*/_react.default.createElement("input", {
       className: "image-upload form-control hidden",
       type: "file",
       name: name,
@@ -166,12 +166,12 @@ class ImageUploader extends _react.Component {
       },
       hidden: true,
       accept: acceptedMimetypes
-    })), file ? _react.default.createElement("span", null, file.name) : _react.default.createElement("span", null, "No file selected"), image && _react.default.createElement("div", {
+    })), file ? /*#__PURE__*/_react.default.createElement("span", null, file.name) : /*#__PURE__*/_react.default.createElement("span", null, "No file selected"), image && /*#__PURE__*/_react.default.createElement("div", {
       className: "image-preview",
       style: {
         marginTop: '10px'
       }
-    }, _react.default.createElement("img", {
+    }, /*#__PURE__*/_react.default.createElement("img", {
       src: image,
       alt: "Image preview",
       style: { ...defaultStyles.preview,

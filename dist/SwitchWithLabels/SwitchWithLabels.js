@@ -58,27 +58,27 @@ class SwitchWithLabels extends _react.Component {
     const {
       checked
     } = this.state;
-    return _react.default.createElement(_InputWrapper.default, {
+    return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
       label: label,
       name: name,
       required: required,
       errorMessage: errorMessage,
       helpText: helpText,
       classes: classes
-    }, _react.default.createElement("div", {
+    }, /*#__PURE__*/_react.default.createElement("div", {
       className: "switch-container"
-    }, _react.default.createElement("span", {
+    }, /*#__PURE__*/_react.default.createElement("span", {
       onClick: this.onClickLabel(false)
-    }, falseLabel), _react.default.createElement("label", null, _react.default.createElement("input", {
+    }, falseLabel), /*#__PURE__*/_react.default.createElement("label", null, /*#__PURE__*/_react.default.createElement("input", {
       checked: checked,
       onChange: this.onChange,
       className: "switch",
       type: "checkbox"
-    }), _react.default.createElement("div", {
+    }), /*#__PURE__*/_react.default.createElement("div", {
       className: `switch-background ${checked ? 'on' : 'off'}`
-    }, _react.default.createElement("div", {
+    }, /*#__PURE__*/_react.default.createElement("div", {
       className: "switch-button"
-    }))), _react.default.createElement("span", {
+    }))), /*#__PURE__*/_react.default.createElement("span", {
       onClick: this.onClickLabel(true)
     }, trueLabel)));
   }

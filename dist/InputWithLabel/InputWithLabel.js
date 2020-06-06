@@ -20,14 +20,14 @@ const InputWithLabel = props => {
     });
   };
 
-  return _react.default.createElement(_InputWrapper.default, {
+  return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
     label: props.label,
     name: props.name,
     required: props.required,
     errorMessage: props.errorMessage,
     helpText: props.helpText,
     classes: props.classes
-  }, _react.default.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     type: props.type,
     id: props.id,
     value: props.value,

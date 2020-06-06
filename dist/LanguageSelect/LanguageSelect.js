@@ -57,14 +57,14 @@ class LanguageSelect extends _react.default.Component {
       value,
       label
     }) => value === props.value) || null;
-    return _react.default.createElement(_InputWrapper.default, {
+    return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
       label: props.label,
       name: props.name,
       required: props.required,
       errorMessage: props.errorMessage,
       helpText: props.helpText,
       classes: props.classes
-    }, _react.default.createElement(_reactSelect.default, {
+    }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
       name: props.name,
       className: props.selectClasses,
       value: selectedValue,

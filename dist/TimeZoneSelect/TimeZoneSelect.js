@@ -105,14 +105,14 @@ class TimeZoneSelect extends _react.Component {
     const {
       value
     } = this.state;
-    return _react.default.createElement(_InputWrapper.default, {
+    return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
       label: label,
       name: name,
       required: required,
       errorMessage: errorMessage,
       helpText: helpText,
       classes: classes
-    }, _react.default.createElement(_reactSelect.default, {
+    }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
       name: name,
       id: name,
       className: `form-group input-with-label ${selectClasses}`,

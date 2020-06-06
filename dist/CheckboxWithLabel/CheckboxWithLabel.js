@@ -20,7 +20,7 @@ const CheckboxWithLabel = props => {
     });
   };
 
-  return _react.default.createElement(_InputWrapper.default, {
+  return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
     label: props.label,
     name: props.name,
     required: props.required,
@@ -28,7 +28,7 @@ const CheckboxWithLabel = props => {
     helpText: props.helpText,
     classes: props.classes,
     labelPosition: props.labelPosition
-  }, _react.default.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
     id: props.id,
     checked: props.checked,

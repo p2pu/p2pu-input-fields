@@ -41,12 +41,6 @@ Object.defineProperty(exports, "LanguageSelect", {
     return _LanguageSelect.default;
   }
 });
-Object.defineProperty(exports, "NumberWithLabel", {
-  enumerable: true,
-  get: function () {
-    return _NumberWithLabel.default;
-  }
-});
 Object.defineProperty(exports, "PlaceSelect", {
   enumerable: true,
   get: function () {
@@ -101,8 +95,6 @@ var _ImageUploader = _interopRequireDefault(require("./ImageUploader/ImageUpload
 var _InputWithLabel = _interopRequireDefault(require("./InputWithLabel/InputWithLabel.js"));
 
 var _LanguageSelect = _interopRequireDefault(require("./LanguageSelect/LanguageSelect.js"));
-
-var _NumberWithLabel = _interopRequireDefault(require("./NumberWithLabel/NumberWithLabel.js"));
 
 var _PlaceSelect = _interopRequireDefault(require("./PlaceSelect/PlaceSelect.js"));
 

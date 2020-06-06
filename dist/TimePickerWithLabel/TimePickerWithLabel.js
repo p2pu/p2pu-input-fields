@@ -13,31 +13,45 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _reactDatepicker = _interopRequireDefault(require("react-datepicker"));
 
-var _moment = _interopRequireDefault(require("moment"));
-
 var _InputWrapper = _interopRequireDefault(require("../InputWrapper"));
 
 require("react-datepicker/dist/react-datepicker.css");
 
-const TimePickerWithLabel = props => {
-  const saveFormat = 'HH:mm';
-  const displayFormat = 'h:mm a';
+const saveFormat = 'HH:mm';
+const displayFormat = 'h:mm a';
 
+const formatTimeString = date => {
+  return date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+};
+
+const generateDateTime = value => {
+  const [hours, minutes] = value.split(':');
+  const date = new Date();
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  return date;
+};
+
+const TimePickerWithLabel = props => {
   const onChange = value => {
-    const time = !!value ? (0, _moment.default)(value).format(saveFormat) : null;
+    const time = !!value ? formatTimeString(value) : null;
     props.handleChange({
       [props.name]: time
     });
   };
 
-  const time = !!props.value ? (0, _moment.default)(props.value, displayFormat).toDate() : new Date();
-  return _react.default.createElement(_InputWrapper.default, {
+  const time = !!props.value ? generateDateTime(props.value) : new Date();
+  return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
     label: props.label,
     name: props.name,
     required: props.required,
     errorMessage: props.errorMessage,
     classes: props.classes
-  }, _react.default.createElement("div", null, _react.default.createElement(_reactDatepicker.default, {
+  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_reactDatepicker.default, {
     selected: time,
     onChange: onChange,
     showTimeSelect: true,

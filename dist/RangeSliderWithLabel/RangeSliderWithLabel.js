@@ -41,14 +41,14 @@ const RangeSliderWithLabel = props => {
     max,
     step
   } = props;
-  return _react.default.createElement(_InputWrapper.default, {
+  return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
     label: label,
     name: name,
     required: required,
     errorMessage: errorMessage,
     helpText: helpText,
     classes: classes
-  }, _react.default.createElement(_reactRangeslider.default, {
+  }, /*#__PURE__*/_react.default.createElement(_reactRangeslider.default, {
     value: value,
     name: name,
     min: min,

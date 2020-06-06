@@ -20,14 +20,14 @@ const TextareaWithLabel = props => {
     });
   };
 
-  return _react.default.createElement(_InputWrapper.default, {
+  return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
     label: props.label,
     name: props.name,
     required: props.required,
     errorMessage: props.errorMessage,
     helpText: props.helpText,
     classes: props.classes
-  }, _react.default.createElement("textarea", {
+  }, /*#__PURE__*/_react.default.createElement("textarea", {
     value: props.value,
     onChange: onChange,
     placeholder: props.placeholder,

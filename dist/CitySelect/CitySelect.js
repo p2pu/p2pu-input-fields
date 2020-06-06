@@ -97,14 +97,14 @@ class CitySelect extends _react.Component {
       value,
       cities
     } = this.state;
-    return _react.default.createElement(_InputWrapper.default, {
+    return /*#__PURE__*/_react.default.createElement(_InputWrapper.default, {
       label: label,
       name: name,
       required: required,
       errorMessage: errorMessage,
       helpText: helpText,
       classes: classes
-    }, _react.default.createElement(_reactSelect.default, {
+    }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
       name: name,
       className: `city-select ${selectClasses}`,
       value: value,
