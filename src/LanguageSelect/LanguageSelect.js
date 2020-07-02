@@ -6,7 +6,7 @@ import InputWrapper from '../InputWrapper'
 const LANGUAGES = [
   {label: 'English', value: 'en'},
   {label: 'German', value: 'de'},
-  {label: 'Polish', value: 'po'},
+  {label: 'Polish', value: 'pl'},
   {label: 'Romanian', value: 'ro'},
   {label: 'Finnish', value: 'fi'},
   {label: 'Portuguese', value: 'pt'},
